@@ -24,6 +24,7 @@ import {
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
 import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+import { IRecipesRecord } from "@/stores/gameDataStore.types";
 
 export function useBuildingData() {
 	const gameDataStore = useGameDataStore();
@@ -62,6 +63,10 @@ export function useBuildingData() {
 		throw new Error(
 			`No data: Building '${buildingTicker}'. Ensure ticker is valid and game data has been loaded.`
 		);
+	}
+
+	function getAllBuildingRecipes(): IRecipesRecord {
+		return gameDataStore.recipes;
 	}
 
 	/**
@@ -310,6 +315,7 @@ export function useBuildingData() {
 
 	return {
 		getBuilding,
+		getAllBuildingRecipes,
 		getProductionBuildingOptions,
 		getBuildingRecipes,
 		getTotalWorkforce,
