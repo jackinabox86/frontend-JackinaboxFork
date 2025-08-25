@@ -153,7 +153,7 @@
 				{
 					label: "Production Chains",
 					display: true,
-					routerLink: "/not-implemented",
+					routerLink: "/production-chain",
 					icon: CompareSharp,
 				},
 				{

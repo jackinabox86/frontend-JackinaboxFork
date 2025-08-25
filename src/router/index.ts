@@ -129,6 +129,12 @@ const router = createRouter({
 				import("@/views/tools/ResourceROIOverviewView.vue"),
 		},
 		{
+			name: "production-chain",
+			path: "/production-chain",
+			meta: { requiresAuth: true },
+			component: () => import("@/views/tools/ProductionChainView.vue"),
+		},
+		{
 			name: "verify-email",
 			path: "/verify-email",
 			component: () => import("@/views/VerifyEmailView.vue"),

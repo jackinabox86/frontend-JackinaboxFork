@@ -1,4 +1,4 @@
-import { toRaw } from "vue";
+import { computed, ComputedRef, toRaw } from "vue";
 
 // Stores
 import { useGameDataStore } from "@/stores/gameDataStore";
@@ -8,6 +8,7 @@ import { inertClone } from "@/util/data";
 
 // Interfaces & Types
 import { IMaterial } from "@/features/api/gameData.types";
+import { PSelectOption } from "@/ui/ui.types";
 
 const cache = new Map<string, IMaterial>();
 
@@ -40,7 +41,15 @@ export function useMaterialData() {
 		);
 	}
 
+	const materialSelectOptions: ComputedRef<PSelectOption[]> = computed(() => {
+		return Object.values(gameDataStore.materials).map((m) => ({
+			label: m.Ticker,
+			value: m.Ticker,
+		}));
+	});
+
 	return {
 		getMaterial,
+		materialSelectOptions,
 	};
 }
