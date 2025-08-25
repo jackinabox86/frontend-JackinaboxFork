@@ -28,6 +28,7 @@
 		"@vue/test-utils": "2.4.0-alpha.2",
 		"axios": "^1.11.0",
 		"dayjs": "^1.11.13",
+		"fast-equals": "^5.2.2",
 		"globals": "^16.3.0",
 		"highcharts": "^12.3.0",
 		"highcharts-vue": "^2.0.1",
