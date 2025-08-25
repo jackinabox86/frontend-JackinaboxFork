@@ -1,3 +1,7 @@
+# 2025-08-25
+
+- Implements the Production Chain Tool [#127](https://github.com/PRUNplanner/frontend/issues/127)
+
 # 2025-08-24
 
 - The backend communication layer has been restructured to be key-based rather than using direct function calls, improving handling and enabling more predictable state management.
