@@ -1,5 +1,13 @@
-import { IRecipe, IRecipeMaterial } from "../api/gameData.types";
-import { IProductionGraphIO } from "./graph.types";
+// Composables
+import { useBuildingData } from "@/features/game_data/useBuildingData";
+
+// Types & Interfaces
+import {
+	IBuilding,
+	IRecipe,
+	IRecipeMaterial,
+} from "@/features/api/gameData.types";
+import { IProductionGraphIO } from "@/features/production_chain/productionGraph.types";
 
 // this is static for "O" (from COL, but also has a TCO recipe)
 const nodeExclusion: string[] = ["O"];
@@ -10,9 +18,14 @@ export class ProductionNode {
 	public amount: number = 0;
 	public recipeAmount: number = 1;
 
+	private getBuilding: ReturnType<typeof useBuildingData>["getBuilding"];
+
 	public constructor(materialTicker: string) {
 		this.materialTicker = materialTicker;
 		this.recipes = [];
+
+		const { getBuilding } = useBuildingData();
+		this.getBuilding = getBuilding;
 	}
 
 	public hasInput: boolean = false;
@@ -94,15 +107,22 @@ export class ProductionNode {
 				selectedRecipes.includes(f.RecipeId)
 			);
 
-			if (selectionMatch.length > 0) {
+			if (selectionMatch.length > 1) {
 				throw new Error(
-					`There can't be multiple matches for: ${this.materialTicker}`
+					`There can't be multiple matches for: ${this.materialTicker}, ${selectedRecipes}`
 				);
 			}
-			if (selectedRecipes.length === 0) return this.recipes[0];
+			if (selectionMatch.length === 0) return this.recipes[0];
 			else return selectionMatch[0];
 		}
 
 		return this.recipes[0];
+	}
+
+	getBuildingData(selectedRecipes: string[]): IBuilding | undefined {
+		const recipe: IRecipe | undefined = this.getRecipe(selectedRecipes);
+
+		if (recipe) return this.getBuilding(recipe.BuildingTicker);
+		return undefined;
 	}
 }

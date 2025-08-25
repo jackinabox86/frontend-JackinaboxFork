@@ -1,18 +1,22 @@
-import { ProductionEdge } from "./productionEdge";
-import { ProductionNode } from "./productionNode";
+// Classes
+import { ProductionEdge } from "@/features/production_chain/productionEdge";
+import { ProductionNode } from "@/features/production_chain/productionNode";
 
-import { useBuildingData } from "../game_data/useBuildingData";
-import { IRecipe } from "../api/gameData.types";
+// Composables
+import { useBuildingData } from "@/features/game_data/useBuildingData";
+
+// Types & Interfaces
+import { IRecipe } from "@/features/api/gameData.types";
 import {
 	IProductionGraphData,
 	IProductionGraphIO,
 	IProductionGraphSubgraph,
-} from "./graph.types";
+} from "@/features/production_chain/productionGraph.types";
 import { PSelectOption } from "@/ui/ui.types";
 
 export class ProductionGraph {
-	private nodes: Record<string, ProductionNode>;
-	private selectedRecipes: string[] = [];
+	public nodes: Record<string, ProductionNode>;
+	public selectedRecipes: string[] = [];
 	private terminals: string[] = [];
 
 	public constructor() {
@@ -55,8 +59,8 @@ export class ProductionGraph {
 
 		// define the amount that this node produces
 		node.amount =
-			node.getOutput(node.materialTicker, this.selectedRecipes)
-				?.quantity ?? 0 * node.recipeAmount;
+			(node.getOutput(node.materialTicker, this.selectedRecipes)
+				?.quantity ?? 0) * node.recipeAmount;
 
 		// find all the inputs we need for this node
 		if (!this.terminals.includes(node.materialTicker)) {
@@ -106,8 +110,13 @@ export class ProductionGraph {
 
 	createGraph(
 		materialTicker: string,
-		recipeAmount: number
+		recipeAmount: number,
+		selectedRecipes: string[],
+		terminals: string[]
 	): IProductionGraphData {
+		this.selectedRecipes = selectedRecipes;
+		this.terminals = terminals;
+
 		let nodes: ProductionNode[] = [];
 		let edges: ProductionEdge[] = [];
 

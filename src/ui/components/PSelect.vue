@@ -80,10 +80,11 @@
 	function change(e: string | number | undefined) {
 		if (disabled) return;
 
-		if (value.value === e) value.value = null;
+		if (value.value === e && clearable) value.value = null;
 		else value.value = e;
 
 		useSearch.value = false;
+		open.value = false;
 	}
 
 	function clear(): void {
