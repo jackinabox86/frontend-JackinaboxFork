@@ -2,7 +2,6 @@
 	import { computed, ComputedRef, PropType, ref, Ref } from "vue";
 
 	// Composables
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
@@ -55,17 +54,12 @@
 
 			capture("manage_cx_create");
 
-			await useQuery(useQueryRepository().repository.CreateCX, {
+			await useQuery("CreateCX", {
 				cxName: refNewCXName.value!,
 			}).execute();
 
 			// forced reload of all CX
-			emit(
-				"update:cxList",
-				await useQuery(
-					useQueryRepository().repository.GetAllCX
-				).execute()
-			);
+			emit("update:cxList", await useQuery("GetAllCX").execute());
 
 			refNewCXName.value = "";
 			refShowCreateCX.value = false;
@@ -91,19 +85,13 @@
 
 		capture("manage_cx_delete", { cxUuid: cxUuid });
 
-		const deletionResult: boolean = await useQuery(
-			useQueryRepository().repository.DeleteCX,
-			{ cxUuid: cxUuid }
-		).execute();
+		const deletionResult: boolean = await useQuery("DeleteCX", {
+			cxUuid: cxUuid,
+		}).execute();
 
 		if (deletionResult) {
 			// forced reload of all CX
-			emit(
-				"update:cxList",
-				await useQuery(
-					useQueryRepository().repository.GetAllCX
-				).execute()
-			);
+			emit("update:cxList", await useQuery("GetAllCX").execute());
 		}
 
 		refIsDeleting.value = undefined;

@@ -3,7 +3,6 @@
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 	// Composables
 	import { usePostHog } from "@/lib/usePostHog";
@@ -44,7 +43,7 @@
 		isUpdating.value = true;
 
 		try {
-			await useQuery(useQueryRepository().repository.PatchUserProfile, {
+			await useQuery("PatchUserProfile", {
 				fio_apikey: localProfile.fio_apikey?.replace(/ /g, "") ?? null,
 				prun_username: localProfile.prun_username ?? null,
 				email: localProfile.email ?? null,
@@ -62,10 +61,7 @@
 		capture("user_request_email_verification");
 
 		try {
-			await useQuery(
-				useQueryRepository().repository.PostUserResendEmailVerification,
-				null
-			).execute();
+			await useQuery("PostUserResendEmailVerification", null).execute();
 		} catch (err) {
 			console.error("Error resending verification code", err);
 		} finally {

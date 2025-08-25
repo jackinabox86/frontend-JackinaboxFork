@@ -58,23 +58,16 @@ export function usePlanningDataLoader(
 			name: "Shared Plan Configuration",
 			enabled: () => !!props.sharedPlanUuid,
 			load: () =>
-				queryStore.executeQuery(
-					useQueryRepository().repository.GetSharedPlan,
-					{
-						sharedPlanUuid: props.sharedPlanUuid!,
-					}
-				),
+				queryStore.execute("GetSharedPlan", {
+					sharedPlanUuid: props.sharedPlanUuid!,
+				}),
 			onSuccess: (data: IPlanShare) => emits("data:shared:plan", data),
 		},
 		{
 			key: "empireList",
 			name: "Empires Configurations",
 			enabled: () => !!props.empireList,
-			load: () =>
-				queryStore.executeQuery(
-					useQueryRepository().repository.GetAllEmpires,
-					undefined
-				),
+			load: () => queryStore.execute("GetAllEmpires", undefined),
 			onSuccess: (data: IPlanEmpireElement[]) => {
 				if (!props.empireUuid) {
 					/*
@@ -95,23 +88,16 @@ export function usePlanningDataLoader(
 			name: "Plan Configuration",
 			enabled: () => !!props.planUuid,
 			load: () =>
-				queryStore.executeQuery(
-					useQueryRepository().repository.GetPlan,
-					{
-						planUuid: props.planUuid!,
-					}
-				),
+				queryStore.execute("GetPlan", {
+					planUuid: props.planUuid!,
+				}),
 			onSuccess: (data: IPlan) => emits("data:plan", data),
 		},
 		{
 			key: "planList",
 			name: "All Plan Configurations",
 			enabled: () => !!props.planList,
-			load: () =>
-				queryStore.executeQuery(
-					useQueryRepository().repository.GetAllPlans,
-					undefined
-				),
+			load: () => queryStore.execute("GetAllPlans", undefined),
 			onSuccess: (data: IPlan[]) => {
 				const planetList: string[] = Array.from(
 					new Set(data.map((e) => e.planet_id)).values()
@@ -139,12 +125,9 @@ export function usePlanningDataLoader(
 							)!.data as IPlanShare
 					  ).baseplanner.planet_id
 					: props.planetNaturalId!;
-				return queryStore.executeQuery(
-					useQueryRepository().repository.GetPlanet,
-					{
-						planetNaturalId: id,
-					}
-				);
+				return queryStore.execute("GetPlanet", {
+					planetNaturalId: id,
+				});
 			},
 			onSuccess: (data: IPlanet) => emits("data:planet", data),
 		},
@@ -152,11 +135,7 @@ export function usePlanningDataLoader(
 			key: "cx",
 			name: "CX Configurations",
 			enabled: () => !!props.loadCX,
-			load: () =>
-				queryStore.executeQuery(
-					useQueryRepository().repository.GetAllCX,
-					undefined
-				),
+			load: () => queryStore.execute("GetAllCX", undefined),
 			onSuccess: (d: ICX[]) => {
 				emits("data:cx", d);
 				if (!props.cxUuid && d.length > 0) {
@@ -168,11 +147,7 @@ export function usePlanningDataLoader(
 			key: "sharedList",
 			name: "Shared Plan Configurations",
 			enabled: () => !!props.loadShared,
-			load: () =>
-				queryStore.executeQuery(
-					useQueryRepository().repository.GetAllShared,
-					undefined
-				),
+			load: () => queryStore.execute("GetAllShared", undefined),
 			onSuccess: (data: IShared[]) => emits("data:shared", data),
 		},
 		{
@@ -180,12 +155,9 @@ export function usePlanningDataLoader(
 			name: "Empire Plans",
 			enabled: () => !!props.empireUuid,
 			load: () =>
-				queryStore.executeQuery(
-					useQueryRepository().repository.GetEmpirePlans,
-					{
-						empireUuid: props.empireUuid!,
-					}
-				),
+				queryStore.execute("GetEmpirePlans", {
+					empireUuid: props.empireUuid!,
+				}),
 			onSuccess: (data: IPlan[]) => {
 				// emit empire data
 				emits("data:empire:plans", data);

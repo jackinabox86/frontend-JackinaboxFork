@@ -63,6 +63,19 @@ describe("Planning Store", async () => {
 			expect(result.length).toBe(cx_list.length);
 		});
 
+		it("setCX", async () => {
+			planningStore.$reset();
+
+			// can't set as not existis
+			planningStore.setCX(cx_list[0].uuid, cx_list[0].cx_data);
+			expect(Object.keys(planningStore.cxs).length).toBe(0);
+
+			planningStore.setCXs([cx_list[0]]);
+			expect(Object.keys(planningStore.cxs).length).toBe(1);
+			planningStore.setCX(cx_list[0].uuid, cx_list[0].cx_data);
+			expect(Object.keys(planningStore.cxs).length).toBe(1);
+		});
+
 		it("getCX", async () => {
 			planningStore.setCXs(cx_list);
 			expect(

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { Ref, ref } from "vue";
+	import { Ref, ref, ComputedRef, computed } from "vue";
 	import { useHead } from "@unhead/vue";
 
 	useHead({
@@ -37,7 +37,7 @@
 		})
 	);
 
-	const materialOptions: Ref<PSelectOption[]> = ref(
+	const materialOptions: ComputedRef<PSelectOption[]> = computed(() =>
 		gameDataStore.getMaterials().map((e) => {
 			return { label: e.Ticker, value: e.Ticker };
 		})

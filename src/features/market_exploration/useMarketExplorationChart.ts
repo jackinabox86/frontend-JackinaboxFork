@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import { formatDate } from "@/util/date";
 
 // Composables
-import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 import { useQuery } from "@/lib/query_cache/useQuery";
 
 // Types & Interfaces
@@ -132,7 +131,7 @@ export function useMarketExplorationChart(
 		error.value = false;
 		data.value = [];
 
-		await useQuery(useQueryRepository().repository.GetExplorationData, {
+		await useQuery("GetExplorationData", {
 			exchangeTicker: exchangeTicker.value,
 			materialTicker: materialTicker.value,
 			payload: {

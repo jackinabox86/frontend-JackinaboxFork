@@ -1,22 +1,29 @@
 export type JSONObject = { [key: string]: JSONValue };
 export type JSONValue = null | boolean | number | string | object;
 
-export interface QueryState<TParams, TData> {
-	// definition
-	definition: QueryDefinition<TParams, TData> | null;
+export interface IQueryState<TParams, TData> {
+	definitionName: string;
 	params: TParams | null;
-	// state
 	data: TData | null;
 	loading: boolean;
 	error: Error | null;
 	timestamp: number;
+	autoRefetch?: boolean;
 	expireTime?: number;
 }
 
-export interface QueryDefinition<TParams, TData> {
-	key: (params?: TParams) => JSONValue;
-	fetchFn: (params?: TParams) => Promise<TData>;
-	autoRefetch?: boolean;
-	expireTime?: number;
-	persist?: boolean;
-}
+export type IQueryDefinition<TParams, TData> = [TParams] extends [undefined]
+	? {
+			key: () => JSONValue;
+			fetchFn: () => Promise<TData>;
+			autoRefetch?: boolean;
+			expireTime?: number;
+			persist?: boolean;
+	  }
+	: {
+			key: (params: TParams) => JSONValue;
+			fetchFn: (params: TParams) => Promise<TData>;
+			autoRefetch?: boolean;
+			expireTime?: number;
+			persist?: boolean;
+	  };

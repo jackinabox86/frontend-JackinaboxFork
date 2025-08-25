@@ -36,6 +36,17 @@ export default [
 				{ allowTernary: true },
 			],
 			"no-async-promise-executor": "off",
+
+			// ensure underscore-prefixed names are ignored for unused-vars
+			"no-unused-vars": "off", // disable base rule
+			"@typescript-eslint/no-unused-vars": [
+				"warn",
+				{
+					varsIgnorePattern: "^_",
+					argsIgnorePattern: "^_",
+					caughtErrorsIgnorePattern: "^_",
+				},
+			],
 		},
 	},
 

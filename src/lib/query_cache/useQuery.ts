@@ -1,32 +1,48 @@
 import { computed } from "vue";
 import { useQueryStore } from "./queryStore";
-import { QueryDefinition } from "./queryCache.types";
+import { IQueryDefinition } from "./queryCache.types";
+import {
+	DataOfDefinition,
+	IQueryRepository,
+	ParamsOfDefinition,
+} from "./queryRepository.types";
+import { useQueryRepository } from "./queryRepository";
 
-export function useQuery<TParam, TData>(
-	fnDef: QueryDefinition<TParam, TData>,
-	params?: TParam
+export function useQuery<K extends keyof IQueryRepository>(
+	definitionName: K,
+	params?: ParamsOfDefinition<IQueryRepository[K]>
 ) {
+	const queryRepository = useQueryRepository();
 	const queryStore = useQueryStore();
+	const definition: IQueryRepository[K] =
+		queryRepository.repository[definitionName];
 
-	const state = computed(() => queryStore.peekQueryState(fnDef.key(params)));
+	const state = computed(() =>
+		queryStore.peekQueryState(
+			(
+				definition as IQueryDefinition<
+					ParamsOfDefinition<IQueryRepository[K]>,
+					DataOfDefinition<IQueryRepository[K]>
+				>
+			).key(params as ParamsOfDefinition<IQueryRepository[K]>)
+		)
+	);
 
 	/**
 	 * Triggers the query execution
-	 * @author jplacht
-	 *
-	 * @async
-	 * @returns {Promise<TData>} Query Data
 	 */
-	async function execute(): Promise<TData> {
-		return await queryStore.executeQuery(fnDef, params);
+	async function execute(): Promise<DataOfDefinition<IQueryRepository[K]>> {
+		return queryStore.execute<K>(
+			definitionName,
+			params as ParamsOfDefinition<IQueryRepository[K]>
+		);
 	}
 
 	return {
-		state: state.value,
+		state: state,
 		loading: state.value?.loading ?? false,
 		error: state.value?.error !== null,
-		data: (state.value?.data as unknown as TData) ?? null,
-		//
+		data: state.value?.data as DataOfDefinition<IQueryRepository[K]> | null,
 		execute,
 	};
 }

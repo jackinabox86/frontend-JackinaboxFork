@@ -3,7 +3,6 @@
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 	// Composables
 	import { usePostHog } from "@/lib/usePostHog";
@@ -35,13 +34,10 @@
 
 		capture("user_password_change");
 
-		await useQuery(
-			useQueryRepository().repository.PatchUserChangePassword,
-			{
-				old: refCurrentPassword.value,
-				new: refNewPassword.value,
-			}
-		)
+		await useQuery("PatchUserChangePassword", {
+			old: refCurrentPassword.value,
+			new: refNewPassword.value,
+		})
 			.execute()
 			.then((result: boolean) => {
 				changeStatus.value = result;

@@ -36,6 +36,7 @@ export default defineConfig({
 				"**/QueryCacheView.vue",
 				"src/features/wrapper/**",
 				"src/util/axiosSetup.ts",
+				"src/lib/piniaBroadcastChannelPlugin.ts",
 			],
 			reportOnFailure: true,
 		},

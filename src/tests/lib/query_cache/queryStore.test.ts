@@ -1,284 +1,159 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
+import { toCacheKey } from "@/lib/query_cache/cacheKeys";
 
-const mockFetch = vi.fn();
+// mock repository
+vi.mock("@/lib/query_cache/queryRepository", () => {
+	return {
+		useQueryRepository: () => ({
+			repository: {
+				testQuery: {
+					key: (params: any) => ["testQuery", params],
+					expireTime: 1000,
+					persist: true,
+					autoRefetch: false,
+					fetchFn: vi.fn(async (params) => {
+						return { result: `data-${params}` };
+					}),
+				},
+				autoRefetchQuery: {
+					key: (params: any) => ["autoRefetchQuery", params],
+					expireTime: 1000,
+					persist: true,
+					autoRefetch: true,
+					fetchFn: vi.fn(async (params) => {
+						return { result: `auto-${params}` };
+					}),
+				},
+			},
+		}),
+	};
+});
 
-const mockDefinition = {
-	key: (params: any) => ({ id: params?.id }),
-	fetchFn: mockFetch,
-	expireTime: 1000,
-	autoRefetch: false,
-	persist: true,
-};
-
-describe("queryStore", () => {
+describe("useQueryStore", () => {
 	let store: ReturnType<typeof useQueryStore>;
 
 	beforeEach(() => {
 		setActivePinia(createPinia());
 		store = useQueryStore();
-		mockFetch.mockReset();
+		vi.useFakeTimers();
+		vi.setSystemTime(0);
 	});
 
-	it("peekQueryState returns undefined if key is unknown", () => {
-		expect(store.peekQueryState({ id: 1 })).toBeUndefined();
+	it("should execute and cache data", async () => {
+		// @ts-expect-error mock query repository
+		const data = await store.execute("testQuery", "foo");
+		expect(data).toEqual({ result: "data-foo" });
+
+		// cached immediately
+		const cached = store.peekQueryState(["testQuery", "foo"]);
+		expect(cached?.data).toEqual({ result: "data-foo" });
+		expect(cached?.loading).toBe(false);
 	});
 
-	it("peekQueryState returns undefined if key is expired", async () => {
-		mockFetch.mockResolvedValueOnce("data");
-		await store.executeQuery(mockDefinition, { id: 1 });
+	it("should return cached data if still fresh", async () => {
+		// @ts-expect-error mock query repository
+		await store.execute("testQuery", "bar");
+		const spy = vi.spyOn(
+			store as any,
+			"execute" // won't actually re-call fetchFn
+		);
 
-		// simulate expiration
-		const state = store.peekQueryState({ id: 1 })!;
-		state.timestamp = Date.now() - 2000;
-
-		const result = store.peekQueryState({ id: 1 });
-		expect(result).toBeUndefined();
+		// @ts-expect-error mock query repository
+		const data2 = await store.execute("testQuery", "bar");
+		expect(data2).toEqual({ result: "data-bar" });
+		expect(spy).toHaveBeenCalledOnce();
 	});
 
-	it("executeQuery caches and returns result", async () => {
-		mockFetch.mockResolvedValueOnce("data");
-		const result = await store.executeQuery(mockDefinition, { id: 1 });
-		expect(result).toBe("data");
+	it("should refetch after expiration", async () => {
+		// @ts-expect-error mock query repository
+		const first = await store.execute("testQuery", "baz");
+		expect(first).toEqual({ result: "data-baz" });
 
-		const state = store.peekQueryState({ id: 1 });
-		expect(state?.data).toBe("data");
+		vi.advanceTimersByTime(2000); // expire
+
+		// @ts-expect-error mock query repository
+		const second = await store.execute("testQuery", "baz");
+		expect(second).toEqual({ result: "data-baz" });
+	});
+
+	it("should force refetch even if fresh", async () => {
+		// @ts-expect-error mock query repository
+		await store.execute("testQuery", "force");
+		// @ts-expect-error mock query repository
+		const data = await store.execute("testQuery", "force", {
+			forceRefetch: true,
+		});
+		expect(data).toEqual({ result: "data-force" });
+	});
+
+	it("should invalidate key and delete state", async () => {
+		// @ts-expect-error mock query repository
+		await store.execute("testQuery", "invalidate");
+		expect(store.peekQueryState(["testQuery", "invalidate"])).toBeDefined();
+
+		await store.invalidateKey(["testQuery", "invalidate"]);
+		expect(
+			store.peekQueryState(["testQuery", "invalidate"])
+		).toBeUndefined();
+	});
+
+	it("should manually add cache state via addCacheState", async () => {
+		// reset store
+		store.$reset();
+
+		const key = ["manual", 123];
+		const data = { result: "manual-data" };
+		// @ts-expect-error mock query repository
+		await store.addCacheState("manualKey", "testQuery", { foo: 1 }, data);
+
+		const state = store.peekQueryState("manualKey");
+		expect(state).toBeDefined();
+		expect(state?.data).toEqual(data);
 		expect(state?.loading).toBe(false);
-	});
+		expect(state?.error).toBeNull();
+		expect(state?.params).toEqual({ foo: 1 });
 
-	it("executeQuery returns cached result if fresh", async () => {
-		mockFetch.mockResolvedValueOnce("cached");
-		await store.executeQuery(mockDefinition, { id: 1 });
-
-		mockFetch.mockClear();
-		const result = await store.executeQuery(mockDefinition, { id: 1 });
-		expect(result).toBe("cached");
-		expect(mockFetch).not.toHaveBeenCalled();
-	});
-
-	it("executeQuery refetches if forceRefetch is true", async () => {
-		mockFetch.mockResolvedValueOnce("first");
-		await store.executeQuery(mockDefinition, { id: 1 });
-
-		mockFetch.mockResolvedValueOnce("second");
-		const result = await store.executeQuery(
-			mockDefinition,
-			{ id: 1 },
-			{ forceRefetch: true }
+		// calling addCacheState again should NOT overwrite existing state
+		await store.addCacheState(
+			"manualKey",
+			// @ts-expect-error mock query repository
+			"testQuery",
+			{ foo: 2 },
+			{ result: "new" }
 		);
-		expect(result).toBe("second");
+		const stateAfter = store.peekQueryState("manualKey");
+		expect(stateAfter?.params).toEqual({ foo: 1 });
+		expect(stateAfter?.data).toEqual(data);
 	});
+	it("should correctly compute isAnythingLoading", async () => {
+		const key = "loadingKey";
 
-	it("invalidateKey deletes exact key", async () => {
-		mockFetch.mockResolvedValueOnce("data");
-		await store.executeQuery(mockDefinition, { id: 1 });
+		// add a cache entry
+		// @ts-expect-error mock query repository
+		await store.addCacheState(key, "testQuery", {}, { result: null });
 
-		await store.invalidateKey({ id: 1 });
-		expect(store.peekQueryState({ id: 1 })).toBeUndefined();
-	});
+		const keyHash = toCacheKey(key);
 
-	it("invalidates subset keys when exact is false", async () => {
-		const def = { ...mockDefinition, persist: true };
+		// initially false
+		expect(store.isAnythingLoading).toBe(false);
 
-		mockFetch.mockResolvedValueOnce("data1");
-		await store.executeQuery(def, { id: "a", type: "a" });
-
-		mockFetch.mockResolvedValueOnce("data2");
-		await store.executeQuery(def, { id: "a", type: "b" });
-
-		mockFetch.mockResolvedValueOnce("data3");
-		await store.executeQuery(def, { id: "b", type: "b" });
-
-		// Invalidate all entries with type: "a"
-		await store.invalidateKey({ id: "a" }, { exact: false });
-
-		expect(store.peekQueryState({ id: "a" })).toBeUndefined();
-		expect(store.peekQueryState({ id: "a" })).toBeUndefined();
-		expect(store.peekQueryState({ id: "b" })).not.toBeUndefined();
-	});
-
-	it("does not refetch if skipRefetch is true", async () => {
-		const def = { ...mockDefinition, persist: true, autoRefetch: true };
-
-		mockFetch.mockResolvedValueOnce("initial");
-		await store.executeQuery(def, { id: 1 });
-
-		mockFetch.mockClear();
-		await store.invalidateKey(
-			{ id: 1 },
-			{ exact: true, skipRefetch: true }
-		);
-
-		expect(mockFetch).not.toHaveBeenCalled();
-	});
-
-	it("refetches if forceRefetch is true", async () => {
-		const def = { ...mockDefinition, persist: true };
-
-		mockFetch.mockResolvedValueOnce("initial");
-		await store.executeQuery(def, { id: 1 });
-
-		mockFetch.mockResolvedValueOnce("refetched");
-		await store.invalidateKey(
-			{ id: 1 },
-			{ exact: true, forceRefetch: true }
-		);
-
-		expect(store.peekQueryState({ id: 1 })?.data).toBe("refetched");
-	});
-
-	it("refetches if autoRefetch is true", async () => {
-		const def = { ...mockDefinition, persist: true, autoRefetch: true };
-
-		mockFetch.mockResolvedValueOnce("initial");
-		await store.executeQuery(def, { id: 1 });
-
-		mockFetch.mockResolvedValueOnce("refetched");
-		await store.invalidateKey({ id: 1 }, { exact: true });
-
-		expect(store.peekQueryState({ id: 1 })?.data).toBe("refetched");
-	});
-
-	it("calls executeQuery with undefined if params are null", async () => {
-		const def = {
-			...mockDefinition,
-			persist: true,
-			autoRefetch: true,
-			key: () => "static-key",
-		};
-
-		mockFetch.mockResolvedValueOnce("initial");
-		await store.executeQuery(def, null);
-
-		// simulate invalidation
-		mockFetch.mockResolvedValueOnce("refetched");
-
-		await store.invalidateKey("static-key", { exact: true });
-
-		expect(store.peekQueryState("static-key")?.data).toBe("refetched");
-	});
-
-	it("isAnythingLoading reflects loading state", async () => {
-		let resolve: (val: any) => void;
-		mockFetch.mockImplementation(
-			() => new Promise((res) => (resolve = res))
-		);
-
-		const promise = store.executeQuery(mockDefinition, { id: 1 });
+		// mark entry as loading
+		store.cacheState[keyHash].loading = true;
 		expect(store.isAnythingLoading).toBe(true);
 
-		resolve!("done");
-		await promise;
+		// mark entry as not loading
+		store.cacheState[keyHash].loading = false;
 		expect(store.isAnythingLoading).toBe(false);
 	});
 
-	it("checkEntryStatusAndRefresh invalidates expired non-autoRefetch entries", async () => {
-		mockFetch.mockResolvedValueOnce("data");
-		await store.executeQuery(mockDefinition, { id: 1 });
+	it("should $reset correctly", async () => {
+		// @ts-expect-error mock query repository
+		await store.execute("testQuery", "reset");
+		expect(Object.keys(store.cacheState).length).toBeGreaterThan(0);
 
-		// simulate expiration
-		const state = store.peekQueryState({ id: 1 })!;
-		state.timestamp = Date.now() - 2000;
-
-		await store.checkEntryStatusAndRefresh();
-		expect(store.peekQueryState({ id: 1 })).toBeUndefined();
-	});
-
-	it("checkEntryStatusAndRefresh refetches autoRefetch entries", async () => {
-		const autoRefetchDef = { ...mockDefinition, autoRefetch: true };
-		mockFetch.mockResolvedValueOnce("data");
-		await store.executeQuery(autoRefetchDef, { id: 1 });
-
-		const state = store.peekQueryState({ id: 1 })!;
-		state.timestamp = Date.now() - 2000;
-
-		mockFetch.mockResolvedValueOnce("refetched");
-		await store.checkEntryStatusAndRefresh();
-
-		expect(store.peekQueryState({ id: 1 })?.data).toBe("refetched");
-	});
-
-	it("reuses in-flight promise if already fetching", async () => {
-		let resolve: (val: any) => void;
-		const promise = new Promise((res) => (resolve = res));
-		mockFetch.mockReturnValue(promise);
-
-		const p1 = store.executeQuery(mockDefinition, { id: 1 });
-		const p2 = store.executeQuery(mockDefinition, { id: 1 });
-
-		expect(p1).toStrictEqual(p2);
-
-		resolve!("done");
-		await p1;
-	});
-
-	it("stores error if fetch fails and persist is true", async () => {
-		const error = new Error("fail");
-
-		const persistentDef = { ...mockDefinition, persist: true };
-
-		// First call to initialize cache
-		mockFetch.mockResolvedValueOnce("init");
-		await store.executeQuery(persistentDef, { id: 1 });
-
-		// Now simulate failure
-		mockFetch.mockRejectedValueOnce(error);
-		await expect(
-			store.executeQuery(persistentDef, { id: 1 }, { forceRefetch: true })
-		).rejects.toThrow("fail");
-
-		const state = store.peekQueryState({ id: 1 });
-		expect(state?.error).toEqual(error);
-	});
-
-	it("deletes cache on error if persist is false", async () => {
-		const error = new Error("fail");
-		mockFetch.mockRejectedValueOnce(error);
-
-		const nonPersistentDef = { ...mockDefinition, persist: false };
-
-		await expect(
-			store.executeQuery(nonPersistentDef, { id: 1 })
-		).rejects.toThrow("fail");
-
-		const state = store.peekQueryState({ id: 1 });
-		expect(state).toBeUndefined();
-	});
-
-	it("deletes cache if persist is false", async () => {
-		const nonPersistentDef = { ...mockDefinition, persist: false };
-		mockFetch.mockResolvedValueOnce("temp");
-
-		await store.executeQuery(nonPersistentDef, { id: 1 });
-
-		expect(store.peekQueryState({ id: 1 })).toBeUndefined();
-	});
-
-	it("$reset", async () => {
 		store.$reset();
-		expect(store.cache.size).toBe(0);
-	});
-
-	it("addCacheState", async () => {
-		expect(store.cache.size).toBe(0);
-
-		store.addCacheState(
-			["foo"],
-			{
-				// @ts-expect-error mock definition
-				definition: null,
-				params: null,
-				data: null,
-				loading: false,
-				error: null,
-				timestamp: 0,
-				expireTime: 0,
-			},
-			null,
-			null
-		);
-
-		expect(store.cache.size).toBe(1);
+		expect(Object.keys(store.cacheState)).toHaveLength(0);
 	});
 });

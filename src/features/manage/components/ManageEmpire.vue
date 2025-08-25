@@ -3,7 +3,6 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
 
@@ -166,19 +165,11 @@
 		try {
 			capture("manage_empire_junctions_update");
 
-			await useQuery(
-				useQueryRepository().repository.PatchEmpireCXJunctions,
-				{
-					junctions: cxEmpireJunctions.value,
-				}
-			).execute();
+			await useQuery("PatchEmpireCXJunctions", {
+				junctions: cxEmpireJunctions.value,
+			}).execute();
 
-			emit(
-				"update:cxList",
-				await useQuery(
-					useQueryRepository().repository.GetAllCX
-				).execute()
-			);
+			emit("update:cxList", await useQuery("GetAllCX").execute());
 			refCreateName.value = "";
 		} catch (err) {
 			console.error(err);
@@ -194,7 +185,7 @@
 			if (compCanCreate.value) {
 				capture("manage_empire_create");
 
-				await useQuery(useQueryRepository().repository.CreateEmpire, {
+				await useQuery("CreateEmpire", {
 					data: {
 						faction: refCreateFaction.value,
 						permits_used: refCreatePermitsUsed.value,
@@ -207,9 +198,7 @@
 				// forced reload of all Empires
 				emit(
 					"update:empireList",
-					await useQuery(
-						useQueryRepository().repository.GetAllEmpires
-					).execute()
+					await useQuery("GetAllEmpires").execute()
 				);
 			}
 		} catch (err) {
@@ -236,18 +225,15 @@
 	async function deleteEmpire(empireUuid: string): Promise<void> {
 		refIsDeleting.value = empireUuid;
 		capture("manage_empire_delete", { empireUuid: empireUuid });
-		const deletionResult: boolean = await useQuery(
-			useQueryRepository().repository.DeleteEmpire,
-			{ empireUuid: empireUuid }
-		).execute();
+		const deletionResult: boolean = await useQuery("DeleteEmpire", {
+			empireUuid: empireUuid,
+		}).execute();
 
 		if (deletionResult) {
 			// forced reload of all Empires
 			emit(
 				"update:empireList",
-				await useQuery(
-					useQueryRepository().repository.GetAllEmpires
-				).execute()
+				await useQuery("GetAllEmpires").execute()
 			);
 		}
 

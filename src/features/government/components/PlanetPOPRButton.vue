@@ -3,7 +3,6 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
 
@@ -44,7 +43,7 @@
 		capture("popr_load", { planetId: planetNaturalId });
 
 		try {
-			await useQuery(useQueryRepository().repository.GetPlanetLastPOPR, {
+			await useQuery("GetPlanetLastPOPR", {
 				planetNaturalId: planetNaturalId,
 			})
 				.execute()

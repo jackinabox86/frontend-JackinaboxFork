@@ -2,7 +2,6 @@
 	import { computed, ComputedRef, ref, Ref } from "vue";
 
 	// API
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
@@ -28,13 +27,12 @@
 	async function verifyEmail(): Promise<void> {
 		isVerifying.value = true;
 
-		await useQuery(useQueryRepository().repository.PostUserVerifyEmail, {
+		await useQuery("PostUserVerifyEmail", {
 			code: refVerificationCode.value,
 		})
 			.execute()
 			.then((result: boolean) => {
 				verifyStatus.value = result;
-
 				capture("user_verify_email", { status: result });
 			})
 			.finally(() => {

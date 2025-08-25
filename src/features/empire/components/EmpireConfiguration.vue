@@ -3,7 +3,6 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
 
@@ -93,7 +92,7 @@
 		};
 
 		try {
-			await useQuery(useQueryRepository().repository.PatchEmpire, {
+			await useQuery("PatchEmpire", {
 				empireUuid: localData.value.uuid,
 				data: patchData,
 			}).execute();

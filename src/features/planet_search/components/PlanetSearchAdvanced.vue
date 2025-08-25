@@ -3,7 +3,6 @@
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 	// Composables
 	import { usePostHog } from "@/lib/usePostHog";
@@ -142,12 +141,9 @@
 		});
 
 		try {
-			const data: IPlanet[] = await useQuery(
-				useQueryRepository().repository.PostPlanetSearch,
-				{
-					searchData: searchPayload.value,
-				}
-			).execute();
+			const data: IPlanet[] = await useQuery("PostPlanetSearch", {
+				searchData: searchPayload.value,
+			}).execute();
 			emit("update:results", data);
 			emit("update:materials", inputMaterials.value);
 		} catch {

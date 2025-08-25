@@ -107,7 +107,7 @@ export const usePlanningStore = defineStore(
 		}
 
 		function setCX(cxUuid: string, data: ICXData): void {
-			cxs.value[cxUuid].cx_data = data;
+			if (cxs.value[cxUuid]) cxs.value[cxUuid].cx_data = data;
 		}
 
 		/**
@@ -219,6 +219,10 @@ export const usePlanningStore = defineStore(
 	{
 		persist: {
 			pick: ["plans", "empires", "cxs", "shared"],
+		},
+		broadcastWatch: {
+			pick: ["plans", "empires", "cxs", "shared"],
+			channel: "pinia_planning_data",
 		},
 	}
 );

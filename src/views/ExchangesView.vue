@@ -13,7 +13,6 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
 
@@ -156,7 +155,7 @@
 
 			capture("exchange_patch", { exchangeUuid: selectedCX.value.uuid });
 
-			await useQuery(useQueryRepository().repository.PatchCX, {
+			await useQuery("PatchCX", {
 				cxUuid: selectedCX.value.uuid,
 				data: data,
 			}).execute();

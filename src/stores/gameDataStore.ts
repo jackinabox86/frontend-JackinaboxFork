@@ -253,5 +253,20 @@ export const useGameDataStore = defineStore(
 				"fio_sites_ships",
 			],
 		},
+		broadcastWatch: {
+			pick: [
+				"materials",
+				"exchanges",
+				"recipes",
+				"buildings",
+				"planets",
+				"fio_storage_planets",
+				"fio_storage_warehouses",
+				"fio_storage_ships",
+				"fio_sites_planets",
+				"fio_sites_ships",
+			],
+			channel: "pinia_game_data",
+		},
 	}
 );

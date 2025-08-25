@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { Ref, ref } from "vue";
+	import { computed, Ref, ref } from "vue";
 	import { useHead } from "@unhead/vue";
 
 	useHead({
@@ -32,6 +32,13 @@
 	const selectedOverride: Ref<Record<string, number | null>> = ref({});
 	const selectedShowLocations: Ref<boolean> = ref(true);
 	const refSelectedCXUuid: Ref<string | undefined> = ref(undefined);
+
+	function overrideBinding(ticker: string) {
+		return computed({
+			get: () => selectedOverride.value[ticker] ?? null,
+			set: (val) => (selectedOverride.value[ticker] = val),
+		});
+	}
 
 	const {
 		levelOptions,
@@ -180,7 +187,7 @@
 								<PInputNumber
 									:key="`OVERRIDE#${rowData.ticker}`"
 									v-model:value="
-										selectedOverride[rowData.ticker]!
+										overrideBinding(rowData.ticker).value
 									"
 									:min="0"
 									clearable

@@ -2,9 +2,9 @@
 	import { SizeKey } from "@/ui/ui.types";
 	import { inputNumberConfig } from "@/ui/styles";
 
-	const value = defineModel<number>("value", {
+	const value = defineModel<number | null>("value", {
 		required: true,
-		type: Number,
+		type: [Number, null],
 	});
 
 	const {
@@ -36,13 +36,17 @@
 
 	function canChange(e: number): boolean {
 		if (disabled) return false;
+		if (value.value === null) value.value = 0;
 
 		if (value.value + e >= min && value.value + e <= max) return true;
 		return false;
 	}
 
 	function change(e: number) {
-		if (canChange(e)) value.value += e;
+		if (canChange(e)) {
+			if (value.value === null) value.value = 0;
+			value.value += e;
+		}
 	}
 </script>
 

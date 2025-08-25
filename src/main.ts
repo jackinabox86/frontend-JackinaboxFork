@@ -5,9 +5,11 @@ import AppProvider from "@/AppProvider.vue";
 // stores
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import { createBroadcastChannelPlugin } from "@/lib/piniaBroadcastChannelPlugin";
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
+pinia.use(createBroadcastChannelPlugin());
 
 // routing
 import router from "@/router";
@@ -21,7 +23,6 @@ app.use(pinia);
 
 // axios
 import axiosSetup from "@/util/axiosSetup";
-
 axiosSetup();
 
 // highcharts

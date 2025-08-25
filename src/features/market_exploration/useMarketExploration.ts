@@ -1,6 +1,5 @@
 // Composables
 import { useQuery } from "@/lib/query_cache/useQuery";
-import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 // Util
 import { formatDate } from "@/util/date";
@@ -49,7 +48,7 @@ export function useMarketExploration() {
 			"IC1",
 			"NC1",
 		].map((exchangeTicker) =>
-			useQuery(useQueryRepository().repository.GetExplorationData, {
+			useQuery("GetExplorationData", {
 				exchangeTicker: exchangeTicker,
 				materialTicker: ticker,
 				payload: fetchPayload,

@@ -1,4 +1,7 @@
-import { QueryDefinition } from "@/lib/query_cache/queryCache.types";
+import {
+	IQueryDefinition,
+	JSONValue,
+} from "@/lib/query_cache/queryCache.types";
 import {
 	IBuilding,
 	IExchange,
@@ -55,68 +58,90 @@ import {
 	IUserVerifyEmailPayload,
 } from "@/features/api/userData.types";
 
-export type QueryRepositoryType = {
-	GetMaterials: QueryDefinition<void, IMaterial[]>;
-	GetExchanges: QueryDefinition<void, IExchange[]>;
-	GetRecipes: QueryDefinition<void, IRecipe[]>;
-	GetBuildings: QueryDefinition<void, IBuilding[]>;
-	GetPlanet: QueryDefinition<{ planetNaturalId: string }, IPlanet>;
-	GetMultiplePlanets: QueryDefinition<
+/*
+ * To be honest, this typing for Query Params and their data is a complete
+ * shitshow, I'm still not 100 % sure why this is working, but if someone
+ * is able to make this easier and more readable, please do! /jplacht
+ */
+
+export type ParamsOfDefinition<Q> = Q extends {
+	key: (params: infer P) => JSONValue;
+}
+	? P
+	: Q extends IQueryDefinition<infer P, unknown>
+	? P
+	: never;
+
+export type DataOfDefinition<Q> = Q extends IQueryDefinition<infer _, infer D>
+	? D
+	: Q extends { fetchFn: (...args: unknown[]) => Promise<infer D> }
+	? D
+	: Q extends { fetchFn: (...args: unknown[]) => infer D }
+	? D
+	: never;
+
+export interface IQueryRepository {
+	GetMaterials: IQueryDefinition<undefined, IMaterial[]>;
+	GetExchanges: IQueryDefinition<undefined, IExchange[]>;
+	GetRecipes: IQueryDefinition<undefined, IRecipe[]>;
+	GetBuildings: IQueryDefinition<undefined, IBuilding[]>;
+	GetPlanet: IQueryDefinition<{ planetNaturalId: string }, IPlanet>;
+	GetMultiplePlanets: IQueryDefinition<
 		{ planetNaturalIds: string[] },
 		IPlanet[]
 	>;
-	GetPlanetSearchSingle: QueryDefinition<{ searchId: string }, IPlanet[]>;
-	PostPlanetSearch: QueryDefinition<
+	GetPlanetSearchSingle: IQueryDefinition<{ searchId: string }, IPlanet[]>;
+	PostPlanetSearch: IQueryDefinition<
 		{ searchData: IPlanetSearchAdvanced },
 		IPlanet[]
 	>;
-	GetSharedPlan: QueryDefinition<{ sharedPlanUuid: string }, IPlanShare>;
-	GetAllShared: QueryDefinition<void, IShared[]>;
-	DeleteSharedPlan: QueryDefinition<{ sharedUuid: string }, boolean>;
-	CreateSharedPlan: QueryDefinition<
+	GetSharedPlan: IQueryDefinition<{ sharedPlanUuid: string }, IPlanShare>;
+	GetAllShared: IQueryDefinition<undefined, IShared[]>;
+	DeleteSharedPlan: IQueryDefinition<{ sharedUuid: string }, boolean>;
+	CreateSharedPlan: IQueryDefinition<
 		{ planUuid: string },
 		ISharedCreateResponse
 	>;
-	CreateEmpire: QueryDefinition<{ data: IEmpireCreatePayload }, IPlanEmpire>;
-	DeleteEmpire: QueryDefinition<{ empireUuid: string }, boolean>;
-	PatchEmpireCXJunctions: QueryDefinition<
+	CreateEmpire: IQueryDefinition<{ data: IEmpireCreatePayload }, IPlanEmpire>;
+	DeleteEmpire: IQueryDefinition<{ empireUuid: string }, boolean>;
+	PatchEmpireCXJunctions: IQueryDefinition<
 		{ junctions: ICXEmpireJunction[] },
 		ICX[]
 	>;
-	PatchCX: QueryDefinition<{ cxUuid: string; data: ICXData }, ICXData>;
-	GetAllEmpires: QueryDefinition<void, IPlanEmpireElement[]>;
-	GetEmpirePlans: QueryDefinition<{ empireUuid: string }, IPlan[]>;
-	PatchEmpire: QueryDefinition<
+	PatchCX: IQueryDefinition<{ cxUuid: string; data: ICXData }, ICXData>;
+	GetAllEmpires: IQueryDefinition<undefined, IPlanEmpireElement[]>;
+	GetEmpirePlans: IQueryDefinition<{ empireUuid: string }, IPlan[]>;
+	PatchEmpire: IQueryDefinition<
 		{ empireUuid: string; data: IEmpirePatchPayload },
 		IPlanEmpire
 	>;
-	PatchEmpirePlanJunctions: QueryDefinition<
+	PatchEmpirePlanJunctions: IQueryDefinition<
 		{ junctions: IPlanEmpireJunction[] },
 		IPlanEmpireElement[]
 	>;
-	CreateCX: QueryDefinition<{ cxName: string }, ICX>;
-	DeleteCX: QueryDefinition<{ cxUuid: string }, boolean>;
-	GetAllCX: QueryDefinition<void, ICX[]>;
-	GetPlan: QueryDefinition<{ planUuid: string }, IPlan>;
-	GetAllPlans: QueryDefinition<void, IPlan[]>;
-	ClonePlan: QueryDefinition<
+	CreateCX: IQueryDefinition<{ cxName: string }, ICX>;
+	DeleteCX: IQueryDefinition<{ cxUuid: string }, boolean>;
+	GetAllCX: IQueryDefinition<undefined, ICX[]>;
+	GetPlan: IQueryDefinition<{ planUuid: string }, IPlan>;
+	GetAllPlans: IQueryDefinition<undefined, IPlan[]>;
+	ClonePlan: IQueryDefinition<
 		{ planUuid: string; cloneName: string },
 		IPlanCloneResponse
 	>;
-	DeletePlan: QueryDefinition<{ planUuid: string }, boolean>;
-	CreatePlan: QueryDefinition<
+	DeletePlan: IQueryDefinition<{ planUuid: string }, boolean>;
+	CreatePlan: IQueryDefinition<
 		{ data: IPlanCreateData },
 		PlanSaveCreateResponseType
 	>;
-	PatchPlan: QueryDefinition<
+	PatchPlan: IQueryDefinition<
 		{ planUuid: string; data: IPlanSaveData },
 		PlanSaveCreateResponseType
 	>;
-	PatchMaterialIO: QueryDefinition<
+	PatchMaterialIO: IQueryDefinition<
 		{ data: IPlanPatchMaterialIOElement[] },
 		boolean
 	>;
-	GetExplorationData: QueryDefinition<
+	GetExplorationData: IQueryDefinition<
 		{
 			exchangeTicker: string;
 			materialTicker: string;
@@ -124,21 +149,21 @@ export type QueryRepositoryType = {
 		},
 		IExploration[]
 	>;
-	GetFIOStorage: QueryDefinition<void, IFIOStorage>;
-	GetFIOSites: QueryDefinition<void, IFIOSites>;
-	GetPlanetLastPOPR: QueryDefinition<
+	GetFIOStorage: IQueryDefinition<undefined, IFIOStorage>;
+	GetFIOSites: IQueryDefinition<undefined, IFIOSites>;
+	GetPlanetLastPOPR: IQueryDefinition<
 		{ planetNaturalId: string },
 		IPopulationReport
 	>;
-	OptimizeHabitation: QueryDefinition<
+	OptimizeHabitation: IQueryDefinition<
 		IOptimizeHabitationPayload,
 		IOptimizeHabitationResponse
 	>;
-	PatchUserProfile: QueryDefinition<IUserProfilePatch, IUserProfile>;
-	PostUserResendEmailVerification: QueryDefinition<null, boolean>;
-	PatchUserChangePassword: QueryDefinition<
+	PatchUserProfile: IQueryDefinition<IUserProfilePatch, IUserProfile>;
+	PostUserResendEmailVerification: IQueryDefinition<null, boolean>;
+	PatchUserChangePassword: IQueryDefinition<
 		IUserChangePasswordPayload,
 		boolean
 	>;
-	PostUserVerifyEmail: QueryDefinition<IUserVerifyEmailPayload, boolean>;
-};
+	PostUserVerifyEmail: IQueryDefinition<IUserVerifyEmailPayload, boolean>;
+}

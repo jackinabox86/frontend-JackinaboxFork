@@ -11,7 +11,6 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 	// Types & Interfaces
 	import {
@@ -115,10 +114,7 @@
 		// check so that there is a workforce requirement
 		if (totalWorkforce.value === 0) return;
 
-		await useQuery(
-			useQueryRepository().repository.OptimizeHabitation,
-			payload
-		)
+		await useQuery("OptimizeHabitation", payload)
 			.execute()
 			.then((result: IOptimizeHabitationResponse) => {
 				responseData.value = result;

@@ -1,4 +1,4 @@
-import { QueryDefinition } from "@/lib/query_cache/queryCache.types";
+import { IQueryDefinition } from "@/lib/query_cache/queryCache.types";
 
 // config
 import config from "@/lib/config";
@@ -56,7 +56,7 @@ import {
 } from "@/features/api/sharingData.api";
 
 // Types & Interfaces
-import { QueryRepositoryType } from "@/lib/query_cache/queryRepository.types";
+import { IQueryRepository } from "@/lib/query_cache/queryRepository.types";
 
 import {
 	IBuilding,
@@ -127,7 +127,7 @@ export function useQueryRepository() {
 	const planningStore = usePlanningStore();
 	const userStore = useUserStore();
 
-	const queryRepository: QueryRepositoryType = {
+	const repository: IQueryRepository = {
 		GetMaterials: {
 			key: () => ["gamedata", "materials"],
 			fetchFn: async () => {
@@ -138,7 +138,7 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_MATERIALS,
 			persist: true,
-		} as QueryDefinition<void, IMaterial[]>,
+		} as IQueryDefinition<undefined, IMaterial[]>,
 		GetExchanges: {
 			key: () => ["gamedata", "exchanges"],
 			fetchFn: async () => {
@@ -149,7 +149,7 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_EXCHANGES,
 			persist: true,
-		} as QueryDefinition<void, IExchange[]>,
+		} as IQueryDefinition<undefined, IExchange[]>,
 		GetRecipes: {
 			key: () => ["gamedata", "recipes"],
 			fetchFn: async () => {
@@ -160,7 +160,7 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_RECIPES,
 			persist: true,
-		} as QueryDefinition<void, IRecipe[]>,
+		} as IQueryDefinition<undefined, IRecipe[]>,
 		GetBuildings: {
 			key: () => ["gamedata", "buildings"],
 			fetchFn: async () => {
@@ -171,7 +171,7 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_BUILDINGS,
 			persist: true,
-		} as QueryDefinition<void, IBuilding[]>,
+		} as IQueryDefinition<undefined, IBuilding[]>,
 		GetPlanet: {
 			key: (params: { planetNaturalId: string }) => [
 				"gamedata",
@@ -188,7 +188,7 @@ export function useQueryRepository() {
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			autoRefetch: true,
 			persist: true,
-		} as QueryDefinition<{ planetNaturalId: string }, IPlanet>,
+		} as IQueryDefinition<{ planetNaturalId: string }, IPlanet>,
 		GetMultiplePlanets: {
 			key: (params: { planetNaturalIds: string[] }) => [
 				"gamedata",
@@ -207,7 +207,7 @@ export function useQueryRepository() {
 					data.forEach((p) => {
 						queryStore.addCacheState(
 							["gamedata", "planet", p.PlanetNaturalId],
-							queryRepository.GetPlanet,
+							"GetPlanet",
 							{ planetNaturalId: p.PlanetNaturalId },
 							p
 						);
@@ -221,7 +221,7 @@ export function useQueryRepository() {
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			autoRefetch: true,
 			persist: true,
-		} as QueryDefinition<{ planetNaturalIds: string[] }, IPlanet[]>,
+		} as IQueryDefinition<{ planetNaturalIds: string[] }, IPlanet[]>,
 		GetPlanetSearchSingle: {
 			key: (params: { searchId: string }) => [
 				"gamedata",
@@ -235,7 +235,7 @@ export function useQueryRepository() {
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			persist: true,
 			autoRefetch: false,
-		} as QueryDefinition<{ searchId: string }, IPlanet[]>,
+		} as IQueryDefinition<{ searchId: string }, IPlanet[]>,
 		PostPlanetSearch: {
 			key: (params: { searchData: IPlanetSearchAdvanced }) => [
 				"gamedata",
@@ -249,7 +249,7 @@ export function useQueryRepository() {
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			persist: true,
 			autoRefetch: false,
-		} as QueryDefinition<{ searchData: IPlanetSearchAdvanced }, IPlanet[]>,
+		} as IQueryDefinition<{ searchData: IPlanetSearchAdvanced }, IPlanet[]>,
 		GetSharedPlan: {
 			key: (params: { sharedPlanUuid: string }) => [
 				"planningdata",
@@ -262,7 +262,7 @@ export function useQueryRepository() {
 			persist: true,
 			autoRefetch: false,
 			expireTime: 10_000,
-		} as QueryDefinition<{ sharedPlanUuid: string }, IPlanShare>,
+		} as IQueryDefinition<{ sharedPlanUuid: string }, IPlanShare>,
 		GetAllShared: {
 			key: () => ["planningdata", "shared", "list"],
 			fetchFn: async () => {
@@ -273,7 +273,7 @@ export function useQueryRepository() {
 			persist: true,
 			autoRefetch: true,
 			expireTime: 60_000 * 60,
-		} as QueryDefinition<void, IShared[]>,
+		} as IQueryDefinition<void, IShared[]>,
 		DeleteSharedPlan: {
 			key: (params: { sharedUuid: string }) => [
 				"planningdata",
@@ -291,7 +291,7 @@ export function useQueryRepository() {
 			},
 			persist: false,
 			autoRefetch: false,
-		} as QueryDefinition<{ sharedUuid: string }, boolean>,
+		} as IQueryDefinition<{ sharedUuid: string }, boolean>,
 		CreateSharedPlan: {
 			key: (params: { planUuid: string }) => [
 				"planningdata",
@@ -308,7 +308,7 @@ export function useQueryRepository() {
 			},
 			persist: false,
 			autoRefetch: false,
-		} as QueryDefinition<{ planUuid: string }, ISharedCreateResponse>,
+		} as IQueryDefinition<{ planUuid: string }, ISharedCreateResponse>,
 		CreateEmpire: {
 			key: () => ["planningdata", "empire", "create"],
 			fetchFn: async (params: { data: IEmpireCreatePayload }) => {
@@ -320,7 +320,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<{ data: IEmpireCreatePayload }, IPlanEmpire>,
+		} as IQueryDefinition<{ data: IEmpireCreatePayload }, IPlanEmpire>,
 		DeleteEmpire: {
 			key: (params: { empireUuid: string }) => [
 				"planningdata",
@@ -337,7 +337,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<{ empireUuid: string }, boolean>,
+		} as IQueryDefinition<{ empireUuid: string }, boolean>,
 		PatchEmpireCXJunctions: {
 			key: () => ["planningdata", "empire", "cx", "junctions"],
 			fetchFn: async (params: { junctions: ICXEmpireJunction[] }) => {
@@ -352,7 +352,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<{ junctions: ICXEmpireJunction[] }, ICX[]>,
+		} as IQueryDefinition<{ junctions: ICXEmpireJunction[] }, ICX[]>,
 		PatchCX: {
 			key: (params: { cxUuid: string }) => [
 				"planningdata",
@@ -372,7 +372,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<{ cxUuid: string; data: ICXData }, ICXData>,
+		} as IQueryDefinition<{ cxUuid: string; data: ICXData }, ICXData>,
 		GetAllEmpires: {
 			key: () => ["planningdata", "empire", "list"],
 			fetchFn: async () => {
@@ -382,7 +382,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as QueryDefinition<void, IPlanEmpireElement[]>,
+		} as IQueryDefinition<void, IPlanEmpireElement[]>,
 		GetEmpirePlans: {
 			key: (params: { empireUuid: string }) => [
 				"planningdata",
@@ -399,7 +399,7 @@ export function useQueryRepository() {
 					data.forEach((p) =>
 						queryStore.addCacheState(
 							["planningdata", "plan", p.uuid],
-							queryRepository.GetPlan,
+							"GetPlan",
 							{ planUuid: p.uuid! },
 							p
 						)
@@ -412,7 +412,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as QueryDefinition<{ empireUuid: string }, IPlan[]>,
+		} as IQueryDefinition<{ empireUuid: string }, IPlan[]>,
 		PatchEmpire: {
 			key: (params: { empireUuid: string }) => [
 				"planningdata",
@@ -435,7 +435,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<
+		} as IQueryDefinition<
 			{ empireUuid: string; data: IEmpirePatchPayload },
 			IPlanEmpire
 		>,
@@ -458,7 +458,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<
+		} as IQueryDefinition<
 			{ junctions: IPlanEmpireJunction[] },
 			IPlanEmpireElement[]
 		>,
@@ -473,7 +473,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<{ cxName: string }, ICX>,
+		} as IQueryDefinition<{ cxName: string }, ICX>,
 		DeleteCX: {
 			key: (params: { cxUuid: string }) => [
 				"planningdata",
@@ -490,7 +490,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<{ cxUuid: string }, boolean>,
+		} as IQueryDefinition<{ cxUuid: string }, boolean>,
 		GetAllCX: {
 			key: () => ["planningdata", "cx"],
 			fetchFn: async () => {
@@ -500,7 +500,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as QueryDefinition<void, ICX[]>,
+		} as IQueryDefinition<void, ICX[]>,
 		GetPlan: {
 			key: (params: { planUuid: string }) => [
 				"planningdata",
@@ -514,7 +514,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as QueryDefinition<{ planUuid: string }, IPlan>,
+		} as IQueryDefinition<{ planUuid: string }, IPlan>,
 		GetAllPlans: {
 			key: () => ["planningdata", "plan", "list"],
 			fetchFn: async () => {
@@ -526,7 +526,7 @@ export function useQueryRepository() {
 					data.forEach((p) =>
 						queryStore.addCacheState(
 							["planningdata", "plan", p.uuid],
-							queryRepository.GetPlan,
+							"GetPlan",
 							{ planUuid: p.uuid! },
 							p
 						)
@@ -539,7 +539,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: true,
-		} as QueryDefinition<void, IPlan[]>,
+		} as IQueryDefinition<void, IPlan[]>,
 		ClonePlan: {
 			key: (params: { planUuid: string; cloneName: string }) => [
 				"planningdata",
@@ -567,7 +567,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<
+		} as IQueryDefinition<
 			{ planUuid: string; cloneName: string },
 			IPlanCloneResponse
 		>,
@@ -598,7 +598,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<{ planUuid: string }, boolean>,
+		} as IQueryDefinition<{ planUuid: string }, boolean>,
 		CreatePlan: {
 			key: () => ["planningdata", "plan", "create"],
 			fetchFn: async (params: { data: IPlanCreateData }) => {
@@ -613,7 +613,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<
+		} as IQueryDefinition<
 			{ data: IPlanCreateData },
 			PlanSaveCreateResponseType
 		>,
@@ -639,7 +639,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<
+		} as IQueryDefinition<
 			{ planUuid: string; data: IPlanSaveData },
 			PlanSaveCreateResponseType
 		>,
@@ -652,7 +652,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<{ data: IPlanPatchMaterialIOElement[] }, boolean>,
+		} as IQueryDefinition<{ data: IPlanPatchMaterialIOElement[] }, boolean>,
 		GetExplorationData: {
 			key: (params: {
 				exchangeTicker: string;
@@ -680,7 +680,7 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: true,
 			expireTime: 60_000 * 15, // 15 minutes,
-		} as QueryDefinition<
+		} as IQueryDefinition<
 			{
 				exchangeTicker: string;
 				materialTicker: string;
@@ -699,7 +699,7 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			persist: true,
 			expireTime: 60_000 * 15, // 15 minutes
-		} as QueryDefinition<void, IFIOStorage>,
+		} as IQueryDefinition<void, IFIOStorage>,
 		GetFIOSites: {
 			key: () => ["gamedata", "fio", "sites"],
 			fetchFn: async () => {
@@ -711,7 +711,7 @@ export function useQueryRepository() {
 			autoRefetch: true,
 			persist: true,
 			expireTime: 60_000 * 15, // 15 minutes
-		} as QueryDefinition<void, IFIOSites>,
+		} as IQueryDefinition<void, IFIOSites>,
 		GetPlanetLastPOPR: {
 			key: (params: { planetNaturalId: string }) => [
 				"gamedata",
@@ -726,7 +726,7 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
-		} as QueryDefinition<{ planetNaturalId: string }, IPopulationReport>,
+		} as IQueryDefinition<{ planetNaturalId: string }, IPopulationReport>,
 		OptimizeHabitation: {
 			key: (params: IOptimizeHabitationPayload) => [
 				"planningdata",
@@ -740,7 +740,7 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: true,
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
-		} as QueryDefinition<
+		} as IQueryDefinition<
 			IOptimizeHabitationPayload,
 			IOptimizeHabitationResponse
 		>,
@@ -753,7 +753,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<IUserProfilePatch, IUserProfile>,
+		} as IQueryDefinition<IUserProfilePatch, IUserProfile>,
 		PostUserResendEmailVerification: {
 			key: () => ["user", "verification", "resend"],
 			fetchFn: async () => {
@@ -761,7 +761,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<null, boolean>,
+		} as IQueryDefinition<null, boolean>,
 		PatchUserChangePassword: {
 			key: () => ["user", "password", "patch"],
 			fetchFn: async (params: IUserChangePasswordPayload) => {
@@ -775,7 +775,7 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<IUserChangePasswordPayload, boolean>,
+		} as IQueryDefinition<IUserChangePasswordPayload, boolean>,
 		PostUserVerifyEmail: {
 			key: () => ["user", "verification", "check"],
 			fetchFn: async (params: IUserVerifyEmailPayload) => {
@@ -789,17 +789,10 @@ export function useQueryRepository() {
 			},
 			autoRefetch: false,
 			persist: false,
-		} as QueryDefinition<IUserVerifyEmailPayload, boolean>,
+		} as IQueryDefinition<IUserVerifyEmailPayload, boolean>,
 	};
 
-	function get(id: keyof QueryRepositoryType) {
-		if (queryRepository[id]) return queryRepository[id];
-
-		throw new Error(`'${id} is not present in query repository.`);
-	}
-
 	return {
-		get,
-		repository: queryRepository,
+		repository,
 	};
 }

@@ -3,7 +3,6 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 	// Components
 	import PlanetPOPRTable from "@/features/government/components/PlanetPOPRTable.vue";
@@ -35,7 +34,7 @@
 	async function fetchPOPR(planetNaturalId: string) {
 		isLoading.value = true;
 		try {
-			await useQuery(useQueryRepository().repository.GetPlanetLastPOPR, {
+			await useQuery("GetPlanetLastPOPR", {
 				planetNaturalId: planetNaturalId,
 			})
 				.execute()

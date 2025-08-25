@@ -2,7 +2,6 @@ import { ref, Ref } from "vue";
 
 // API
 import { useQuery } from "@/lib/query_cache/useQuery";
-import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 // Composables
 import {
@@ -46,7 +45,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	);
 
 	async function searchPlanets(materialTicker: string): Promise<IPlanet[]> {
-		await useQuery(useQueryRepository().repository.PostPlanetSearch, {
+		await useQuery("PostPlanetSearch", {
 			searchData: {
 				Materials: [materialTicker],
 				COGC: [],

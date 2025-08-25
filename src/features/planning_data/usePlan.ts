@@ -1,5 +1,4 @@
 import { useQuery } from "@/lib/query_cache/useQuery";
-import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 import { usePlanningStore } from "@/stores/planningStore";
 
@@ -164,12 +163,12 @@ export function usePlan() {
 	): Promise<string | undefined> {
 		try {
 			const createdData: IPlanSaveCreateResponse = await useQuery(
-				useQueryRepository().repository.CreatePlan,
+				"CreatePlan",
 				{ data: data }
 			).execute();
 
 			// trigger backend data load
-			await useQuery(useQueryRepository().repository.GetPlan, {
+			await useQuery("GetPlan", {
 				planUuid: createdData.uuid,
 			});
 			return createdData.uuid;
@@ -195,7 +194,7 @@ export function usePlan() {
 	): Promise<string | undefined> {
 		try {
 			const savedData: IPlanSaveCreateResponse = await useQuery(
-				useQueryRepository().repository.PatchPlan,
+				"PatchPlan",
 				{
 					planUuid: planUuid,
 					data: {
@@ -206,7 +205,7 @@ export function usePlan() {
 			).execute();
 
 			if (savedData) {
-				await useQuery(useQueryRepository().repository.GetPlan, {
+				await useQuery("GetPlan", {
 					planUuid: savedData.uuid,
 				}).execute();
 				return savedData.uuid;
@@ -233,7 +232,7 @@ export function usePlan() {
 		planetNaturalId: string,
 		materialio: IMaterialIO[]
 	): Promise<boolean> {
-		return await useQuery(useQueryRepository().repository.PatchMaterialIO, {
+		return await useQuery("PatchMaterialIO", {
 			data: [
 				{
 					uuid: planUuid,

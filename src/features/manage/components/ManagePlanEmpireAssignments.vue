@@ -13,7 +13,6 @@
 	import { usePlanetData } from "@/features/game_data/usePlanetData";
 	const { getPlanetName } = usePlanetData();
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
 	// Util
@@ -215,13 +214,13 @@
 	);
 
 	async function updateEmitEmpiresPlans(): Promise<void> {
-		useQuery(useQueryRepository().repository.GetAllEmpires, undefined)
+		useQuery("GetAllEmpires")
 			.execute()
 			.then((e: IPlanEmpireElement[]) => {
 				emit("update:empireList", e);
 			});
 
-		useQuery(useQueryRepository().repository.GetAllPlans, undefined)
+		useQuery("GetAllPlans")
 			.execute()
 			.then((p: IPlan[]) => emit("update:planList", p));
 	}
@@ -231,7 +230,7 @@
 
 		capture("manage_plans_junctions_update");
 
-		useQuery(useQueryRepository().repository.PatchEmpirePlanJunctions, {
+		useQuery("PatchEmpirePlanJunctions", {
 			junctions: patchJunctionData.value,
 		})
 			.execute()
@@ -247,7 +246,7 @@
 
 		capture("manage_plans_clone", { planUuid: planUuid });
 
-		useQuery(useQueryRepository().repository.ClonePlan, {
+		useQuery("ClonePlan", {
 			planUuid: planUuid,
 			cloneName: `${planName} (Clone)`,
 		})
@@ -275,7 +274,7 @@
 
 		capture("manage_plans_delete", { planUuid: planUuid });
 
-		useQuery(useQueryRepository().repository.DeletePlan, {
+		useQuery("DeletePlan", {
 			planUuid: planUuid,
 		})
 			.execute()

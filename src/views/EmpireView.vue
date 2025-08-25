@@ -15,6 +15,7 @@
 	});
 
 	// Composables
+	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 	import { usePreferences } from "@/features/preferences/usePreferences";
@@ -55,8 +56,6 @@
 
 	// UI
 	import { PForm, PFormItem, PSelect } from "@/ui";
-	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 	const props = defineProps({
 		empireUuid: {
@@ -116,9 +115,7 @@
 	async function reloadEmpires(): Promise<void> {
 		try {
 			// make a forced call to also update store
-			refEmpireList.value = await useQuery(
-				useQueryRepository().repository.GetAllEmpires
-			).execute();
+			refEmpireList.value = await useQuery("GetAllEmpires").execute();
 		} catch (err) {
 			console.error("Error reloading empires", err);
 		}

@@ -1,7 +1,6 @@
 import { computed, reactive, ref, Ref, watch, watchEffect } from "vue";
 
 // Stores & Repository
-import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Util
@@ -35,10 +34,7 @@ export function useGameDataLoader(
 			name: `Material Data`,
 			enabled: () => !!props.loadMaterials,
 			load: () => {
-				return queryStore.executeQuery(
-					useQueryRepository().repository.GetMaterials,
-					undefined
-				);
+				return queryStore.execute("GetMaterials", undefined);
 			},
 			onSuccess: (d: IMaterial[]) => emits("data:materials", d),
 		},
@@ -47,10 +43,7 @@ export function useGameDataLoader(
 			name: `Exchange Data`,
 			enabled: () => !!props.loadExchanges,
 			load: () => {
-				return queryStore.executeQuery(
-					useQueryRepository().repository.GetExchanges,
-					undefined
-				);
+				return queryStore.execute("GetExchanges", undefined);
 			},
 			onSuccess: (d: IExchange[]) => emits("data:exchanges", d),
 		},
@@ -59,10 +52,7 @@ export function useGameDataLoader(
 			name: `Building Data`,
 			enabled: () => !!props.loadBuildings,
 			load: () => {
-				return queryStore.executeQuery(
-					useQueryRepository().repository.GetBuildings,
-					undefined
-				);
+				return queryStore.execute("GetBuildings", undefined);
 			},
 			onSuccess: (d: IBuilding[]) => emits("data:buildings", d),
 		},
@@ -71,10 +61,7 @@ export function useGameDataLoader(
 			name: `Recipe Data`,
 			enabled: () => !!props.loadRecipes,
 			load: () => {
-				return queryStore.executeQuery(
-					useQueryRepository().repository.GetRecipes,
-					undefined
-				);
+				return queryStore.execute("GetRecipes", undefined);
 			},
 			onSuccess: (d: IRecipe[]) => emits("data:recipes", d),
 		},
@@ -83,12 +70,9 @@ export function useGameDataLoader(
 			name: `Planet '${props.loadPlanet}' Data`,
 			enabled: () => !!props.loadPlanet,
 			load: () => {
-				return queryStore.executeQuery(
-					useQueryRepository().repository.GetPlanet,
-					{
-						planetNaturalId: props.loadPlanet!,
-					}
-				);
+				return queryStore.execute("GetPlanet", {
+					planetNaturalId: props.loadPlanet!,
+				});
 			},
 			onSuccess: (d: IPlanet) => emits("data:planet", d),
 		},
@@ -97,12 +81,9 @@ export function useGameDataLoader(
 			name: `Planet '${props.loadPlanetMultiple?.join(", ")}' Data`,
 			enabled: () => !!props.loadPlanetMultiple,
 			load: () => {
-				return queryStore.executeQuery(
-					useQueryRepository().repository.GetMultiplePlanets,
-					{
-						planetNaturalIds: props.loadPlanetMultiple!,
-					}
-				);
+				return queryStore.execute("GetMultiplePlanets", {
+					planetNaturalIds: props.loadPlanetMultiple!,
+				});
 			},
 			onSuccess: (d: IPlanet[]) => emits("data:planet:multiple", d),
 		},

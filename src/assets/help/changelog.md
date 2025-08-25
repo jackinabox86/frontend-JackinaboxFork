@@ -1,3 +1,12 @@
+# 2025-08-24
+
+- The backend communication layer has been restructured to be key-based rather than using direct function calls, improving handling and enabling more predictable state management.
+- Added functionality to persist Query, Game, and Planning data so that users’ data state is maintained across browser sessions. Additionally, static data is now broadcasted across all open tabs in the same browser.
+
+# 2025-08-23
+
+- Fixes an issue in HQ Upgrade Calculations were the starting level was wrongly part of the material list (by `skiedude`)
+
 # 2025-08-22
 
 - Fixes a bug where Planet Search material results were not sortable. This also identified a potential backend issue where searching for more than 2 materials returns results that actually don't hold the materials searched for. Currently the frontend limits to search for maximum of 2 resources until the API handling of the search query was investigated and potentially fixed.

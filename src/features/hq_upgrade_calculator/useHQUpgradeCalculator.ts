@@ -76,8 +76,9 @@ export function useHQUpgradeCalculator(
 
 		if (hasError.value) return [];
 
-		// iterate over all upgrade costs from "start" to "to" values
-		for (let index = start.value; index <= to.value; index++) {
+		// iterate over all upgrade costs from "start" to "to" 
+		// do not count the materials for the start value (+1)
+		for (let index = start.value + 1; index <= to.value; index++) {
 			const element = data[index];
 
 			// check and create or add to sumData

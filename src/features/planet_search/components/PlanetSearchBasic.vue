@@ -3,7 +3,6 @@
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { useQueryRepository } from "@/lib/query_cache/queryRepository";
 
 	// Composables
 	import { usePostHog } from "@/lib/usePostHog";
@@ -34,12 +33,9 @@
 			capture("planet_search_basic");
 
 			try {
-				await useQuery(
-					useQueryRepository().repository.GetPlanetSearchSingle,
-					{
-						searchId: refSearchId.value!,
-					}
-				)
+				await useQuery("GetPlanetSearchSingle", {
+					searchId: refSearchId.value!,
+				})
 					.execute()
 					.then((data: IPlanet[]) => emit("update:results", data))
 					.finally(() => (isLoading.value = false));
