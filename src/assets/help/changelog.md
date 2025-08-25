@@ -1,5 +1,6 @@
 # 2025-08-25
 
+- Updates to ROI and Resource ROI Overview Help texts (by `lowstrife`)
 - Implements the Production Chain Tool [#127](https://github.com/PRUNplanner/frontend/issues/127)
 
 # 2025-08-24
