@@ -28,6 +28,16 @@ describe("useMaterialData", () => {
 		expect(result.Ticker).toBe(testMaterial.Ticker);
 	});
 
+	it("materialSelectOptions", () => {
+		const testMaterial = materials[0];
+
+		gameDataStore.materials["foo"] = testMaterial;
+
+		const { materialSelectOptions } = useMaterialData();
+
+		expect(materialSelectOptions.value.length).toBe(1);
+	});
+
 	it("getMaterial: undefined", () => {
 		const { getMaterial } = useMaterialData();
 
