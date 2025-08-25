@@ -1,7 +1,7 @@
 export class ProductionEdge {
-	public source: string;
-	public target: string;
-	public quantitiy: number;
+	source: string;
+	target: string;
+	quantitiy: number;
 
 	public constructor(source: string, target: string, quantity: number) {
 		this.source = source;

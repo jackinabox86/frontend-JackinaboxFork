@@ -13,10 +13,12 @@ import { IProductionGraphIO } from "@/features/production_chain/productionGraph.
 const nodeExclusion: string[] = ["O"];
 
 export class ProductionNode {
-	public readonly materialTicker: string;
-	public recipes: IRecipe[];
-	public amount: number = 0;
-	public recipeAmount: number = 1;
+	readonly materialTicker: string;
+	recipes: IRecipe[];
+	amount: number = 0;
+	recipeAmount: number = 1;
+	hasInput: boolean = false;
+	hasOutput: boolean = false;
 
 	private getBuilding: ReturnType<typeof useBuildingData>["getBuilding"];
 
@@ -27,9 +29,6 @@ export class ProductionNode {
 		const { getBuilding } = useBuildingData();
 		this.getBuilding = getBuilding;
 	}
-
-	public hasInput: boolean = false;
-	public hasOutput: boolean = false;
 
 	get id(): string {
 		return `NODE#${this.materialTicker}`;

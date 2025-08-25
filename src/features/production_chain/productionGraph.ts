@@ -15,11 +15,11 @@ import {
 import { PSelectOption } from "@/ui/ui.types";
 
 export class ProductionGraph {
-	public nodes: Record<string, ProductionNode>;
-	public selectedRecipes: string[] = [];
-	private terminals: string[] = [];
+	nodes: Record<string, ProductionNode>;
+	selectedRecipes: string[] = [];
+	terminals: string[] = [];
 
-	public constructor() {
+	constructor() {
 		this.nodes = {};
 
 		// initialize all nodes from building data

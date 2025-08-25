@@ -199,5 +199,8 @@ export function useGraph() {
 
 	return {
 		create,
+		createFlowNodes,
+		createFlowEdges,
+		applyDagreLayout,
 	};
 }
