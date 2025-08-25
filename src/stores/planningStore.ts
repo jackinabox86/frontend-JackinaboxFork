@@ -220,9 +220,11 @@ export const usePlanningStore = defineStore(
 		persist: {
 			pick: ["plans", "empires", "cxs", "shared"],
 		},
-		broadcastWatch: {
+		broadcast: {
+			enable: true,
 			pick: ["plans", "empires", "cxs", "shared"],
-			channel: "pinia_planning_data",
+			debounce: 2_000,
+			channel: "prunplanner_planning_data",
 		},
 	}
 );

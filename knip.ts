@@ -34,6 +34,11 @@ const config = {
 			].join("\n");
 		},
 	},
+	ignore: [
+		"src/lib/piniaBroadcastWorker.ts",
+		"src/lib/piniaBroadcastPlugin.ts",
+	],
+	ignoreDependencies: ["fast-equals"],
 } satisfies KnipConfig;
 
 export default config;

@@ -253,7 +253,8 @@ export const useGameDataStore = defineStore(
 				"fio_sites_ships",
 			],
 		},
-		broadcastWatch: {
+		broadcast: {
+			enable: true,
 			pick: [
 				"materials",
 				"exchanges",
@@ -266,7 +267,8 @@ export const useGameDataStore = defineStore(
 				"fio_sites_planets",
 				"fio_sites_ships",
 			],
-			channel: "pinia_game_data",
+			channel: "prunplanner_game_data",
+			debounce: 5_000,
 		},
 	}
 );

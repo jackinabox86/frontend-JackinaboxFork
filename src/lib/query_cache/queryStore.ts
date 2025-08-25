@@ -415,10 +415,11 @@ export const useQueryStore = defineStore(
 		persist: {
 			pick: ["cacheState"],
 		},
-		broadcastWatch: {
+		broadcast: {
+			enable: true,
 			pick: ["cacheState"],
-			debounce: 500,
-			channel: "pinia_query_cache",
+			debounce: 1_000,
+			channel: "prunplanner_query_data",
 		},
 	}
 );

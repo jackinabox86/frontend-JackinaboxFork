@@ -2,6 +2,7 @@
 
 - Updates to ROI and Resource ROI Overview Help texts (by `lowstrife`)
 - Implements the Production Chain Tool [#127](https://github.com/PRUNplanner/frontend/issues/127)
+- Reworked cross-tab sync in favor of Web Workers, shifting load to a background thread.
 
 # 2025-08-24
 
