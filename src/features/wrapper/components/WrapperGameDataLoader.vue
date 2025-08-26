@@ -32,26 +32,28 @@
 					? 'bg-[url(/images/bg_striped_prunplanner.png)]'
 					: 'bg-[url(/images/bg_striped_error.png)]'
 			">
-			<div class="absolute inset-0 flex items-center justify-center">
-				<div
-					class="max-w-[500px] bg-black p-8 rounded shadow-lg text-center flex flex-col gap-y-3">
-					<h1 class="text-2xl font-bold font-mono mb-3">
-						Loading Data...
-					</h1>
+			<div class="absolute w-full h-full bg-black/50">
+				<div class="absolute inset-0 flex items-center justify-center">
 					<div
-						v-for="e in loadingSteps"
-						:key="e.name"
-						class="flex flex-row align-middle gap-x-3">
-						<div class="mr-5">
-							<div v-if="e.loading" class="my-1">
-								<n-spin :size="14" />
+						class="max-w-[500px] bg-black p-8 rounded shadow-lg text-center flex flex-col gap-y-3">
+						<h1 class="text-2xl font-bold font-mono mb-3">
+							Loading Data...
+						</h1>
+						<div
+							v-for="e in loadingSteps"
+							:key="e.name"
+							class="flex flex-row align-middle gap-x-3">
+							<div class="mr-5">
+								<div v-if="e.loading" class="my-1">
+									<n-spin :size="14" />
+								</div>
+								<n-icon v-else :size="20">
+									<CheckSharp v-if="!e.error" />
+									<ClearSharp v-else />
+								</n-icon>
 							</div>
-							<n-icon v-else :size="20">
-								<CheckSharp v-if="!e.error" />
-								<ClearSharp v-else />
-							</n-icon>
+							<div class="!text-left">{{ e.name }}</div>
 						</div>
-						<div class="!text-left">{{ e.name }}</div>
 					</div>
 				</div>
 			</div>
