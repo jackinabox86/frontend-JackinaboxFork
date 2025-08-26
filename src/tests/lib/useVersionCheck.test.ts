@@ -14,6 +14,8 @@ describe("useVersionCheck", () => {
 			removeItem: vi.fn(),
 		});
 
+		vi.stubEnv("DEV", false);
+
 		currentVersion.value = null;
 		updateAvailable.value = false;
 	});
