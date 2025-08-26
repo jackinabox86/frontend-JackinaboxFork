@@ -16,6 +16,7 @@ import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Composables
 import { usePostHog } from "@/lib/usePostHog";
+import { useVersionCheck } from "@/lib/useVersionCheck";
 
 // Types & Interfaces
 import {
@@ -156,6 +157,10 @@ export const useUserStore = defineStore(
 				);
 
 				setToken(tokenData.access_token, tokenData.refresh_token);
+
+				// sets the current version to the available version
+				const { markUpdated } = useVersionCheck();
+				await markUpdated();
 
 				return true;
 			} catch (err) {

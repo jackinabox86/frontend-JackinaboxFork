@@ -42,7 +42,7 @@
 </script>
 
 <template>
-	<VersionUpdateNotification v-if="updateAvailable" />
+	<VersionUpdateNotification v-if="updateAvailable && userStore.isLoggedIn" />
 
 	<main class="flex h-view w-full bg-[rgb(3,7,7)] text-white/80">
 		<template v-if="userStore.isLoggedIn">

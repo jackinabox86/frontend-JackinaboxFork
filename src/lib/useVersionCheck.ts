@@ -16,6 +16,9 @@ const LOCAL_KEY = "prunplanner_version";
 
 export function useVersionCheck(interval = 60_000) {
 	const checkVersion = async () => {
+		// skip on dev mode
+		if (import.meta.env.DEV) return;
+
 		try {
 			const res = await fetch("/version.json", { cache: "no-cache" });
 			const data = await res.json();
@@ -41,6 +44,9 @@ export function useVersionCheck(interval = 60_000) {
 	};
 
 	async function markUpdated(): Promise<void> {
+		// skip on dev mode
+		if (import.meta.env.DEV) return;
+
 		const res = await fetch("/version.json", { cache: "no-cache" });
 		const data = await res.json();
 		const latestVersion = data.version;
