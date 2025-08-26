@@ -29,6 +29,7 @@ declare module "pinia" {
 	export interface DefineStoreOptionsBase<S extends StateTree, Store> {
 		broadcast?: {
 			enable?: boolean;
+			persisted?: boolean;
 			pick?: string[];
 			debounce?: number;
 			channel?: string;
@@ -38,6 +39,7 @@ declare module "pinia" {
 
 type PluginOptions = {
 	enable?: boolean;
+	persisted?: boolean;
 	pick?: string[];
 	debounce?: number;
 	channel?: string;
@@ -52,8 +54,10 @@ export interface BroadcastMessage {
 }
 
 export interface WorkerMessage {
+	persisted: boolean;
 	path: string;
 	newState: unknown;
+	debounce: number;
 }
 
 export function usePiniaBroadcast(globalOptions?: Partial<PluginOptions>) {
@@ -66,6 +70,7 @@ export function usePiniaBroadcast(globalOptions?: Partial<PluginOptions>) {
 	const defaultEnable: boolean = globalOptions?.enable ?? false;
 	const defaultDebounce: number | undefined = globalOptions?.debounce ?? 250;
 	const defaultChannel: string = globalOptions?.channel ?? "pinia_broadcast";
+	const defaultPersisted: boolean = globalOptions?.persisted ?? false;
 
 	return (context: PiniaPluginContext) => {
 		const store = context.store;
@@ -74,6 +79,7 @@ export function usePiniaBroadcast(globalOptions?: Partial<PluginOptions>) {
 		// setup options
 		const storeConfig = options.broadcast ?? {};
 		const enable = storeConfig.enable ?? defaultEnable;
+		const persisted = storeConfig.persisted ?? defaultPersisted;
 
 		// return if not enabled, dont run anything
 		if (!enable) return;
@@ -132,11 +138,14 @@ export function usePiniaBroadcast(globalOptions?: Partial<PluginOptions>) {
 			for (const pick of picks) {
 				const mutatedState = deepUnwrap(state[pick]);
 
-				worker.postMessage({
+				const workerMessage: WorkerMessage = {
 					path: pick,
 					newState: mutatedState,
 					debounce: debounceMs,
-				});
+					persisted: persisted,
+				};
+
+				worker.postMessage(workerMessage);
 			}
 		});
 

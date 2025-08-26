@@ -85,8 +85,8 @@ const router = createRouter({
 			component: () => import("@/views/fio/FIOBurnView.vue"),
 		},
 		{
-			name: "api",
-			path: "/api",
+			name: "debug",
+			path: "/debug",
 			meta: { requiresAuth: true },
 			component: () => import("@/lib/query_cache/QueryCacheView.vue"),
 		},
@@ -138,6 +138,12 @@ const router = createRouter({
 			name: "verify-email",
 			path: "/verify-email",
 			component: () => import("@/views/VerifyEmailView.vue"),
+		},
+		{
+			name: "debug",
+			path: "/debug",
+			meta: { requiresAuth: true },
+			component: () => import("@/lib/query_cache/QueryCacheView.vue"),
 		},
 	],
 });

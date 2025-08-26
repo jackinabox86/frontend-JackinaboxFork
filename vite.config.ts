@@ -15,6 +15,8 @@ export function skipEmptyChunks(): Plugin {
 		name: "skip-empty-chunks",
 		// @ts-expect-error Rollout imported from Vite
 		generateBundle(_options: unknown, bundle: OutputBundle) {
+			// add linebreak
+			console.log("\n");
 			for (const fileName in bundle) {
 				// @ts-expect-error Rollout imported from Vite
 				const chunkOrAsset: OutputChunk | OutputAsset =

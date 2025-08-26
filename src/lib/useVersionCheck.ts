@@ -1,5 +1,5 @@
 /**
- * Composable to onMounted first set the version from version.json
+ * Composable to set the version from version.json
  * as the current version and then continuously watch for a new
  * version being pushed to the server.
  *
@@ -8,13 +8,20 @@
  * @author jplacht
  */
 
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 
 const currentVersion = ref<string | null>(null);
 const updateAvailable = ref(false);
 const LOCAL_KEY = "prunplanner_version";
 
 export function useVersionCheck(interval = 60_000) {
+	function startWatch(): void {
+		// skip on dev mode
+		if (import.meta.env.DEV) return;
+		checkVersion();
+		setInterval(checkVersion, interval);
+	}
+
 	const checkVersion = async () => {
 		// skip on dev mode
 		if (import.meta.env.DEV) return;
@@ -55,12 +62,11 @@ export function useVersionCheck(interval = 60_000) {
 		updateAvailable.value = false;
 	}
 
-	onMounted(() => {
-		// skip on dev mode
-		if (import.meta.env.DEV) return;
-		checkVersion();
-		setInterval(checkVersion, interval);
-	});
-
-	return { currentVersion, updateAvailable, markUpdated, checkVersion };
+	return {
+		currentVersion,
+		updateAvailable,
+		markUpdated,
+		checkVersion,
+		startWatch,
+	};
 }

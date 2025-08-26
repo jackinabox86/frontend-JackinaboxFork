@@ -6,7 +6,7 @@ const timers = new Map<string, ReturnType<typeof setTimeout>>();
 const lastValues = new Map<string, unknown>();
 
 self.onmessage = (e) => {
-	const { path, newState, debounce } = e.data;
+	const { path, newState, debounce, persisted } = e.data;
 
 	if (timers.has(path)) clearTimeout(timers.get(path));
 
@@ -18,7 +18,7 @@ self.onmessage = (e) => {
 
 			// if there is no last value, we're coming from
 			// hydration, set and skip out
-			if (!last) {
+			if (!last && persisted) {
 				lastValues.set(path, newState);
 				timers.delete(path);
 				return;

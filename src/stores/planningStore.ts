@@ -220,11 +220,12 @@ export const usePlanningStore = defineStore(
 		persist: {
 			pick: ["plans", "empires", "cxs", "shared"],
 		},
-		broadcast: {
-			enable: true,
-			pick: ["plans", "empires", "cxs", "shared"],
-			debounce: 2_000,
-			channel: "prunplanner_planning_data",
-		},
+		// broadcast: {
+		// 	enable: true,
+		// 	persisted: true,
+		// 	pick: ["plans", "empires", "cxs", "shared"],
+		// 	debounce: 2_000,
+		// 	channel: "prunplanner_planning_data",
+		// },
 	}
 );

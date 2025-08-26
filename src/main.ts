@@ -5,11 +5,11 @@ import AppProvider from "@/AppProvider.vue";
 // stores
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
-import { usePiniaBroadcast } from "./lib/piniaBroadcastPlugin";
+// import { usePiniaBroadcast } from "./lib/piniaBroadcastPlugin";
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
-pinia.use(usePiniaBroadcast({}));
+// pinia.use(usePiniaBroadcast({}));
 
 // routing
 import router from "@/router";

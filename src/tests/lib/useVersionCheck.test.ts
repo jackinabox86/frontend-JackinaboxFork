@@ -15,6 +15,7 @@ describe("useVersionCheck", () => {
 		});
 
 		vi.stubEnv("DEV", false);
+		vi.useFakeTimers();
 
 		currentVersion.value = null;
 		updateAvailable.value = false;
@@ -37,6 +38,8 @@ describe("useVersionCheck", () => {
 		const { currentVersion, updateAvailable, checkVersion } =
 			useVersionCheck(10_000);
 
+		console.log(currentVersion);
+
 		await checkVersion();
 
 		expect(currentVersion.value).toBe("1.0.0");
@@ -50,7 +53,7 @@ describe("useVersionCheck", () => {
 			json: async () => ({ version: "1.0.0" }),
 		});
 
-		const { updateAvailable, checkVersion } = useVersionCheck(10_000);
+		const { updateAvailable, checkVersion } = useVersionCheck(1_000);
 		await checkVersion();
 
 		expect(updateAvailable.value).toBe(false);
@@ -78,7 +81,7 @@ describe("useVersionCheck", () => {
 			json: async () => ({ version: "1.1.0" }),
 		});
 
-		const { updateAvailable, checkVersion } = useVersionCheck(10_000);
+		const { updateAvailable, checkVersion } = useVersionCheck(1_000);
 		await checkVersion();
 
 		expect(updateAvailable.value).toBe(true);
@@ -98,18 +101,10 @@ describe("useVersionCheck", () => {
 		expect(updateAvailable.value).toBe(false);
 	});
 
-	it("runs onMounted without errors", async () => {
-		const DummyComp = {
-			template: "<div></div>",
-			setup() {
-				useVersionCheck();
-			},
-		};
+	it("startWatch", async () => {
+		const { startWatch, updateAvailable } = useVersionCheck(1_000);
+		startWatch();
 
-		// Mount the dummy component
-		const wrapper = mount(DummyComp);
-
-		// Wait for any async onMounted logic to finish
-		await flushPromises();
+		expect(updateAvailable.value).toBeFalsy();
 	});
 });

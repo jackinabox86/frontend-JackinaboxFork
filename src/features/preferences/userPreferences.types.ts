@@ -14,6 +14,14 @@ export interface IPreference {
 
 	// seeding per plan defaults
 	planOverrides: Record<string, Partial<IPreferencePerPlan>>;
+
+	[key: string]:
+		| string
+		| undefined
+		| number
+		| boolean
+		| Record<string, Partial<IPreferencePerPlan>>
+		| IPreferencePerPlan;
 }
 
 export interface IPreferenceDefault extends IPreference {

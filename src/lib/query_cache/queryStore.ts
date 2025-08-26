@@ -410,16 +410,14 @@ export const useQueryStore = defineStore(
 			checkEntryStatusAndRefresh,
 			startStatusWatcher,
 		};
-	},
-	{
-		persist: {
-			pick: ["cacheState"],
-		},
-		broadcast: {
-			enable: true,
-			pick: ["cacheState"],
-			debounce: 1_000,
-			channel: "prunplanner_query_data",
-		},
 	}
+	// {
+	// 	broadcast: {
+	// 		enable: true,
+	// 		persisted: false,
+	// 		pick: ["cacheState"],
+	// 		debounce: 1_000,
+	// 		channel: "prunplanner_query_data",
+	// 	},
+	// }
 );

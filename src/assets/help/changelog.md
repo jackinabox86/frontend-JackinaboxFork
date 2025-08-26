@@ -1,6 +1,7 @@
 # 2025-08-26
 
 - Skip Version frontend version check if user is not logged in, set current version on login [#205](https://github.com/PRUNplanner/frontend/issues/205)
+- Disable cross-tab store broadcasting and query store persistance until further testing is done
 
 # 2025-08-25
 

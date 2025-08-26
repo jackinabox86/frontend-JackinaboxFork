@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { defineAsyncComponent } from "vue";
+	import { defineAsyncComponent, onMounted } from "vue";
 
 	// Components
 	const HomepageHeader = defineAsyncComponent(
@@ -18,7 +18,7 @@
 
 	// Composables
 	import { useVersionCheck } from "@/lib/useVersionCheck";
-	const { updateAvailable } = useVersionCheck();
+	const { updateAvailable, startWatch } = useVersionCheck();
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
@@ -39,12 +39,14 @@
 	router.afterEach((to) => {
 		if (to.name) loadingBar.finish();
 	});
+
+	onMounted(() => startWatch());
 </script>
 
 <template>
 	<VersionUpdateNotification v-if="updateAvailable && userStore.isLoggedIn" />
 
-	<main class="flex h-view w-full bg-[rgb(3,7,7)] text-white/80">
+	<main class="flex h-full w-full bg-[rgb(3,7,7)] text-white/80">
 		<template v-if="userStore.isLoggedIn">
 			<NavigationBar />
 			<div class="flex flex-col flex-1 overflow-y-auto">
@@ -52,8 +54,10 @@
 					<MobileToggle />
 					<RouterView />
 					<footer
-						class="sticky top-[100vh] text-white/50 text-[10px] text-end hover:cursor-pointer pr-3 py-1">
-						<router-link :to="'/imprint-tos'">
+						class="sticky top-[100vh] pr-3 py-1 text-white/50 text-[10px] text-end">
+						<router-link
+							:to="'/imprint-tos'"
+							class="hover:cursor-pointer">
 							Imprint & Terms of Service
 						</router-link>
 					</footer>
@@ -62,12 +66,14 @@
 		</template>
 		<template v-else>
 			<div class="flex flex-col flex-1">
-				<div class="h-screen text-white/80">
+				<div>
 					<HomepageHeader />
 					<RouterView />
 					<footer
-						class="sticky top-[100vh] text-white/50 text-[10px] text-end hover:cursor-pointer pr-3 py-1">
-						<router-link :to="'/imprint-tos'">
+						class="sticky top-[100vh] pr-3 py-1 text-white/50 text-[10px] text-end">
+						<router-link
+							:to="'/imprint-tos'"
+							class="hover:cursor-pointer">
 							Imprint & Terms of Service
 						</router-link>
 					</footer>
