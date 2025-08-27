@@ -27,6 +27,7 @@
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import EmpireMaterialIOFiltered from "@/features/empire/components/EmpireMaterialIOFiltered.vue";
 
 	const AsyncEmpireCostOverview = defineAsyncComponent(
 		() => import("@/features/empire/components/EmpireCostOverview.vue")
@@ -34,9 +35,7 @@
 	const AsyncEmpirePlanList = defineAsyncComponent(
 		() => import("@/features/empire/components/EmpirePlanList.vue")
 	);
-	const AsyncEmpireMaterialIO = defineAsyncComponent(
-		() => import("@/features/empire/components/EmpireMaterialIO.vue")
-	);
+
 	const AsyncEmpireConfiguration = defineAsyncComponent(
 		() => import("@/features/empire/components/EmpireConfiguration.vue")
 	);
@@ -55,7 +54,7 @@
 	} from "@/features/empire/empire.types";
 
 	// UI
-	import { PForm, PFormItem, PSelect } from "@/ui";
+	import { PForm, PFormItem, PSelect, PButton } from "@/ui";
 
 	const props = defineProps({
 		empireUuid: {
@@ -235,6 +234,20 @@
 			};
 		})
 	);
+
+	const mainContent = ref<"materialio" | "analysis">("materialio");
+
+	const switchText = computed(() =>
+		mainContent.value === "materialio"
+			? "Empire Analysis"
+			: "Empire Material I/O"
+	);
+
+	// dafuq does Vite complain it would change a computed here?
+	function switchMainContent(): void {
+		mainContent.value =
+			mainContent.value === "materialio" ? "analysis" : "materialio";
+	}
 </script>
 
 <template>
@@ -273,7 +286,12 @@
 							<h1 class="text-2xl font-bold my-auto">
 								{{ empireName }}
 							</h1>
-							<HelpDrawer file-name="empire" />
+							<div class="gap-3 flex flex-row flex-wrap">
+								<PButton @click="switchMainContent">
+									{{ switchText }}
+								</PButton>
+								<HelpDrawer file-name="empire" />
+							</div>
 						</div>
 
 						<div
@@ -325,17 +343,14 @@
 								</div>
 							</div>
 							<div class="p-6">
-								<Suspense>
-									<AsyncEmpireMaterialIO
-										:empire-material-i-o="
-											combineEmpireMaterialIO(
-												empireMaterialIO
-											)
-										" />
-									<template #fallback>
-										<RenderingProgress :height="400" />
-									</template>
-								</Suspense>
+								<EmpireMaterialIOFiltered
+									:content="mainContent"
+									:empire-material-i-o="
+										combineEmpireMaterialIO(
+											empireMaterialIO
+										)
+									"
+									:plan-list-data="planListData" />
 							</div>
 						</div>
 					</div>

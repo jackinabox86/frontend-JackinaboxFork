@@ -1,6 +1,7 @@
 # 2025-08-27
 
 - Implement Exchange Preference updates directly from Plan COGM
+- Add charts for empire analysis
 
 # 2025-08-26
 
