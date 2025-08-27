@@ -5,7 +5,7 @@
 		nextTick,
 		PropType,
 		ref,
-		type Ref,
+		Ref,
 	} from "vue";
 
 	// Router
@@ -628,7 +628,7 @@
 					</template>
 				</Suspense>
 			</div>
-			<div class="p-6 grid grid-cols-1 2xl:grid-cols-[auto_450px] gap-6">
+			<div class="p-6 grid grid-cols-1 2xl:grid-cols-[auto_400px] gap-6">
 				<div>
 					<div
 						class="grid grid-cols-1 2xl:grid-cols-[60%_auto] gap-6">
@@ -655,6 +655,8 @@
 							:disabled="disabled"
 							:production-data="result.production"
 							:cogc="result.cogc"
+							:cx-uuid="refCXUuid"
+							:planet-id="planetData.PlanetNaturalId"
 							@update:building:amount="handleUpdateBuildingAmount"
 							@delete:building="handleDeleteBuilding"
 							@create:building="handleCreateBuilding"

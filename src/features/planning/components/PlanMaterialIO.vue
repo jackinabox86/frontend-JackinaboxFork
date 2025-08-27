@@ -35,7 +35,7 @@
 
 <template>
 	<XNDataTable :data="localMaterialIOData" striped>
-		<XNDataTableColumn key="ticker" title="Ticker" sorter="default">
+		<XNDataTableColumn key="ticker" title="" sorter="default">
 			<template #render-cell="{ rowData }">
 				<MaterialTile
 					:key="`MATERIALIO#MATERIALTILE#${rowData.ticker}`"
@@ -43,14 +43,14 @@
 					:disable-drawer="false" />
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="input" title="Input" sorter="default">
+		<XNDataTableColumn key="input" title="In" sorter="default">
 			<template #render-cell="{ rowData }">
 				<span :class="rowData.input === 0 ? 'text-white/20' : ''">
 					{{ formatNumber(rowData.input) }}
 				</span>
 			</template>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="output" title="Output" sorter="default">
+		<XNDataTableColumn key="output" title="Out" sorter="default">
 			<template #render-cell="{ rowData }">
 				<span :class="rowData.output === 0 ? 'text-white/20' : ''">
 					{{ formatNumber(rowData.output) }}

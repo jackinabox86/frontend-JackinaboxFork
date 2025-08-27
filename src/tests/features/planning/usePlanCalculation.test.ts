@@ -1,9 +1,10 @@
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 // Stores
 import { useGameDataStore } from "@/stores/gameDataStore";
+import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
@@ -22,15 +23,19 @@ import exchanges from "@/tests/test_data/api_data_exchanges.json";
 const etherwindPlanetId: string = "KW-688c";
 
 describe("usePlanCalculation", async () => {
-	let gameDataStore: any;
+	let gameDataStore: ReturnType<typeof useGameDataStore>;
+	let planningStore: ReturnType<typeof usePlanningStore>;
 
 	beforeAll(() => {
 		setActivePinia(createPinia());
 		gameDataStore = useGameDataStore();
+		planningStore = usePlanningStore();
 
+		// @ts-expect-error mock data
 		gameDataStore.planets[etherwindPlanetId] = planet_etherwind;
 
 		buildings.forEach((b) => {
+			// @ts-expect-error mock data
 			gameDataStore.buildings[b.Ticker] = b;
 		});
 
@@ -51,6 +56,24 @@ describe("usePlanCalculation", async () => {
 		});
 
 		vi.resetAllMocks();
+	});
+
+	it("refreshkey", async () => {
+		const { refreshKey } = usePlanCalculation(
+			// @ts-expect-error mock data
+			ref(plan_etherwind),
+			ref(undefined),
+			ref(undefined),
+			ref(undefined)
+		);
+
+		expect(refreshKey.value).toBe(0);
+
+		// upate store
+		// @ts-expect-error mock data
+		planningStore.cxs = "foo";
+		await nextTick();
+		expect(refreshKey.value).toBe(1);
 	});
 
 	it("validate result", async () => {

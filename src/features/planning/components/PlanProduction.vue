@@ -27,6 +27,15 @@
 			type: String as PropType<PLAN_COGCPROGRAM_TYPE>,
 			required: true,
 		},
+		cxUuid: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
+		planetId: {
+			type: String,
+			required: true,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -100,6 +109,8 @@
 		:disabled="props.disabled"
 		:building-data="building"
 		:building-index="index"
+		:cx-uuid="cxUuid"
+		:planet-id="planetId"
 		@update:building:amount="
 			(index: number, value: number) =>
 				emit('update:building:amount', index, value)

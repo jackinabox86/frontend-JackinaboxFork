@@ -1,7 +1,8 @@
-import { computed, ComputedRef, ref, Ref, toRaw, toRef } from "vue";
+import { computed, ComputedRef, ref, Ref, toRaw, toRef, watch } from "vue";
 
 // Stores
 import { useGameDataStore } from "@/stores/gameDataStore";
+import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { useBuildingData } from "@/features/game_data/useBuildingData";
@@ -75,6 +76,18 @@ export function usePlanCalculation(
 	// stores
 
 	const gameDataStore = useGameDataStore();
+	const planningDataStore = usePlanningStore();
+
+	const refreshKey: Ref<number> = ref(0);
+
+	// watches external data to trigger a recalculation
+	watch(
+		() => planningDataStore.cxs,
+		() => {
+			refreshKey.value++;
+		},
+		{ deep: true }
+	);
 
 	// data references
 
@@ -676,6 +689,9 @@ export function usePlanCalculation(
 	 * @type {ComputedRef<IPlanResult>} Plan Calculation Result
 	 */
 	const result: ComputedRef<IPlanResult> = computed(() => {
+		// inject a refresh key on data watching
+		const _ = refreshKey.value;
+
 		// pre-calculate individual results
 		const corpHQResult = planet.value.corphq;
 		const cogcResult = planet.value.cogc;
@@ -903,5 +919,7 @@ export function usePlanCalculation(
 		computedActiveEmpire,
 		// submodules
 		...handlers,
+		// internal,
+		refreshKey,
 	};
 }

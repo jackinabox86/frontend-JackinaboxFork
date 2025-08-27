@@ -27,6 +27,15 @@
 			type: Number,
 			required: true,
 		},
+		cxUuid: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
+		planetId: {
+			type: String,
+			required: true,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -110,6 +119,8 @@
 					:recipe-index="index"
 					:recipe-data="recipe"
 					:recipe-options="localBuildingData.recipeOptions"
+					:cx-uuid="cxUuid"
+					:planet-id="planetId"
 					@update:building:recipe:amount="
 						(index: number, value: number) => {
 							emit(
