@@ -64,7 +64,8 @@ export function usePrice(
 	const cache = new Map<string, number>();
 
 	// Watch cxUuid and plantNaturalId changes to reset cache
-	watch([cxUuid, planetNaturalId], () => {
+	// also watches the actual cx preferences for change
+	watch([cxUuid, planetNaturalId, planningStore.cxs], () => {
 		cache.clear();
 	});
 

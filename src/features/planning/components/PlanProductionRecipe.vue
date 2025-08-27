@@ -44,6 +44,15 @@
 			type: Array as PropType<IRecipeBuildingOption[]>,
 			required: true,
 		},
+		cxUuid: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
+		planetId: {
+			type: String,
+			required: true,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -73,6 +82,12 @@
 	});
 	const refShowRecipeOptions: Ref<boolean> = ref(false);
 	const refShowCOGM: Ref<boolean> = ref(false);
+
+	const cogmEnabled = computed(
+		() => localRecipeData.value.cogm && localRecipeData.value.cogm.visible
+	);
+
+	const cogmWithCX = computed(() => !!props.cxUuid);
 </script>
 
 <template>
@@ -81,10 +96,12 @@
 		v-model:show="refShowCOGM"
 		preset="card"
 		title="Cost Of Goods Manufactured"
-		class="max-w-[600px]">
+		:class="cogmWithCX ? 'max-w-[1000px]' : 'max-w-[600px]'">
 		<PlanCOGM
-			v-if="localRecipeData.cogm"
-			:cogm-data="localRecipeData.cogm" />
+			v-if="localRecipeData.cogm && cxUuid"
+			:cogm-data="localRecipeData.cogm"
+			:cx-uuid="cxUuid"
+			:planet-id="planetId" />
 	</n-modal>
 	<div class="flex flex-col">
 		<div class="pb-1">
@@ -231,9 +248,7 @@
 		<div class="flex flex-row justify-between pt-1 child:my-auto">
 			<PButton
 				size="sm"
-				:disabled="
-					localRecipeData.cogm && !localRecipeData.cogm.visible
-				"
+				:disabled="!cogmEnabled"
 				@click="() => (refShowCOGM = true)">
 				<template #icon><AnalyticsOutlined /> </template>
 			</PButton>

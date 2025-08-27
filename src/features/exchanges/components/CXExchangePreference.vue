@@ -43,12 +43,11 @@
 
 <template>
 	<div class="flex flex-row gap-x-1">
-		<div class="!min-w-[100px]">
-			<PSelect
-				v-model:value="selectedType"
-				:options="typeOptions"
-				class="w-full" />
-		</div>
+		<PSelect
+			v-model:value="selectedType"
+			:options="typeOptions"
+			class="!w-[100px]" />
+
 		<PSelect
 			v-model:value="selectedExchange"
 			class="w-full"

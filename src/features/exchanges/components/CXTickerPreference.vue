@@ -54,7 +54,7 @@
 
 <template>
 	<div class="flex flex-row gap-x-1">
-		<div class="!max-w-[100px]">
+		<div class="child:!w-[100px]">
 			<PSelect v-model:value="selectedType" :options="typeOptions" />
 		</div>
 		<PSelect
@@ -63,7 +63,7 @@
 			searchable
 			size="small"
 			placeholder="Material"
-			class="w-full" />
+			class="!w-[100px]" />
 		<PInputNumber
 			v-model:value="selectedValue"
 			:min="0"

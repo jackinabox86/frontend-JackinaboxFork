@@ -13,7 +13,7 @@ import shared_list from "@/tests/test_data/api_data_shared_list.json";
 const etherwindUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
 
 describe("Planning Store", async () => {
-	let planningStore: any;
+	let planningStore: ReturnType<typeof usePlanningStore>;
 
 	beforeEach(() => {
 		setActivePinia(createPinia());
@@ -29,22 +29,26 @@ describe("Planning Store", async () => {
 		});
 
 		it("setPlan", async () => {
+			// @ts-expect-error mock data
 			planningStore.setPlan(plan_etherwind);
 			const ewUuid: string = plan_etherwind.uuid;
 			expect(planningStore.plans[ewUuid]).toBeDefined();
 		});
 
 		it("setPlan, no uuid", async () => {
+			// @ts-expect-error mock data
 			expect(() => planningStore.setPlan({ name: "foo" })).toThrowError();
 		});
 
 		it("setPlans", async () => {
+			// @ts-expect-error mock data
 			planningStore.setPlans([plan_etherwind, plan_etherwind]);
 			// same uuid, one entry
 			expect(Object.keys(planningStore.plans).length).toBe(1);
 		});
 
 		it("deletePlan", async () => {
+			// @ts-expect-error mock data
 			planningStore.setPlan(plan_etherwind);
 			const ewUuid: string = plan_etherwind.uuid;
 			expect(planningStore.plans[ewUuid]).toBeDefined();
@@ -53,11 +57,13 @@ describe("Planning Store", async () => {
 		});
 
 		it("setCXs", async () => {
+			// @ts-expect-error mock data
 			planningStore.setCXs(cx_list);
 			expect(Object.keys(planningStore.cxs).length).toBe(6);
 		});
 
 		it("setCXs", async () => {
+			// @ts-expect-error mock data
 			planningStore.setCXs(cx_list);
 			const result = planningStore.getAllCX();
 			expect(result.length).toBe(cx_list.length);
@@ -67,16 +73,21 @@ describe("Planning Store", async () => {
 			planningStore.$reset();
 
 			// can't set as not existis
+			// @ts-expect-error mock data
 			planningStore.setCX(cx_list[0].uuid, cx_list[0].cx_data);
 			expect(Object.keys(planningStore.cxs).length).toBe(0);
 
+			// @ts-expect-error mock data
 			planningStore.setCXs([cx_list[0]]);
 			expect(Object.keys(planningStore.cxs).length).toBe(1);
+
+			// @ts-expect-error mock data
 			planningStore.setCX(cx_list[0].uuid, cx_list[0].cx_data);
 			expect(Object.keys(planningStore.cxs).length).toBe(1);
 		});
 
 		it("getCX", async () => {
+			// @ts-expect-error mock data
 			planningStore.setCXs(cx_list);
 			expect(
 				planningStore.getCX("2a83a2ca-db0c-49d2-9c43-0db08c1675bb")
@@ -106,6 +117,7 @@ describe("Planning Store", async () => {
 
 		describe("getPlan", async () => {
 			it("plan uuid already fetched", async () => {
+				// @ts-expect-error mock data
 				planningStore.plans[etherwindUuid] = plan_etherwind;
 
 				const result = await planningStore.getPlan(etherwindUuid);
@@ -121,9 +133,13 @@ describe("Planning Store", async () => {
 	});
 
 	it("$reset", async () => {
+		// @ts-expect-error mock data
 		planningStore.plans = true;
+		// @ts-expect-error mock data
 		planningStore.empires = true;
+		// @ts-expect-error mock data
 		planningStore.cxs = true;
+		// @ts-expect-error mock data
 		planningStore.shared = true;
 
 		planningStore.$reset();

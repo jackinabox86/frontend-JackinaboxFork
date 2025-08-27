@@ -1,3 +1,7 @@
+# 2025-08-27
+
+- Implement Exchange Preference updates directly from Plan COGM
+
 # 2025-08-26
 
 - Skip Version frontend version check if user is not logged in, set current version on login [#205](https://github.com/PRUNplanner/frontend/issues/205)

@@ -153,7 +153,10 @@
 		if (selectedCX.value) {
 			isPatching.value = true;
 
-			capture("exchange_patch", { exchangeUuid: selectedCX.value.uuid });
+			capture("exchange_patch", {
+				exchangeUuid: selectedCX.value.uuid,
+				location: "exchanges_view",
+			});
 
 			await useQuery("PatchCX", {
 				cxUuid: selectedCX.value.uuid,
@@ -166,7 +169,7 @@
 	}
 
 	function reloadCXData(): void {
-		capture("exchange_reload");
+		capture("exchange_reload", { location: "exchanges_view" });
 		selectedCX.value = inertClone(rawSelectedCX.value);
 		selectedName.value = selectedCX.value!.name;
 		generatePlanetMap(localPlanetList.value);
