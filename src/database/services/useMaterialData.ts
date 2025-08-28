@@ -10,17 +10,7 @@ const materialCache = new Map<string, IMaterial>();
 const materialClassCache = new Map<string, string>();
 
 export function useMaterialData() {
-	const {
-		allData,
-		get,
-		preload: storePreload,
-	} = useDB(materialsStore, "Ticker");
-
-	async function preload(): Promise<void> {
-		if (!allData.value || allData.value.length === 0) {
-			await storePreload();
-		}
-	}
+	const { allData, get, preload } = useDB(materialsStore);
 
 	// reactive caches
 	const materialsMap = computed((): Record<string, IMaterial> => {
@@ -72,11 +62,11 @@ export function useMaterialData() {
 	}
 
 	return {
+		preload,
 		materials: allData,
 		materialsMap,
 		materialSelectOptions,
 		getMaterial,
-		preload,
 		getMaterialClass,
 	};
 }

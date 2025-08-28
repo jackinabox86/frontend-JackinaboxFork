@@ -24,7 +24,7 @@ export class ProductionGraph {
 	}
 
 	async init() {
-		const buildingData = await useBuildingData(); // can preload data first
+		const buildingData = await useBuildingData();
 		const allRecipes = Object.values(
 			await buildingData.getAllBuildingRecipes() // async version
 		);

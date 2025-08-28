@@ -26,9 +26,7 @@ export async function useHQUpgradeCalculator(
 	cxUuid: Ref<string | undefined>
 ) {
 	const { findMaterial } = useFIOStorage();
-	const { materialsMap, preload: preloadMaterials } = useMaterialData();
-
-	await preloadMaterials();
+	const { materialsMap } = useMaterialData();
 
 	// use json data
 	const data: IHQLevelRecord = hqLevels;

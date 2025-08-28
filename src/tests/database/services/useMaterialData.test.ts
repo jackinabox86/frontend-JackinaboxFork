@@ -112,6 +112,6 @@ describe("useMaterialData", () => {
 	it("reload calls preload", async () => {
 		const { preload } = useMaterialData();
 		await preload();
-		expect(preloadMock).not.toHaveBeenCalled();
+		expect(preloadMock).toHaveBeenCalled();
 	});
 });

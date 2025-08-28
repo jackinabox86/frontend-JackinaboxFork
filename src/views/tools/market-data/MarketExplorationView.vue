@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { Ref, ref, ComputedRef, computed, onMounted } from "vue";
+	import { onMounted, Ref, ref } from "vue";
 	import { useHead } from "@unhead/vue";
 
 	useHead({
@@ -8,8 +8,7 @@
 
 	// Stores
 	import { useMaterialData } from "@/database/services/useMaterialData";
-	const { materialSelectOptions, preload: preloadMaterials } =
-		useMaterialData();
+	const { materialSelectOptions } = useMaterialData();
 
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
@@ -58,8 +57,7 @@
 		fetchData();
 	}
 
-	onMounted(async () => {
-		await preloadMaterials();
+	onMounted(() => {
 		materialOptions.value = materialSelectOptions.value;
 	});
 </script>

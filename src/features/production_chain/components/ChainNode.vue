@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, onMounted, type PropType } from "vue";
+	import { computed, type PropType } from "vue";
 
 	// Vue Flow
 	import { Handle, Position } from "@vue-flow/core";
@@ -34,7 +34,7 @@
 		},
 	});
 
-	const { preload: preloadMaterials, getMaterialClass } = useMaterialData();
+	const { getMaterialClass } = useMaterialData();
 
 	const materialClass = getMaterialClass(props.data.materialTicker);
 
@@ -111,8 +111,6 @@
 
 		return gradient;
 	});
-
-	onMounted(async () => await preloadMaterials());
 </script>
 
 <template>

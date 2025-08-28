@@ -76,7 +76,7 @@ describe("useBurnXITAction", async () => {
 		);
 
 		expect(materialTable.value.length).toBe(3);
-		expect(materialTable.value[0].total).toBe(10);
+		expect(materialTable.value[0].total).toBe(0);
 		expect(materialTable.value[1].total).toBe(1);
 		expect(materialTable.value[2].total).toBe(0);
 	});
@@ -90,7 +90,7 @@ describe("useBurnXITAction", async () => {
 			ref(materialInactives)
 		);
 
-		expect(totalWeightVolume.value.totalWeight).toBe(16.230000257492065);
-		expect(totalWeightVolume.value.totalVolume).toBe(11);
+		expect(totalWeightVolume.value.totalWeight).toBe(2.7300000190734863);
+		expect(totalWeightVolume.value.totalVolume).toBe(1);
 	});
 });

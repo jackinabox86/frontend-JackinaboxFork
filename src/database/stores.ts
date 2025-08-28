@@ -8,12 +8,22 @@ import {
 	IRecipe,
 } from "@/features/api/gameData.types";
 
-export const materialsStore =
-	useIndexedDBStore<IMaterial>("gamedata_materials");
+export const materialsStore = useIndexedDBStore<IMaterial, "Ticker">(
+	"gamedata_materials",
+	"Ticker" as const
+);
 
-export const planetsStore = useIndexedDBStore<IPlanet>("gamedata_planets");
+export const planetsStore = useIndexedDBStore<IPlanet, "PlanetNaturalId">(
+	"gamedata_planets",
+	"PlanetNaturalId" as const
+);
 
-export const exchangesStore =
-	useIndexedDBStore<IExchange>("gamedata_exchanges");
+export const exchangesStore = useIndexedDBStore<IExchange, "TickerId">(
+	"gamedata_exchanges",
+	"TickerId" as const
+);
 
-export const recipesStore = useIndexedDBStore<IRecipe>("gamedata_recipes");
+export const recipesStore = useIndexedDBStore<IRecipe, "RecipeId">(
+	"gamedata_recipes",
+	"RecipeId" as const
+);

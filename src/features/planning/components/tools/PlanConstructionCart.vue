@@ -6,7 +6,6 @@
 		ref,
 		watchEffect,
 		ComputedRef,
-		onMounted,
 	} from "vue";
 
 	// Composables
@@ -62,13 +61,11 @@
 		(e: "close"): void;
 	}>();
 
-	const { preload: preloadMaterials, materialsMap } = useMaterialData();
+	const { materialsMap } = useMaterialData();
 	const { getPrice } = await usePrice(
 		ref(props.cxUuid),
 		ref(props.planetNaturalId)
 	);
-
-	onMounted(async () => await preloadMaterials());
 
 	const localBuildingAmount: Ref<Record<string, number>> = ref({});
 	const localBuildingMaterials: Ref<Record<string, Record<string, number>>> =
