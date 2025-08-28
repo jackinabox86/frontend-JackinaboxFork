@@ -1,9 +1,9 @@
 <script setup lang="ts">
-	import { PropType, computed, onMounted } from "vue";
+	import { PropType, computed } from "vue";
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
-	const { getMaterialClass, preload: preloadMaterials } = useMaterialData();
+	const { getMaterialClass } = useMaterialData();
 
 	// Components
 	import { Chart } from "highcharts-vue";
@@ -28,8 +28,6 @@
 			required: true,
 		},
 	});
-
-	onMounted(async () => await preloadMaterials());
 
 	// Local State
 	const localEmpireMaterialIO = computed(() => props.empireMaterialIO);

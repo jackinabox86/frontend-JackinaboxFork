@@ -13,9 +13,7 @@ import {
 } from "@/features/planning/usePlanCalculation.types";
 
 export async function useMaterialIOUtil() {
-	const { materialsMap, preload: preloadMaterials } = useMaterialData();
-
-	await preloadMaterials();
+	const { materialsMap } = useMaterialData();
 
 	/**
 	 * Combines arrays of MaterialIOMinimal into a singular array

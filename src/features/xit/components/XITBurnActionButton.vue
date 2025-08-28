@@ -110,6 +110,7 @@
 		<n-drawer-content closable body-class="bg-black">
 			<template #header> {{ drawerTitle }} </template>
 
+			{{ refMaterialOverrides }}
 			<div class="mb-3 grid grid-cols-1 xl:grid-cols-2 gap-3">
 				<div>
 					<PForm>

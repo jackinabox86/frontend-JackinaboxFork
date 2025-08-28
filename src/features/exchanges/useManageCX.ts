@@ -15,8 +15,7 @@ import {
 import { PSelectOption } from "@/ui/ui.types";
 
 export async function useCXManagement() {
-	const { preload, materialSelectOptions } = useMaterialData();
-	await preload();
+	const { materialSelectOptions } = useMaterialData();
 
 	const typeOptions: PSelectOption[] = [
 		{ label: "BOTH" as PreferenceType, value: "BOTH" },

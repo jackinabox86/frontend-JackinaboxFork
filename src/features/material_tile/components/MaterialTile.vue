@@ -56,11 +56,7 @@
 		},
 	});
 
-	const {
-		preload: preloadMaterials,
-		getMaterial,
-		getMaterialClass,
-	} = useMaterialData();
+	const { getMaterial, getMaterialClass } = useMaterialData();
 	const { getMaterialExchangeOverview } = useExchangeData();
 
 	const refShowDrawer: Ref<boolean> = ref(false);
@@ -131,7 +127,6 @@
 
 	onMounted(async () => {
 		try {
-			await preloadMaterials();
 			material.value = await getMaterial(props.ticker);
 			categoryCssClass.value = getMaterialClass(props.ticker);
 		} catch (err) {

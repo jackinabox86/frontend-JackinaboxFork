@@ -24,22 +24,6 @@
 	import { useUserStore } from "@/stores/userStore";
 	const userStore = useUserStore();
 
-	// UI
-	import { useLoadingBar } from "naive-ui";
-
-	// Loading Bars
-	import router from "@/router";
-	const loadingBar = useLoadingBar();
-
-	router.beforeEach((to, _, next) => {
-		if (to.name) loadingBar.start();
-		next();
-	});
-
-	router.afterEach((to) => {
-		if (to.name) loadingBar.finish();
-	});
-
 	onMounted(() => startWatch());
 </script>
 

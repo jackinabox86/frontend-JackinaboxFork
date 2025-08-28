@@ -1,7 +1,6 @@
 import { Ref, ref } from "vue";
 
 import { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
-import { KeyOfStore } from "@/database/composables/useIndexedDBStore.types";
 
 type SharedState<T extends object> = {
 	allData: ReturnType<typeof ref<T[]>>;
@@ -11,13 +10,13 @@ type SharedState<T extends object> = {
 
 const storeStateMap = new WeakMap<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	ReturnType<typeof useIndexedDBStore<any>>,
+	ReturnType<typeof useIndexedDBStore<any, any>>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	SharedState<any>
 >();
 
-function ensureState<T extends object>(
-	store: ReturnType<typeof useIndexedDBStore<T>>
+function ensureState<T extends object, K extends keyof T & string>(
+	store: ReturnType<typeof useIndexedDBStore<T, K>>
 ): SharedState<T> {
 	let state = storeStateMap.get(store) as SharedState<T> | undefined;
 	if (!state) {
@@ -32,9 +31,16 @@ function ensureState<T extends object>(
 }
 
 export function useDB<T extends object, K extends keyof T & string>(
-	store: ReturnType<typeof useIndexedDBStore<T>>,
-	_keyProp: K
+	store: ReturnType<typeof useIndexedDBStore<T, K>>
 ) {
+	// The key prop literal type
+	type KeyProp = typeof store.keyPath extends keyof T
+		? typeof store.keyPath
+		: never;
+
+	// The type of the key itself
+	type KeyType = T[KeyProp] extends IDBValidKey ? T[KeyProp] : never;
+
 	const state = ensureState(store);
 
 	async function preload(force: boolean = false) {
@@ -54,15 +60,15 @@ export function useDB<T extends object, K extends keyof T & string>(
 		state.loaded = true;
 	}
 
-	async function get(key: KeyOfStore<T, K>): Promise<T | undefined> {
+	async function get(key: KeyType): Promise<T | undefined> {
 		// return from cache
 		if (state.cache.has(key as string))
-			return state.cache.get(key as string)!;
+			return state.cache.get(key as string)! as T;
 
 		// check in database
 		const item = await store.get(key);
 		if (item) state.cache.set(key as string, item);
-		return item;
+		return item as T;
 	}
 
 	return {

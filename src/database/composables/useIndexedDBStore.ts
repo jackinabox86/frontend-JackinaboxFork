@@ -59,7 +59,10 @@ export async function resetDB(): Promise<void> {
 	await indexedDB.deleteDatabase(config.INDEXEDDB_DBNAME);
 }
 
-export function useIndexedDBStore<T extends object>(storeName: string) {
+export function useIndexedDBStore<T extends object, K extends keyof T & string>(
+	storeName: string,
+	keyPath: K
+) {
 	// Basic CRUD methods for all IndexedDBStores
 
 	async function get<K extends keyof T>(
@@ -100,10 +103,11 @@ export function useIndexedDBStore<T extends object>(storeName: string) {
 	}
 
 	return {
+		keyPath,
 		get,
 		getAll,
 		set,
 		setMany,
 		remove,
-	};
+	} as const;
 }

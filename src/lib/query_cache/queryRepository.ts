@@ -16,6 +16,7 @@ import {
 	exchangesStore,
 	recipesStore,
 } from "@/database/stores";
+import { useDB } from "@/database/composables/useDB";
 
 // API Calls
 import {
@@ -143,6 +144,7 @@ export function useQueryRepository() {
 
 				// set in indexeddb
 				await materialsStore.setMany(data, true);
+				await useDB(materialsStore).preload(true);
 
 				return data;
 			},
@@ -158,6 +160,8 @@ export function useQueryRepository() {
 
 				// set in indexeddb
 				await exchangesStore.setMany(data, true);
+				await useDB(exchangesStore).preload(true);
+
 				return data;
 			},
 			autoRefetch: true,
@@ -172,6 +176,7 @@ export function useQueryRepository() {
 
 				// set in indexeddb
 				await recipesStore.setMany(data, true);
+				await useDB(recipesStore).preload(true);
 				return data;
 			},
 			autoRefetch: true,
@@ -202,6 +207,7 @@ export function useQueryRepository() {
 
 				// set in indexeddb
 				await planetsStore.set(data);
+				await useDB(planetsStore).preload(true);
 
 				return data;
 			},
@@ -224,6 +230,7 @@ export function useQueryRepository() {
 
 					// set in indexeddb
 					await planetsStore.setMany(data);
+					await useDB(planetsStore).preload(true);
 
 					// set plans individually
 					data.forEach((p) => {
@@ -253,7 +260,9 @@ export function useQueryRepository() {
 			],
 			fetchFn: async (params: { searchId: string }) => {
 				const data = await callDataPlanetSearchSingle(params.searchId);
+
 				await planetsStore.setMany(data);
+				await useDB(planetsStore).preload(true);
 
 				return data;
 			},
@@ -272,6 +281,7 @@ export function useQueryRepository() {
 				const data = await callDataPlanetSearch(params.searchData);
 
 				await planetsStore.setMany(data);
+				await useDB(planetsStore).preload(true);
 
 				return data;
 			},

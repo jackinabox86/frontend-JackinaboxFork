@@ -14,12 +14,17 @@ export async function useBurnXITAction(
 	elements: Ref<IXITActionElement[]>,
 	resupplyDays: Ref<number>,
 	hideInfinite: Ref<boolean>,
-	materialOverrides: Ref<Record<string, number>>,
+	materialOverrides: Ref<Record<string, number | null>>,
 	materialInactives: Ref<Set<string>>
 ) {
-	// get materials and preload all
-	const { preload: preloadMaterials, materialsMap } = useMaterialData();
-	await preloadMaterials();
+	// get materials
+	const { materialsMap } = useMaterialData();
+
+	// buildupo material overrides
+	materialOverrides.value = elements.value.reduce((sum, current) => {
+		sum[current.ticker] = null;
+		return sum;
+	}, {} as Record<string, number | null>);
 
 	/**
 	 * Computes a material table to be used in a XIT Resupply Action
@@ -43,11 +48,9 @@ export async function useBurnXITAction(
 					!hideInfinite.value ||
 					(hideInfinite.value && e.delta < 0)
 				) {
+					const value = materialOverrides.value[e.ticker];
 					const override: number | undefined =
-						materialOverrides.value[e.ticker] &&
-						materialOverrides.value[e.ticker] > 0
-							? materialOverrides.value[e.ticker]
-							: undefined;
+						value != null && value > 0 ? value : undefined;
 
 					tableElements.push({
 						active: !materialInactives.value.has(e.ticker),
