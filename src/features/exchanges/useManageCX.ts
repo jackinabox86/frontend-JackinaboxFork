@@ -1,7 +1,7 @@
 import { computed, ComputedRef } from "vue";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Types & Interfaces
 import {
@@ -14,8 +14,9 @@ import {
 } from "@/features/exchanges/manageCX.types";
 import { PSelectOption } from "@/ui/ui.types";
 
-export function useCXManagement() {
-	const gameDataStore = useGameDataStore();
+export async function useCXManagement() {
+	const { preload, materialSelectOptions } = useMaterialData();
+	await preload();
 
 	const typeOptions: PSelectOption[] = [
 		{ label: "BOTH" as PreferenceType, value: "BOTH" },
@@ -58,9 +59,7 @@ export function useCXManagement() {
 		{ label: "PP30D UNIVERSE" as ExchangeType, value: "PP30D_UNIVERSE" },
 	];
 
-	const materialOptions: PSelectOption[] = gameDataStore
-		.getMaterials()
-		.map((e) => ({ label: e.Ticker, value: e.Ticker }));
+	const materialOptions: PSelectOption[] = materialSelectOptions.value;
 
 	/**
 	 * Checks if a specific exchange preference can be set depending

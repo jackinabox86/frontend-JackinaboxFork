@@ -81,7 +81,7 @@
 		localData.value.length > 0 ? 0 : undefined
 	);
 
-	const { getPrice } = usePrice(localCxUuid, localPlanetNaturalId);
+	const { getPrice } = await usePrice(localCxUuid, localPlanetNaturalId);
 
 	const rep: ComputedRef<IPlanRepairAnalysisElement[]> = computed(() => {
 		const r: IPlanRepairAnalysisElement[] = [];

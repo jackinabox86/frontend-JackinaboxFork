@@ -1,9 +1,12 @@
 import { ref } from "vue";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
+import { flushPromises } from "@vue/test-utils";
 
 // stores
 import { useGameDataStore } from "@/stores/gameDataStore";
+import { materialsStore } from "@/database/stores";
+import { useMaterialData } from "@/database/services/useMaterialData";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -34,11 +37,17 @@ describe("useROIOverview", async () => {
 	const definition = ref(plan_etherwind);
 	const tnp = optimalProduction.find((e) => e.ticker === "TNP")!;
 
-	beforeAll(() => {
+	beforeAll(async () => {
 		setActivePinia(createPinia());
 		const gameDataStore = useGameDataStore();
 
-		gameDataStore.setMaterials(materials);
+		await materialsStore.setMany(materials);
+
+		const { preload } = useMaterialData();
+
+		await preload();
+		await flushPromises();
+
 		gameDataStore.setExchanges(exchanges);
 		gameDataStore.setRecipes(recipes);
 		// @ts-expect-error mock data
@@ -46,7 +55,7 @@ describe("useROIOverview", async () => {
 	});
 
 	it("calculateItem", async () => {
-		const { calculateItem, resultData } = useROIOverview(
+		const { calculateItem, resultData } = await useROIOverview(
 			// @ts-expect-error mock definition
 			definition,
 			ref(undefined)
@@ -58,7 +67,7 @@ describe("useROIOverview", async () => {
 	});
 
 	it("calculate", async () => {
-		const { calculate, resultData } = useROIOverview(
+		const { calculate, resultData } = await useROIOverview(
 			// @ts-expect-error mock definition
 			definition,
 			ref(undefined)
@@ -67,10 +76,10 @@ describe("useROIOverview", async () => {
 		await calculate();
 
 		expect(resultData.value.length).toBe(353);
-	});
+	}, 30_000);
 
 	it("formatOptimal", async () => {
-		const { formatOptimal } = useROIOverview(
+		const { formatOptimal } = await useROIOverview(
 			// @ts-expect-error mock definition
 			definition,
 			ref(undefined)

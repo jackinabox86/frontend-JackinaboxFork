@@ -1,9 +1,9 @@
 <script setup lang="ts">
-	import { PropType, computed } from "vue";
+	import { PropType, computed, onMounted } from "vue";
 
 	// Composables
-	import { useMaterialData } from "@/features/game_data/useMaterialData";
-	const { getMaterial } = useMaterialData();
+	import { useMaterialData } from "@/database/services/useMaterialData";
+	const { getMaterialClass, preload: preloadMaterials } = useMaterialData();
 
 	// Components
 	import { Chart } from "highcharts-vue";
@@ -28,6 +28,8 @@
 			required: true,
 		},
 	});
+
+	onMounted(async () => await preloadMaterials());
 
 	// Local State
 	const localEmpireMaterialIO = computed(() => props.empireMaterialIO);
@@ -106,13 +108,7 @@
 	};
 
 	function getMaterialColor(materialTicker: string): string {
-		const material = getMaterial(materialTicker);
-
-		const sanitizedName = material.CategoryName.replaceAll(" ", "-")
-			.replaceAll("(", "")
-			.replaceAll(")", "");
-
-		return materialColors[sanitizedName];
+		return materialColors[getMaterialClass(materialTicker)];
 	}
 
 	const chartProfitablePlans = computed(() => {

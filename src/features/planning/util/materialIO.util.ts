@@ -4,7 +4,7 @@ import {
 	IEmpireMaterialIOPlanet,
 	IEmpirePlanMaterialIO,
 } from "@/features/empire/empire.types";
-import { useMaterialData } from "@/features/game_data/useMaterialData";
+import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Types & Interfaces
 import {
@@ -12,8 +12,10 @@ import {
 	IMaterialIOMinimal,
 } from "@/features/planning/usePlanCalculation.types";
 
-export function useMaterialIOUtil() {
-	const { getMaterial } = useMaterialData();
+export async function useMaterialIOUtil() {
+	const { materialsMap, preload: preloadMaterials } = useMaterialData();
+
+	await preloadMaterials();
 
 	/**
 	 * Combines arrays of MaterialIOMinimal into a singular array
@@ -60,7 +62,7 @@ export function useMaterialIOUtil() {
 		const enhancedArray: IMaterialIOMaterial[] = [];
 
 		data.forEach((minimal) => {
-			const material = getMaterial(minimal.ticker);
+			const material = materialsMap.value[minimal.ticker];
 
 			enhancedArray.push({
 				ticker: minimal.ticker,

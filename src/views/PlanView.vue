@@ -133,7 +133,7 @@
 	const refMaterialIOShowBasked: Ref<boolean> = ref(false);
 	const refMaterialIOSplitted: Ref<boolean> = ref(false);
 
-	const { calculateInfrastructureCosts } = usePrice(
+	const { calculateInfrastructureCosts } = await usePrice(
 		refCXUuid,
 		ref(planetData.PlanetNaturalId)
 	);

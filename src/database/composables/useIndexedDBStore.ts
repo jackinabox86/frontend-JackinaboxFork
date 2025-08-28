@@ -6,7 +6,7 @@ import { KeyOfStore } from "@/database/composables/useIndexedDBStore.types";
 import { DB_SCHEMA } from "@/database/schema";
 
 export async function requestPersistence() {
-	if (navigator.storage && navigator.storage.persist) {
+	if (navigator && navigator.storage && navigator.storage.persist) {
 		await navigator.storage.persist();
 	}
 }
@@ -39,7 +39,11 @@ export async function getDB() {
 		);
 	}
 	// Request persistence after DB is ready
-	await requestPersistence();
+	try {
+		await requestPersistence();
+	} catch {
+		// ignore
+	}
 
 	return dbPromise;
 }

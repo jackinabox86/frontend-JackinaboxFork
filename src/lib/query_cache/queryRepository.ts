@@ -10,7 +10,12 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
 
 // indexeddb
-import { materialsStore, planetsStore } from "@/database/stores";
+import {
+	materialsStore,
+	planetsStore,
+	exchangesStore,
+	recipesStore,
+} from "@/database/stores";
 
 // API Calls
 import {
@@ -135,7 +140,6 @@ export function useQueryRepository() {
 			key: () => ["gamedata", "materials"],
 			fetchFn: async () => {
 				const data: IMaterial[] = await callDataMaterials();
-				gameDataStore.setMaterials(data);
 
 				// set in indexeddb
 				await materialsStore.setMany(data, true);
@@ -151,6 +155,9 @@ export function useQueryRepository() {
 			fetchFn: async () => {
 				const data: IExchange[] = await callDataExchanges();
 				gameDataStore.setExchanges(data);
+
+				// set in indexeddb
+				await exchangesStore.setMany(data, true);
 				return data;
 			},
 			autoRefetch: true,
@@ -162,6 +169,9 @@ export function useQueryRepository() {
 			fetchFn: async () => {
 				const data: IRecipe[] = await callDataRecipes();
 				gameDataStore.setRecipes(data);
+
+				// set in indexeddb
+				await recipesStore.setMany(data, true);
 				return data;
 			},
 			autoRefetch: true,

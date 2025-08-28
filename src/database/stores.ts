@@ -1,25 +1,19 @@
 import { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
 
 // Types & Interfaces
-import { IMaterial, IPlanet } from "@/features/api/gameData.types";
+import {
+	IExchange,
+	IMaterial,
+	IPlanet,
+	IRecipe,
+} from "@/features/api/gameData.types";
 
-export const materialsStore = useIndexedDBStore<IMaterial>(
-	"gamedata_materials"
-	// keyPath: "Ticker",
-	// indexes: [
-	// 	{
-	// 		name: "byMaterialId",
-	// 		keyPath: "MaterialId",
-	// 		options: { unique: true },
-	// 	},
-	// 	{ name: "byCategoryId", keyPath: "CategoryId" },
-	// ],});
-);
+export const materialsStore =
+	useIndexedDBStore<IMaterial>("gamedata_materials");
 
-export const planetsStore = useIndexedDBStore<IPlanet>(
-	"gamedata_planets"
-	// 	{
-	// 	storeName: "gamedata_planets",
-	// 	keyPath: "PlanetNaturalId",
-	// }
-);
+export const planetsStore = useIndexedDBStore<IPlanet>("gamedata_planets");
+
+export const exchangesStore =
+	useIndexedDBStore<IExchange>("gamedata_exchanges");
+
+export const recipesStore = useIndexedDBStore<IRecipe>("gamedata_recipes");

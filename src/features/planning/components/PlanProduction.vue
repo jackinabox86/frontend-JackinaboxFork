@@ -73,7 +73,7 @@
 	);
 	const localMatchCOGC: Ref<boolean> = ref(false);
 
-	const { getProductionBuildingOptions } = useBuildingData();
+	const { getProductionBuildingOptions } = await useBuildingData();
 </script>
 
 <template>

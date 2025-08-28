@@ -36,7 +36,7 @@ import { infrastructureBuildingNames } from "@/features/planning/calculations/wo
  * remains responsive and efficient, even as users make frequent adjustments
  * to their plans.
  */
-export function usePlanCalculationPreComputes(
+export async function usePlanCalculationPreComputes(
 	buildings: Ref<IPlanDataBuilding[]>,
 	cxUuid: Ref<string | undefined>,
 	empireUuid: Ref<string | undefined>,
@@ -50,9 +50,9 @@ export function usePlanCalculationPreComputes(
 		getBuildingConstructionMaterials,
 		getBuildingRecipes,
 		getBuildingWorkforceMaterials,
-	} = useBuildingData();
+	} = await useBuildingData();
 
-	const { getMaterialIOTotalPrice } = usePrice(cxUuid, planetNaturalId);
+	const { getMaterialIOTotalPrice } = await usePrice(cxUuid, planetNaturalId);
 	/**
 	 * Holds data of the currently active empire based on all available
 	 * empires and the empireUuid passed to this composable

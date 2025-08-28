@@ -55,7 +55,7 @@
 	const filterOutputMaterial: Ref<string | null> = ref(null);
 	const filterPostiveROI: Ref<boolean> = ref(false);
 
-	const { calculate, formatOptimal } = useROIOverview(definition, cx);
+	const { calculate, formatOptimal } = await useROIOverview(definition, cx);
 
 	const filteredResult: ComputedRef<IROIResult[]> = computed(() => {
 		let filtered = result.value;

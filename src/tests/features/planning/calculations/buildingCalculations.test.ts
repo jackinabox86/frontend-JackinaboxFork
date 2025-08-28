@@ -17,7 +17,7 @@ describe("Planning: Workforce Calculations", async () => {
 
 	describe("calculateMaterialIO", async () => {
 		it("Calculate whole production material io", async () => {
-			const { calculateMaterialIO } = useBuildingCalculation();
+			const { calculateMaterialIO } = await useBuildingCalculation();
 
 			const fakeData = [
 				{
@@ -85,7 +85,7 @@ describe("Planning: Workforce Calculations", async () => {
 		});
 
 		it("Skip recipes which amount = 0", async () => {
-			const { calculateMaterialIO } = useBuildingCalculation();
+			const { calculateMaterialIO } = await useBuildingCalculation();
 
 			const fakeData = [
 				{

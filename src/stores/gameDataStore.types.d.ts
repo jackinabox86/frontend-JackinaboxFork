@@ -1,16 +1,8 @@
-import {
-	IMaterial,
-	IExchange,
-	IRecipe,
-	IBuilding,
-	IPlanet,
-} from "@/features/api/gameData.types";
+import { IExchange, IRecipe, IBuilding } from "@/features/api/gameData.types";
 
-type IMaterialsRecord = Record<string, IMaterial>;
 type IExchangesRecord = Record<string, IExchange>;
 type IRecipesRecord = Record<string, IRecipe[]>;
 type IBuildingsRecord = Record<string, IBuilding>;
-type IPlanetsRecord = Record<string, IPlanet>;
 
 type TOptionalDate = undefined | Date;
 

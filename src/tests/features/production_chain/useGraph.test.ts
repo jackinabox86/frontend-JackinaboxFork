@@ -23,15 +23,15 @@ describe("productionNode", async () => {
 	});
 
 	it("createFlowNodes", async () => {
-		const { createFlowNodes } = useGraph();
-		const result = createFlowNodes([new ProductionNode("RAT")], []);
+		const { createFlowNodes } = await useGraph();
+		const result = await createFlowNodes([new ProductionNode("RAT")], []);
 
 		expect(result.length).toBe(1);
 		expect(result[0].id).toBe("NODE#RAT");
 	});
 
 	it("createFlowEdges", async () => {
-		const { createFlowEdges } = useGraph();
+		const { createFlowEdges } = await useGraph();
 
 		const result = createFlowEdges([new ProductionEdge("FOO", "MOO", 1)]);
 
@@ -41,8 +41,8 @@ describe("productionNode", async () => {
 
 	it("applyDagreLayout", async () => {
 		const { createFlowNodes, createFlowEdges, applyDagreLayout } =
-			useGraph();
-		const nodes = createFlowNodes(
+			await useGraph();
+		const nodes = await createFlowNodes(
 			[new ProductionNode("RAT"), new ProductionNode("H2O")],
 			[]
 		);
@@ -67,9 +67,9 @@ describe("productionNode", async () => {
 	});
 
 	it("create", async () => {
-		const { create } = useGraph();
+		const { create } = await useGraph();
 
-		const result = create("RAT");
+		const result = await create("RAT");
 
 		expect(result).toBeDefined();
 		expect(result.nodes.length).toBe(8);

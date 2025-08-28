@@ -1,9 +1,9 @@
-import { computed, ComputedRef, ref, Ref } from "vue";
+import { computed, ComputedRef, ref, Ref, watchEffect } from "vue";
 
 // Composables
 import { usePrice } from "@/features/cx/usePrice";
 import { useFIOStorage } from "@/features/fio/useFIOStorage";
-import { useMaterialData } from "@/features/game_data/useMaterialData";
+import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Util
 import { clamp } from "@/util/numbers";
@@ -19,14 +19,16 @@ import { PSelectOption } from "@/ui/ui.types";
 // Static data
 import hqLevels from "@/features/hq_upgrade_calculator/hq_levels.json";
 
-export function useHQUpgradeCalculator(
+export async function useHQUpgradeCalculator(
 	start: Ref<number>,
 	to: Ref<number>,
 	refOverride: Ref<Record<string, number | null>>,
 	cxUuid: Ref<string | undefined>
 ) {
 	const { findMaterial } = useFIOStorage();
-	const { getMaterial } = useMaterialData();
+	const { materialsMap, preload: preloadMaterials } = useMaterialData();
+
+	await preloadMaterials();
 
 	// use json data
 	const data: IHQLevelRecord = hqLevels;
@@ -63,69 +65,67 @@ export function useHQUpgradeCalculator(
 		() => to.value < start.value
 	);
 
-	/**
-	 * Computes the required materials for the selected HQ upgrade period
-	 *
-	 * @author jplacht
-	 *
-	 * @type {ComputedRef<IHQMaterial[]>} Upgrade Materials
-	 */
-	const materialData: ComputedRef<IHQMaterial[]> = computed(() => {
-		const sumData: Record<string, IHQMaterialData> = {};
-		const { getPrice } = usePrice(cxUuid, ref(undefined));
+	const materialData = ref<IHQMaterial[]>([]);
 
-		if (hasError.value) return [];
+	watchEffect(async () => {
+		{
+			const sumData: Record<string, IHQMaterialData> = {};
+			const { getPrice } = await usePrice(cxUuid, ref(undefined));
 
-		// iterate over all upgrade costs from "start" to "to" 
-		// do not count the materials for the start value (+1)
-		for (let index = start.value + 1; index <= to.value; index++) {
-			const element = data[index];
+			if (hasError.value) return [];
 
-			// check and create or add to sumData
-			element.forEach((point) => {
-				if (sumData[point.ticker])
-					sumData[point.ticker].amount += point.amount;
-				else {
-					const {
-						amount: storageAmount,
-						locations: storageLocations,
-					} = findMaterial(point.ticker);
+			// iterate over all upgrade costs from "start" to "to"
+			// do not count the materials for the start value (+1)
+			for (let index = start.value + 1; index <= to.value; index++) {
+				const element = data[index];
 
-					// initialize material, combined values added later
-					sumData[point.ticker] = {
-						amount: point.amount,
-						required: 0,
-						storage:
-							refOverride.value[point.ticker] ?? storageAmount,
-						storageLocations: storageLocations,
-						override: refOverride.value[point.ticker] ?? 0,
-						unitCost: 0,
-						totalCost: 0,
-					};
-				}
+				// check and create or add to sumData
+				element.forEach((point) => {
+					if (sumData[point.ticker])
+						sumData[point.ticker].amount += point.amount;
+					else {
+						const {
+							amount: storageAmount,
+							locations: storageLocations,
+						} = findMaterial(point.ticker);
+
+						// initialize material, combined values added later
+						sumData[point.ticker] = {
+							amount: point.amount,
+							required: 0,
+							storage:
+								refOverride.value[point.ticker] ??
+								storageAmount,
+							storageLocations: storageLocations,
+							override: refOverride.value[point.ticker] ?? 0,
+							unitCost: 0,
+							totalCost: 0,
+						};
+					}
+				});
+			}
+
+			// calculate required and cost values
+			Object.entries(sumData).map(([ticker, e]) => {
+				e.required = clamp(e.amount - e.storage, 0, Infinity);
+				e.unitCost = getPrice(ticker, "BUY");
+				e.totalCost = e.required * e.unitCost;
 			});
+
+			// transform to array, sort by ticker, required for datatable
+			materialData.value = [
+				...Object.entries(sumData).map(([ticker, value]) => ({
+					ticker: ticker,
+					amount: value.amount,
+					override: value.override,
+					required: value.required,
+					unitCost: value.unitCost,
+					totalCost: value.totalCost,
+					storage: value.storage,
+					storageLocations: value.storageLocations,
+				})),
+			].sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 		}
-
-		// calculate required and cost values
-		Object.entries(sumData).map(([ticker, e]) => {
-			e.required = clamp(e.amount - e.storage, 0, Infinity);
-			e.unitCost = getPrice(ticker, "BUY");
-			e.totalCost = e.required * e.unitCost;
-		});
-
-		// transform to array, sort by ticker, required for datatable
-		return [
-			...Object.entries(sumData).map(([ticker, value]) => ({
-				ticker: ticker,
-				amount: value.amount,
-				override: value.override,
-				required: value.required,
-				unitCost: value.unitCost,
-				totalCost: value.totalCost,
-				storage: value.storage,
-				storageLocations: value.storageLocations,
-			})),
-		].sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 	});
 
 	/**
@@ -162,14 +162,16 @@ export function useHQUpgradeCalculator(
 				(sum, current) =>
 					(sum =
 						sum +
-						getMaterial(current.ticker).Weight * current.required),
+						materialsMap.value[current.ticker].Weight *
+							current.required),
 				0
 			),
 			totalVolume: materialData.value.reduce(
 				(sum, current) =>
 					(sum =
 						sum +
-						getMaterial(current.ticker).Volume * current.required),
+						materialsMap.value[current.ticker].Volume *
+							current.required),
 				0
 			),
 		};

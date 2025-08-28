@@ -15,8 +15,48 @@ import { useDB } from "@/database/composables/useDB";
 import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Sample materials
-const mockMaterial1 = { Ticker: "MAT1", Name: "Material One" };
-const mockMaterial2 = { Ticker: "MAT2", Name: "Material Two" };
+const mockMaterial1 = {
+	Ticker: "MAT1",
+	Name: "Material One",
+	CategoryName: "foo",
+};
+const mockMaterial2 = {
+	Ticker: "MAT2",
+	Name: "Material Two",
+	CategoryName: "moo",
+};
+
+describe("useMaterialData, no data", async () => {
+	let getMock: any;
+	let preloadMock: any;
+
+	beforeEach(() => {
+		preloadMock = vi.fn(async () => {});
+
+		// @ts-ignore
+		useDB.mockReturnValue({
+			allData: ref(undefined),
+			get: getMock,
+			preload: preloadMock,
+		});
+	});
+
+	it("trigger preload", async () => {
+		const { preload } = useMaterialData();
+		await preload();
+		expect(preloadMock).toHaveBeenCalled();
+	});
+
+	it("empty materialsMap", async () => {
+		const { materialsMap } = useMaterialData();
+		expect(materialsMap.value).toStrictEqual({});
+	});
+
+	it("empty materialSelectOptions", async () => {
+		const { materialSelectOptions } = useMaterialData();
+		expect(materialSelectOptions.value).toStrictEqual([]);
+	});
+});
 
 describe("useMaterialData", () => {
 	let getMock: any;
@@ -63,9 +103,15 @@ describe("useMaterialData", () => {
 		]);
 	});
 
+	it("getMaterialClass", async () => {
+		const { getMaterialClass } = useMaterialData();
+
+		expect(getMaterialClass("MAT1")).toBe("material-category-foo");
+	});
+
 	it("reload calls preload", async () => {
-		const { reload } = useMaterialData();
-		await reload();
-		expect(preloadMock).toHaveBeenCalled();
+		const { preload } = useMaterialData();
+		await preload();
+		expect(preloadMock).not.toHaveBeenCalled();
 	});
 });

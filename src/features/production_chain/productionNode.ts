@@ -20,14 +20,9 @@ export class ProductionNode {
 	hasInput: boolean = false;
 	hasOutput: boolean = false;
 
-	private getBuilding: ReturnType<typeof useBuildingData>["getBuilding"];
-
 	public constructor(materialTicker: string) {
 		this.materialTicker = materialTicker;
 		this.recipes = [];
-
-		const { getBuilding } = useBuildingData();
-		this.getBuilding = getBuilding;
 	}
 
 	get id(): string {
@@ -118,10 +113,13 @@ export class ProductionNode {
 		return this.recipes[0];
 	}
 
-	getBuildingData(selectedRecipes: string[]): IBuilding | undefined {
+	async getBuildingData(
+		selectedRecipes: string[]
+	): Promise<IBuilding | undefined> {
 		const recipe: IRecipe | undefined = this.getRecipe(selectedRecipes);
+		const { getBuilding } = await useBuildingData();
 
-		if (recipe) return this.getBuilding(recipe.BuildingTicker);
+		if (recipe) return await getBuilding(recipe.BuildingTicker);
 		return undefined;
 	}
 }

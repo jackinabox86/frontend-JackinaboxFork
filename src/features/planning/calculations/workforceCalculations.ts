@@ -78,8 +78,8 @@ export const infrastructureBuildingNames: string[] = [
 	"STO",
 ];
 
-export function useWorkforceCalculation() {
-	const { combineMaterialIOMinimal } = useMaterialIOUtil();
+export async function useWorkforceCalculation() {
+	const { combineMaterialIOMinimal } = await useMaterialIOUtil();
 
 	/**
 	 * Calculates workforce satisfaction based on capacity and luxuries
@@ -110,7 +110,8 @@ export function useWorkforceCalculation() {
 		}
 
 		let efficiency: number = 0;
-		const baseEfficiency: number = 0.02 * (1 + 10 / 3) * (1 + 4) * (1 + 5 / 6);
+		const baseEfficiency: number =
+			0.02 * (1 + 10 / 3) * (1 + 4) * (1 + 5 / 6);
 		const lux1Efficiency: number = 1 + 1 / 11;
 		const lux2Efficiency: number = 1 + 2 / 13;
 

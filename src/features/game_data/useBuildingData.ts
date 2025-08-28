@@ -26,12 +26,12 @@ import {
 import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
 import { IRecipesRecord } from "@/stores/gameDataStore.types";
 
-export function useBuildingData() {
+export async function useBuildingData() {
 	const gameDataStore = useGameDataStore();
 
 	const { getPlanetSpecialMaterials } = usePlanetData();
-	const { combineMaterialIOMinimal } = useMaterialIOUtil();
-	const { calculateWorkforceConsumption } = useWorkforceCalculation();
+	const { combineMaterialIOMinimal } = await useMaterialIOUtil();
+	const { calculateWorkforceConsumption } = await useWorkforceCalculation();
 
 	/**
 	 * Maps resource buildings to their respective extraction / collection

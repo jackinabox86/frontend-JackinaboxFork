@@ -26,9 +26,6 @@ export const boundaryTemperatureHigh: number = 75.0;
 export function usePlanetData() {
 	const { allData, get, preload } = useDB(planetsStore, "PlanetNaturalId");
 
-	// trigger preload
-	preload();
-
 	// reactive caches
 	const planetNames = ref<Record<string, string>>({});
 

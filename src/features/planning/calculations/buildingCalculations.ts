@@ -9,8 +9,8 @@ import {
 
 export const TOTALMSDAY: number = 24 * 60 * 60 * 1000;
 
-export function useBuildingCalculation() {
-	const { combineMaterialIOMinimal } = useMaterialIOUtil();
+export async function useBuildingCalculation() {
+	const { combineMaterialIOMinimal } = await useMaterialIOUtil();
 
 	/**
 	 * Calculates a plans production buildings total material io based

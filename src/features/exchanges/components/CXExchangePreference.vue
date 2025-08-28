@@ -35,7 +35,7 @@
 		canAddExchangePreference,
 		updateExchangePreference,
 		deleteExchangePreference,
-	} = useCXManagement();
+	} = await useCXManagement();
 
 	const selectedType: Ref<PreferenceType> = ref("BOTH");
 	const selectedExchange: Ref<ExchangeType> = ref("PP30D_UNIVERSE");

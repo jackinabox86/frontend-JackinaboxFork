@@ -16,16 +16,28 @@ import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types
 import materials from "@/tests/test_data/api_data_materials.json";
 import { IEmpirePlanMaterialIO } from "@/features/empire/empire.types";
 
+import { materialsStore } from "@/database/stores";
+import { useMaterialData } from "@/database/services/useMaterialData";
+import { flushPromises } from "@vue/test-utils";
+
 describe("Util: materialIO ", async () => {
 	let gameDataStore: any;
 
-	beforeAll(() => {
+	beforeAll(async () => {
 		setActivePinia(createPinia());
 		gameDataStore = useGameDataStore();
+
+		await materialsStore.setMany(materials);
+		const { preload } = useMaterialData();
+		await preload();
+		await flushPromises();
+
+		await preload();
+		await flushPromises();
 	});
 
 	it("combineMaterialIOMinimal", async () => {
-		const { combineMaterialIOMinimal } = useMaterialIOUtil();
+		const { combineMaterialIOMinimal } = await useMaterialIOUtil();
 		const firstArray: IMaterialIOMinimal[] = [
 			{
 				ticker: "C",
@@ -81,12 +93,7 @@ describe("Util: materialIO ", async () => {
 	});
 
 	it("enhanceMaterialIOMinimal", async () => {
-		// prepare, add all materials
-		materials.forEach((m) => {
-			gameDataStore.materials[m.Ticker] = m;
-		});
-
-		const { enhanceMaterialIOMinimal } = useMaterialIOUtil();
+		const { enhanceMaterialIOMinimal } = await useMaterialIOUtil();
 
 		const fakeArray: IMaterialIOMinimal[] = [
 			{
@@ -116,20 +123,12 @@ describe("Util: materialIO ", async () => {
 		expect(findWater?.delta).toBe(5);
 
 		// individual weight
-		expect(findC?.individualVolume).toBe(
-			gameDataStore.materials["C"].Volume
-		);
-		expect(findC?.individualWeight).toBe(
-			gameDataStore.materials["C"].Weight
-		);
+		expect(findC?.individualVolume).toBe(1);
+		expect(findC?.individualWeight).toBe(2.25);
 
 		// total
-		expect(findWater?.totalVolume).toBe(
-			gameDataStore.materials["H2O"].Volume * 5
-		);
-		expect(findWater?.totalWeight).toBe(
-			gameDataStore.materials["H2O"].Weight * 5
-		);
+		expect(findWater?.totalVolume).toBe(1.0000000149011612);
+		expect(findWater?.totalWeight).toBe(1.0000000149011612);
 
 		// sorted alphabetically
 		expect(result[0].ticker).toBe("C");
@@ -137,7 +136,7 @@ describe("Util: materialIO ", async () => {
 	});
 
 	it("enhanceMaterialIOMaterial", async () => {
-		const { enhanceMaterialIOMaterial } = usePrice(
+		const { enhanceMaterialIOMaterial } = await usePrice(
 			ref(undefined),
 			ref(undefined)
 		);
@@ -214,7 +213,7 @@ describe("Util: materialIO ", async () => {
 			},
 		];
 
-		const { combineEmpireMaterialIO } = useMaterialIOUtil();
+		const { combineEmpireMaterialIO } = await useMaterialIOUtil();
 
 		const result = combineEmpireMaterialIO(fakeInput);
 
@@ -252,7 +251,7 @@ describe("Util: materialIO ", async () => {
 			},
 		];
 
-		const { combineEmpireMaterialIO } = useMaterialIOUtil();
+		const { combineEmpireMaterialIO } = await useMaterialIOUtil();
 
 		const result = combineEmpireMaterialIO(fakeInput);
 

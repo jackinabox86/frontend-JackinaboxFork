@@ -4,7 +4,6 @@ import { createPinia, setActivePinia } from "pinia";
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
 import buildings from "@/tests/test_data/api_data_buildings.json";
-import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import fio_sites from "@/tests/test_data/api_data_fio_sites.json";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
@@ -25,10 +24,8 @@ describe("GameData Store", async () => {
 
 	describe("Functions", () => {
 		it("$reset", async () => {
-			gameDataStore.materials = true;
 			gameDataStore.exchanges = true;
 			gameDataStore.buildings = true;
-			gameDataStore.planets = true;
 			gameDataStore.fio_storage_planets = true;
 			gameDataStore.fio_storage_ships = true;
 			gameDataStore.fio_storage_warehouses = true;
@@ -37,10 +34,8 @@ describe("GameData Store", async () => {
 
 			gameDataStore.$reset();
 
-			expect(Object.keys(gameDataStore.materials).length).toBe(0);
 			expect(Object.keys(gameDataStore.exchanges).length).toBe(0);
 			expect(Object.keys(gameDataStore.buildings).length).toBe(0);
-			expect(Object.keys(gameDataStore.planets).length).toBe(0);
 			expect(Object.keys(gameDataStore.fio_storage_planets).length).toBe(
 				0
 			);
@@ -53,10 +48,6 @@ describe("GameData Store", async () => {
 		});
 
 		describe("setters", async () => {
-			it("setMaterials", async () => {
-				gameDataStore.setMaterials(materials);
-				expect(Object.keys(gameDataStore.materials).length).toBe(345);
-			});
 			it("setExchanges", async () => {
 				gameDataStore.setExchanges(exchanges);
 				expect(Object.keys(gameDataStore.exchanges).length).toBe(6980);

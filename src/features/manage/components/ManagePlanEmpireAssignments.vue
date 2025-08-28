@@ -111,7 +111,6 @@
 		if (filterEmpires.value.length > 0) {
 			filtered = filtered.filter((f) =>
 				Object.entries(f.empires)
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					.filter(([_, value]) => value === true)
 					.map(([key]) => key)
 					.find((e) => filterEmpires.value.includes(e))

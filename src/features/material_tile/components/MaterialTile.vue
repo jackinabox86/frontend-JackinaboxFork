@@ -6,7 +6,7 @@
 	import { computed, ComputedRef, onMounted, ref, Ref } from "vue";
 
 	// Composables
-	import { useMaterialData } from "@/features/game_data/useMaterialData";
+	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { useExchangeData } from "@/features/game_data/useExchangeData";
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
@@ -56,7 +56,11 @@
 		},
 	});
 
-	const { getMaterial } = useMaterialData();
+	const {
+		preload: preloadMaterials,
+		getMaterial,
+		getMaterialClass,
+	} = useMaterialData();
 	const { getMaterialExchangeOverview } = useExchangeData();
 
 	const refShowDrawer: Ref<boolean> = ref(false);
@@ -83,16 +87,8 @@
 		},
 	]);
 
-	const material: ComputedRef<IMaterial> = computed(() => {
-		return getMaterial(props.ticker);
-	});
-
-	const categoryCssClass: ComputedRef<string> = computed(() => {
-		const sanitizedName = material.value.CategoryName.replaceAll(" ", "-")
-			.replaceAll("(", "")
-			.replaceAll(")", "");
-		return `material-category-${sanitizedName}`;
-	});
+	const material = ref<IMaterial | null>(null);
+	const categoryCssClass = ref<string>("");
 
 	const indicatorPercentage: ComputedRef<number> = computed(() => {
 		if (props.amount && props.max) {
@@ -133,7 +129,14 @@
 		}
 	}
 
-	onMounted(() => {
+	onMounted(async () => {
+		try {
+			await preloadMaterials();
+			material.value = await getMaterial(props.ticker);
+			categoryCssClass.value = getMaterialClass(props.ticker);
+		} catch (err) {
+			console.error("Failed to fetch material:", err);
+		}
 		try {
 			if (props.enablePopover)
 				refExchangeOverview.value = getMaterialExchangeOverview(
@@ -215,7 +218,7 @@
 	</div>
 
 	<n-drawer
-		v-if="refShowDrawer"
+		v-if="refShowDrawer && material"
 		v-model:show="refShowDrawer"
 		:width="500"
 		placement="right">
@@ -225,7 +228,7 @@
 					<div
 						:class="categoryCssClass"
 						class="text-nowrap p-2 px-4 text-2xl text-shadow-[0_1px_1px_rgb(34,34,34)]">
-						{{ getMaterial(ticker).Ticker }}
+						{{ material.Ticker }}
 					</div>
 				</div>
 				<div class="flex-grow">

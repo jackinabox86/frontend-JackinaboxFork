@@ -19,7 +19,7 @@
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 	import { usePreferences } from "@/features/preferences/usePreferences";
-	const { combineEmpireMaterialIO } = useMaterialIOUtil();
+	const { combineEmpireMaterialIO } = await useMaterialIOUtil();
 	const { defaultEmpireUuid } = usePreferences();
 
 	// Components
@@ -55,6 +55,7 @@
 
 	// UI
 	import { PForm, PFormItem, PSelect, PButton } from "@/ui";
+	import { NSpin } from "naive-ui";
 
 	const props = defineProps({
 		empireUuid: {
@@ -88,19 +89,15 @@
 
 		// calculate all plans, pass in references as the
 		// empire might be updated
-		try {
-			planData.value.forEach(async (plan) => {
-				const calculation = await usePlanCalculation(
-					toRef(plan),
-					selectedEmpireUuid,
-					refEmpireList,
-					selectedCXUuid
-				);
+		for (const plan of planData.value) {
+			const calculation = await usePlanCalculation(
+				toRef(plan),
+				selectedEmpireUuid,
+				refEmpireList,
+				selectedCXUuid
+			);
 
-				calculatedPlans.value[plan.uuid!] = calculation.result.value;
-			});
-		} catch (error) {
-			console.error(error);
+			calculatedPlans.value[plan.uuid!] = calculation.result.value;
 		}
 
 		isCalculating.value = false;
@@ -273,10 +270,7 @@
 				load-exchanges
 				:load-planet-multiple="empirePlanetList"
 				@complete="calculateEmpire">
-				<template v-if="isCalculating">
-					<div>Calculating</div>
-				</template>
-				<template v-else-if="refEmpireList.length === 0">
+				<template v-if="refEmpireList.length === 0">
 					<AsyncWrapperGenericError
 						message-title="No Empires"
 						message-text="You don't have any empires. Head to Management to create your first." />
@@ -285,9 +279,12 @@
 					<div class="min-h-screen flex flex-col">
 						<div
 							class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
-							<h1 class="text-2xl font-bold my-auto">
-								{{ empireName }}
-							</h1>
+							<div class="flex flex-row gap-3">
+								<h1 class="text-2xl font-bold my-auto">
+									{{ empireName }}
+								</h1>
+								<n-spin v-if="isCalculating" :size="16" />
+							</div>
 							<div class="gap-3 flex flex-row flex-wrap">
 								<PButton @click="switchMainContent">
 									{{ switchText }}

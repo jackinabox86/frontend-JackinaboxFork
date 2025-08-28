@@ -47,7 +47,8 @@
 
 	watch(
 		() => props.planListData,
-		() => loadPlanetNames(props.planListData.map((p) => p.planet))
+		() => loadPlanetNames(props.planListData.map((p) => p.planet)),
+		{ immediate: true }
 	);
 </script>
 

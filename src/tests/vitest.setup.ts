@@ -9,3 +9,11 @@ beforeEach(async () => {
 	// Close and delete DB from fake-indexeddb
 	await indexedDB.deleteDatabase(config.INDEXEDDB_DBNAME);
 });
+
+if (typeof navigator === "undefined") {
+	(global as any).navigator = {
+		storage: {
+			persist: async () => true,
+		},
+	};
+}
