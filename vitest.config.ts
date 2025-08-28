@@ -6,7 +6,11 @@ import vue from "@vitejs/plugin-vue";
 const alias = { "@": path.resolve(__dirname, "./src") };
 
 export default defineConfig({
+	define: {
+		__INDEXEDDB_VERSION__: Date.now(), // force db upgrade each test run
+	},
 	test: {
+		setupFiles: "./src/tests/vitest.setup.ts",
 		globals: true,
 		env: loadEnv("", ""),
 		exclude: [

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import { watch, PropType } from "vue";
 
 	// Composables
-	import { usePlanetData } from "@/features/game_data/usePlanetData";
-	const { getPlanetName } = usePlanetData();
+	import { usePlanetData } from "@/database/services/usePlanetData";
+	const { planetNames, loadPlanetNames } = usePlanetData();
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -20,7 +20,7 @@
 		XNDataTableSummaryCell,
 	} from "@skit/x.naive-ui";
 
-	defineProps({
+	const props = defineProps({
 		planListData: {
 			type: Array as PropType<IEmpirePlanListData[]>,
 			required: true,
@@ -44,6 +44,11 @@
 		ENGINEERS: "ENG",
 		SCIENTISTS: "SCI",
 	};
+
+	watch(
+		() => props.planListData,
+		() => loadPlanetNames(props.planListData.map((p) => p.planet))
+	);
 </script>
 
 <template>
@@ -62,7 +67,7 @@
 		<XNDataTableColumn key="planet" title="Planet" sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="w-[150px] test-wrap">
-					{{ getPlanetName(rowData.planet) }}
+					{{ planetNames[rowData.planet] || "Loading..." }}
 				</div>
 			</template>
 		</XNDataTableColumn>

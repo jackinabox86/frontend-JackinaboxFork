@@ -9,6 +9,9 @@ import { useGameDataStore } from "@/stores/gameDataStore";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
 
+// indexeddb
+import { materialsStore, planetsStore } from "@/database/stores";
+
 // API Calls
 import {
 	callDataBuildings,
@@ -133,6 +136,10 @@ export function useQueryRepository() {
 			fetchFn: async () => {
 				const data: IMaterial[] = await callDataMaterials();
 				gameDataStore.setMaterials(data);
+
+				// set in indexeddb
+				await materialsStore.setMany(data, true);
+
 				return data;
 			},
 			autoRefetch: true,
@@ -182,7 +189,10 @@ export function useQueryRepository() {
 				const data: IPlanet = await callDataPlanet(
 					params.planetNaturalId
 				);
-				gameDataStore.setPlanet(data);
+
+				// set in indexeddb
+				await planetsStore.set(data);
+
 				return data;
 			},
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
@@ -201,7 +211,9 @@ export function useQueryRepository() {
 					const data: IPlanet[] = await callDataMultiplePlanets(
 						params.planetNaturalIds
 					);
-					gameDataStore.setMultiplePlanets(data);
+
+					// set in indexeddb
+					await planetsStore.setMany(data);
 
 					// set plans individually
 					data.forEach((p) => {
@@ -230,7 +242,10 @@ export function useQueryRepository() {
 				params.searchId,
 			],
 			fetchFn: async (params: { searchId: string }) => {
-				return await callDataPlanetSearchSingle(params.searchId);
+				const data = await callDataPlanetSearchSingle(params.searchId);
+				await planetsStore.setMany(data);
+
+				return data;
 			},
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			persist: true,
@@ -244,7 +259,11 @@ export function useQueryRepository() {
 				params.searchData,
 			],
 			fetchFn: async (params: { searchData: IPlanetSearchAdvanced }) => {
-				return await callDataPlanetSearch(params.searchData);
+				const data = await callDataPlanetSearch(params.searchData);
+
+				await planetsStore.setMany(data);
+
+				return data;
 			},
 			expireTime: 60_000 * config.GAME_DATA_STALE_MINUTES_PLANETS,
 			persist: true,

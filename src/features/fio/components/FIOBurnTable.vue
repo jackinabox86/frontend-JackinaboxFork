@@ -2,10 +2,10 @@
 	import { PropType } from "vue";
 
 	// Composables
-	import { usePlanetData } from "@/features/game_data/usePlanetData";
+	import { usePlanetData } from "@/database/services/usePlanetData";
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	const { getBurnDisplayClass } = usePreferences();
-	const { getPlanetName } = usePlanetData();
+	const { planetNames, loadPlanetName } = usePlanetData();
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -133,7 +133,11 @@
 						</span>
 						<span class="!text-white/50">
 							&mdash;
-							{{ getPlanetName(rowData.planetId) }}
+							{{
+								planetNames[rowData.planetId] ||
+								loadPlanetName(rowData.planetId) ||
+								"Loading..."
+							}}
 						</span>
 					</div>
 					<div class="flex flex-row items-center gap-x-3">

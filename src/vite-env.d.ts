@@ -12,6 +12,8 @@ interface ImportMetaEnv {
 
 	readonly VITE_POSTHOG_TOKEN: string | undefined;
 	readonly VITE_POSTHOG_NAME: string | undefined;
+
+	readonly VITE_INDEXEDDB_DBNAME: string | undefined;
 }
 
 interface ImportMeta {

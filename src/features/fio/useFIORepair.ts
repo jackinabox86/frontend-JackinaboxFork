@@ -1,7 +1,7 @@
 import { computed, ComputedRef, Ref } from "vue";
 
 // Composables
-import { usePlanetData } from "@/features/game_data/usePlanetData";
+import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Types & Interfaces
 import { IFIOSitePlanet, IFIOSiteShip } from "@/features/api/gameData.types";
@@ -22,7 +22,7 @@ export function useFIORepair(
 	planets: Ref<Record<string, IFIOSitePlanet>>,
 	ships: Ref<Record<string, IFIOSiteShip>>
 ) {
-	const { getPlanetName } = usePlanetData();
+	const { planetNames, loadPlanetNames } = usePlanetData();
 
 	const MINTCONDITION: number = 1.0;
 
@@ -47,6 +47,9 @@ export function useFIORepair(
 	const planetRepairTable: ComputedRef<IFIOSitesRepairTablePlanetElement[]> =
 		computed(() => {
 			const data: IFIOSitesRepairTablePlanetElement[] = [];
+
+			// trigger planet name loading
+			loadPlanetNames(Object.keys(planets.value));
 
 			Object.values(planets.value).forEach((planetData) => {
 				// generate average condition and building factors
@@ -88,7 +91,9 @@ export function useFIORepair(
 
 				data.push({
 					planetId: planetData.PlanetIdentifier,
-					planetName: getPlanetName(planetData.PlanetIdentifier),
+					planetName:
+						planetNames.value[planetData.PlanetIdentifier] ??
+						"Loading",
 					amountBuildings: buildingAmount,
 					amountProductionBuildings: productionBuildingAmount,
 					amountInfrastructureBuildings: infrastructureBuildingAmount,

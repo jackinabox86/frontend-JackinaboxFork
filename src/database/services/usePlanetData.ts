@@ -1,14 +1,11 @@
-// Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
-
-// Util
-import { boundaryDescriptor } from "@/util/numbers";
-import { inertClone } from "@/util/data";
-
-// Interfaces & Types
 import { IPlanet } from "@/features/api/gameData.types";
+import { useDB } from "../composables/useDB";
+import { planetsStore } from "../stores";
+import { ref } from "vue";
+
 import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
 import { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
+import { boundaryDescriptor } from "@/util/numbers";
 
 /**
  * Planetary type static boundaries
@@ -27,24 +24,53 @@ export const boundaryTemperatureLow: number = -25.0;
 export const boundaryTemperatureHigh: number = 75.0;
 
 export function usePlanetData() {
-	const gameDataStore = useGameDataStore();
+	const { allData, get, preload } = useDB(planetsStore, "PlanetNaturalId");
 
-	/**
-	 * Gets Planet information from gamedata store
-	 *
-	 * @author jplacht
-	 *
-	 * @param {string} planetNaturalId Planet Natural Id (e.g. 'OT-580b')
-	 * @returns {IPlanet} Planet
-	 */
-	function getPlanet(planetNaturalId: string): IPlanet {
-		const findPlanet: IPlanet | undefined =
-			gameDataStore.planets[planetNaturalId];
+	// trigger preload
+	preload();
 
-		if (findPlanet) return inertClone(findPlanet);
+	// reactive caches
+	const planetNames = ref<Record<string, string>>({});
 
-		throw new Error(
-			`No data: Planet '${planetNaturalId}'. Ensure planet natural id is valid and data loaded`
+	async function getPlanet(planetNaturalId: string): Promise<IPlanet> {
+		const planet = await get(planetNaturalId);
+
+		if (!planet) {
+			throw new Error(`Planet ${planetNaturalId} not available.`);
+		}
+
+		return planet;
+	}
+
+	async function getPlanetName(planetNaturalId: string): Promise<string> {
+		try {
+			const planet = await getPlanet(planetNaturalId);
+
+			if (planet.PlanetName != planet.PlanetNaturalId) {
+				return `${planet.PlanetName} (${planet.PlanetNaturalId})`;
+			} else return planet.PlanetName;
+		} catch {
+			return planetNaturalId;
+		}
+	}
+
+	async function loadPlanetName(planetNaturalId: string): Promise<string> {
+		if (!planetNames.value[planetNaturalId])
+			planetNames.value[planetNaturalId] = await getPlanetName(
+				planetNaturalId
+			);
+
+		return planetNames.value[planetNaturalId];
+	}
+
+	async function loadPlanetNames(planetNaturalIds: string[]) {
+		const uniqueIds = [...new Set(planetNaturalIds)];
+
+		await Promise.all(
+			uniqueIds.map(async (id) => {
+				if (!planetNames.value[id])
+					planetNames.value[id] = await getPlanetName(id);
+			})
 		);
 	}
 
@@ -114,34 +140,14 @@ export function usePlanetData() {
 		return additions;
 	}
 
-	/**
-	 * Builds a readable string for a planets natural id either being
-	 * only the naturalid or a combination of name and naturalid if the
-	 * planet has received a proper name. Falls back to given ID if the
-	 * planet was not yet fetched.
-	 *
-	 * @author jplacht
-	 *
-	 * @param {string} planetNaturalId Planet Natural Id
-	 * @returns {string} Readable planet name
-	 */
-	function getPlanetName(planetNaturalId: string): string {
-		// if the planet has not been fetched, don't fetch it but
-		// only return the planetNaturalId
-		try {
-			const planet = getPlanet(planetNaturalId);
-
-			if (planet.PlanetName != planet.PlanetNaturalId) {
-				return `${planet.PlanetName} (${planet.PlanetNaturalId})`;
-			} else return planet.PlanetName;
-		} catch {
-			return planetNaturalId;
-		}
-	}
-
 	return {
+		planets: allData,
+		reload: preload,
 		getPlanet,
-		getPlanetSpecialMaterials,
 		getPlanetName,
+		loadPlanetName,
+		loadPlanetNames,
+		planetNames,
+		getPlanetSpecialMaterials,
 	};
 }

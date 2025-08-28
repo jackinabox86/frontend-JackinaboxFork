@@ -1,11 +1,9 @@
 import { ref } from "vue";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 // stores
 import { useGameDataStore } from "@/stores/gameDataStore";
-
-import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -15,6 +13,22 @@ import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
 import planet_etherwind from "@/tests/test_data/api_data_planet_etherwind.json";
 import { useROIOverview } from "@/features/roi_overview/useROIOverview";
+
+vi.mock("@/database/services/usePlanetData", async () => {
+	const actual: any = await vi.importActual(
+		"@/database/services/usePlanetData"
+	);
+
+	return {
+		usePlanetData: vi.fn(() => ({
+			getPlanet: vi.fn().mockResolvedValue(planet_etherwind),
+			getPlanetSpecialMaterials:
+				actual.usePlanetData().getPlanetSpecialMaterials,
+		})),
+	};
+});
+
+import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
 describe("useROIOverview", async () => {
 	const definition = ref(plan_etherwind);
@@ -29,8 +43,6 @@ describe("useROIOverview", async () => {
 		gameDataStore.setRecipes(recipes);
 		// @ts-expect-error mock data
 		gameDataStore.setBuildings(buildings);
-		// @ts-expect-error mock data
-		gameDataStore.setPlanet(planet_etherwind);
 	});
 
 	it("calculateItem", async () => {

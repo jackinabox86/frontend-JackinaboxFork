@@ -1,7 +1,6 @@
 import { computed, ComputedRef, ref, Ref, toRaw, toRef, watch } from "vue";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
@@ -12,6 +11,7 @@ import {
 } from "@/features/planning/calculations/buildingCalculations";
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
+import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Calculation Utils
 import {
@@ -67,16 +67,15 @@ import {
 } from "@/stores/planningStore.types";
 import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
 
-export function usePlanCalculation(
+export async function usePlanCalculation(
 	plan: Ref<IPlan>,
 	empireUuid: Ref<string | undefined> = ref(undefined),
 	empireOptions: Ref<IPlanEmpireElement[] | undefined> = ref(undefined),
 	cxUuid: Ref<string | undefined> = ref(undefined)
 ) {
 	// stores
-
-	const gameDataStore = useGameDataStore();
 	const planningDataStore = usePlanningStore();
+	const { getPlanet } = usePlanetData();
 
 	const refreshKey: Ref<number> = ref(0);
 
@@ -105,7 +104,7 @@ export function usePlanCalculation(
 	const planEmpires: ComputedRef<IPlanEmpire[]> = computed(
 		() => plan.value.empires
 	);
-	const planetData: IPlanet = gameDataStore.planets[planet.value.planetid];
+	const planetData: IPlanet = await getPlanet(planet.value.planetid);
 	const buildings: ComputedRef<IPlanDataBuilding[]> = computed(
 		() => data.value.buildings
 	);

@@ -2,10 +2,11 @@
 	import { PropType } from "vue";
 
 	// Composables
-	import { usePlanetData } from "@/features/game_data/usePlanetData";
+	import { usePlanetData } from "@/database/services/usePlanetData";
 	import { usePreferences } from "@/features/preferences/usePreferences";
+
 	const { getBurnDisplayClass } = usePreferences();
-	const { getPlanetName } = usePlanetData();
+	const { planetNames, loadPlanetName } = usePlanetData();
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -37,7 +38,11 @@
 		</XNDataTableColumn>
 		<XNDataTableColumn key="planetId" title="Planet">
 			<template #render-cell="{ rowData }">
-				{{ getPlanetName(rowData.planetId) }}
+				{{
+					planetNames[rowData.planetId] ||
+					loadPlanetName(rowData.planetId) ||
+					"Loading..."
+				}}
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn key="minDays" title="Burn" sorter="default">

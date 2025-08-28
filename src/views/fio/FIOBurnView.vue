@@ -53,21 +53,23 @@
 	const refEmpireList: Ref<IPlanEmpireElement[]> = ref([]);
 	const refCalculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
 
-	function calculateEmpire(): void {
+	async function calculateEmpire(): Promise<void> {
 		refIsCalculating.value = true;
 
 		refCalculatedPlans.value = {};
 
 		// calculate all plans, pass in references as the
 		// empire might be updated
-		refPlanData.value.forEach((plan) => {
-			refCalculatedPlans.value[plan.uuid!] = usePlanCalculation(
+		for (const plan of refPlanData.value) {
+			const calculation = await usePlanCalculation(
 				toRef(plan),
 				refSelectedEmpireUuid,
 				refEmpireList,
 				refSelectedCXUuid
-			).result.value;
-		});
+			);
+
+			refCalculatedPlans.value[plan.uuid!] = calculation.result.value;
+		}
 
 		refIsCalculating.value = false;
 	}

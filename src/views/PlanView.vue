@@ -16,7 +16,7 @@
 	import { IPlanet } from "@/features/api/gameData.types";
 
 	// Composables
-	import { usePlanetData } from "@/features/game_data/usePlanetData";
+	import { usePlanetData } from "@/database/services/usePlanetData";
 	const { getPlanet } = usePlanetData();
 	import { useCXData } from "@/features/cx/useCXData";
 	const { findEmpireCXUuid } = useCXData();
@@ -91,6 +91,13 @@
 	const refEmpireUuid: Ref<string | undefined> = ref(undefined);
 	const refCXUuid: Ref<string | undefined> = ref(undefined);
 
+	const calculation = await usePlanCalculation(
+		refPlanData,
+		refEmpireUuid,
+		refEmpireList,
+		refCXUuid
+	);
+
 	const {
 		existing,
 		saveable,
@@ -118,14 +125,9 @@
 		handleAddBuildingRecipe,
 		handleChangeBuildingRecipe,
 		handleChangePlanName,
-	} = usePlanCalculation(
-		refPlanData,
-		refEmpireUuid,
-		refEmpireList,
-		refCXUuid
-	);
+	} = calculation;
 
-	const planetData: IPlanet = getPlanet(props.planData.planet_id);
+	const planetData: IPlanet = await getPlanet(props.planData.planet_id);
 
 	const refVisualShowConfiguration: Ref<boolean> = ref(true);
 	const refMaterialIOShowBasked: Ref<boolean> = ref(false);

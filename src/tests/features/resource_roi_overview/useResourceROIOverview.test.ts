@@ -41,7 +41,7 @@ describe("useResourceROIOverview", async () => {
 	it("searchPlanets", async () => {
 		mock.onPost("/data/planet/search").reply(200, planet_search_results);
 
-		const { searchPlanets } = useResourceROIOverview();
+		const { searchPlanets } = useResourceROIOverview(ref(undefined));
 
 		const result = await searchPlanets("N");
 
@@ -51,7 +51,7 @@ describe("useResourceROIOverview", async () => {
 	it("calculate", async () => {
 		mock.onPost("/data/planet/search").reply(200, [planet_etherwind]);
 
-		const { calculate } = useResourceROIOverview();
+		const { calculate } = useResourceROIOverview(ref(undefined));
 
 		const result = await calculate("H2O");
 

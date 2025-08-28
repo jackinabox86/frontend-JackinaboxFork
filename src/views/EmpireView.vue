@@ -89,13 +89,15 @@
 		// calculate all plans, pass in references as the
 		// empire might be updated
 		try {
-			planData.value.forEach((plan) => {
-				calculatedPlans.value[plan.uuid!] = usePlanCalculation(
+			planData.value.forEach(async (plan) => {
+				const calculation = await usePlanCalculation(
 					toRef(plan),
 					selectedEmpireUuid,
 					refEmpireList,
 					selectedCXUuid
-				).result.value;
+				);
+
+				calculatedPlans.value[plan.uuid!] = calculation.result.value;
 			});
 		} catch (error) {
 			console.error(error);

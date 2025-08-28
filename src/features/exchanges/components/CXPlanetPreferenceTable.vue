@@ -2,7 +2,7 @@
 	import { PropType, ref, Ref, watch } from "vue";
 
 	// Composables
-	import { usePlanetData } from "@/features/game_data/usePlanetData";
+	import { usePlanetData } from "@/database/services/usePlanetData";
 
 	// Utils
 	import { formatNumber } from "@/util/numbers";
@@ -20,7 +20,7 @@
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import { EditSharp } from "@vicons/material";
 
-	const { getPlanetName } = usePlanetData();
+	const { planetNames, loadPlanetName } = usePlanetData();
 
 	const props = defineProps({
 		planetMap: {
@@ -44,7 +44,12 @@
 <template>
 	<h2 class="text-xl font-bold my-auto pb-3">
 		Planet Preferences<span v-if="selectedPlanet"
-			>: {{ getPlanetName(selectedPlanet) }}
+			>:
+			{{
+				planetNames[selectedPlanet] ||
+				loadPlanetName(selectedPlanet) ||
+				"Loading"
+			}}
 		</span>
 	</h2>
 	<div
@@ -84,7 +89,11 @@
 		</XNDataTableColumn>
 		<XNDataTableColumn key="planet" title="Planet" sorter="default">
 			<template #render-cell="{ rowData }">
-				{{ getPlanetName(rowData.planet) }}
+				{{
+					planetNames[rowData.planet] ||
+					loadPlanetName(rowData.planet) ||
+					"Loading..."
+				}}
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn key="exchanges" title="Exchanges" max-width="20%">

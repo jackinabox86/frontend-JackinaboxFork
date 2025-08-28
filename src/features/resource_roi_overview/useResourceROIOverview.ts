@@ -11,13 +11,10 @@ import {
 	boundaryPressureLow,
 	boundaryTemperatureHigh,
 	boundaryTemperatureLow,
-} from "@/features/game_data/usePlanetData";
+} from "@/database/services/usePlanetData";
 import { usePlan } from "@/features/planning_data/usePlan";
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
-import { usePlanetData } from "@/features/game_data/usePlanetData";
-
-// Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { usePlanetData } from "@/database/services/usePlanetData";
 
 // Static
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
@@ -28,13 +25,11 @@ import { boundaryDescriptor } from "@/util/numbers";
 
 // Types & Interfaces
 import { IPlanet } from "@/features/api/gameData.types";
-import { IStaticOptimalProduction } from "@/features/roi_overview/useROIOverview.types";
 import { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
 
 export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	const { createBlankDefinition } = usePlan();
-	const { getPlanetName } = usePlanetData();
-	const gameDataStore = useGameDataStore();
+	const { planetNames, loadPlanetNames } = usePlanetData();
 
 	const planetResults: Ref<IPlanet[]> = ref([]);
 	const resultData: Ref<IResourceROIResult[]> = ref([]);
@@ -67,8 +62,6 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		})
 			.execute()
 			.then((data: IPlanet[]) => {
-				// set in store, to be used for calculation
-				gameDataStore.setMultiplePlanets(data);
 				planetResults.value = data;
 			});
 
@@ -82,7 +75,10 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		const planets: IPlanet[] = await searchPlanets(materialTicker);
 		const localResults: IResourceROIResult[] = [];
 
-		planets.forEach((planetData: IPlanet) => {
+		// trigger planet name loading and wait on it
+		await loadPlanetNames(planets.map((p) => p.PlanetNaturalId));
+
+		for (const planetData of planets) {
 			// create a blank definition from planet data
 			const definition = ref(
 				createBlankDefinition(
@@ -136,120 +132,120 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 				environmentTemperature.push("TSH");
 
 			// iterate over optimal buildings
-			filteredOptimalProduction.forEach(
-				(optimal: IStaticOptimalProduction) => {
-					// set infrastructure
-					definition.value.baseplanner_data.infrastructure = [
-						{ building: "HB1", amount: optimal.HB1 },
-						{ building: "HB2", amount: optimal.HB2 },
-						{ building: "HB3", amount: optimal.HB3 },
-						{ building: "HB4", amount: optimal.HB4 },
-						{ building: "HB5", amount: optimal.HB5 },
-						{ building: "HBB", amount: optimal.HBB },
-						{ building: "HBC", amount: optimal.HBC },
-						{ building: "HBM", amount: optimal.HBM },
-						{ building: "HBL", amount: optimal.HBL },
-						{ building: "STO", amount: optimal.sto },
-					];
+			for (const optimal of filteredOptimalProduction) {
+				// set infrastructure
+				definition.value.baseplanner_data.infrastructure = [
+					{ building: "HB1", amount: optimal.HB1 },
+					{ building: "HB2", amount: optimal.HB2 },
+					{ building: "HB3", amount: optimal.HB3 },
+					{ building: "HB4", amount: optimal.HB4 },
+					{ building: "HB5", amount: optimal.HB5 },
+					{ building: "HBB", amount: optimal.HBB },
+					{ building: "HBC", amount: optimal.HBC },
+					{ building: "HBM", amount: optimal.HBM },
+					{ building: "HBL", amount: optimal.HBL },
+					{ building: "STO", amount: optimal.sto },
+				];
 
-					// artificially set cogc to resource extraction
-					definition.value.baseplanner_data.planet.cogc =
-						"RESOURCE_EXTRACTION";
+				// artificially set cogc to resource extraction
+				definition.value.baseplanner_data.planet.cogc =
+					"RESOURCE_EXTRACTION";
 
-					const {
-						result,
-						overviewData,
-						handleCreateBuilding,
-						handleDeleteBuilding,
-						handleAddBuildingRecipe,
-						handleChangeBuildingRecipe,
-						handleUpdateBuildingAmount,
-					} = usePlanCalculation(
-						definition,
-						undefined,
-						undefined,
-						cxUuid
-					);
+				const calculation = await usePlanCalculation(
+					definition,
+					undefined,
+					undefined,
+					cxUuid
+				);
 
-					// create building
-					handleCreateBuilding(optimal.ticker);
+				const {
+					result,
+					overviewData,
+					handleCreateBuilding,
+					handleDeleteBuilding,
+					handleAddBuildingRecipe,
+					handleChangeBuildingRecipe,
+					handleUpdateBuildingAmount,
+				} = calculation;
 
-					// add recipe
-					result.value.production.buildings.forEach(
-						(productionBuilding) => {
-							if (
-								productionBuilding.recipeOptions
-									.map((e) => e.Outputs.map((m) => m.Ticker))
-									.flat()
-									.includes(materialTicker)
-							) {
-								// found it, update amount
-								handleUpdateBuildingAmount(0, optimal.amount);
-								// add a recipe
-								handleAddBuildingRecipe(0);
-								// change to the correct extraction recipe
-								handleChangeBuildingRecipe(
-									0,
-									0,
-									`${productionBuilding.name}#${materialTicker}`
-								);
+				// create building
+				handleCreateBuilding(optimal.ticker);
 
-								// find daily yield from material i/o for given materialticker
-								const dailyYield: number =
-									result.value.materialio.find(
-										(f) => f.ticker === materialTicker
-									)?.output ?? 0;
+				// add recipe
+				result.value.production.buildings.forEach(
+					(productionBuilding) => {
+						if (
+							productionBuilding.recipeOptions
+								.map((e) => e.Outputs.map((m) => m.Ticker))
+								.flat()
+								.includes(materialTicker)
+						) {
+							// found it, update amount
+							handleUpdateBuildingAmount(0, optimal.amount);
+							// add a recipe
+							handleAddBuildingRecipe(0);
+							// change to the correct extraction recipe
+							handleChangeBuildingRecipe(
+								0,
+								0,
+								`${productionBuilding.name}#${materialTicker}`
+							);
 
-								// all matches, push the result
-								localResults.push({
-									planetNaturalId: planetData.PlanetNaturalId,
-									planetName: getPlanetName(
+							// find daily yield from material i/o for given materialticker
+							const dailyYield: number =
+								result.value.materialio.find(
+									(f) => f.ticker === materialTicker
+								)?.output ?? 0;
+
+							// all matches, push the result
+							localResults.push({
+								planetNaturalId: planetData.PlanetNaturalId,
+								planetName:
+									planetNames.value[
 										planetData.PlanetNaturalId
-									),
-									buildingTicker: productionBuilding.name,
-									dailyYield,
-									percentMaxDailyYield: 0,
-									cogm: result.value.production.buildings[0]
-										.activeRecipes[0].cogm,
-									outputProfit:
-										result.value.production.buildings[0]
-											.activeRecipes[0].cogm
-											?.totalProfit ?? 0,
-									dailyProfit: overviewData.value.profit,
-									planCost:
-										overviewData.value
-											.totalConstructionCost,
-									planROI: overviewData.value.roi,
-									distanceAI1:
-										planetData.Distances.find(
-											(e) => e.name === "Antares Station"
-										)?.distance ?? 0,
-									distanceCI1:
-										planetData.Distances.find(
-											(e) => e.name === "Benten Station"
-										)?.distance ?? 0,
-									distanceIC1:
-										planetData.Distances.find(
-											(e) => e.name === "Hortus Station"
-										)?.distance ?? 0,
-									distanceNC1:
-										planetData.Distances.find(
-											(e) => e.name === "Moria Station"
-										)?.distance ?? 0,
-									planetSurface: environmentSurface,
-									planetGravity: environmentGravity,
-									planetPressure: environmentPressure,
-									planetTemperature: environmentTemperature,
-								});
-							}
+									],
+								buildingTicker: productionBuilding.name,
+								dailyYield,
+								percentMaxDailyYield: 0,
+								cogm: result.value.production.buildings[0]
+									.activeRecipes[0].cogm,
+								outputProfit:
+									result.value.production.buildings[0]
+										.activeRecipes[0].cogm?.totalProfit ??
+									0,
+								dailyProfit: overviewData.value.profit,
+								planCost:
+									overviewData.value.totalConstructionCost,
+								planROI: overviewData.value.roi,
+								distanceAI1:
+									planetData.Distances.find(
+										(e) => e.name === "Antares Station"
+									)?.distance ?? 0,
+								distanceCI1:
+									planetData.Distances.find(
+										(e) => e.name === "Benten Station"
+									)?.distance ?? 0,
+								distanceIC1:
+									planetData.Distances.find(
+										(e) => e.name === "Hortus Station"
+									)?.distance ?? 0,
+								distanceNC1:
+									planetData.Distances.find(
+										(e) => e.name === "Moria Station"
+									)?.distance ?? 0,
+								planetSurface: environmentSurface,
+								planetGravity: environmentGravity,
+								planetPressure: environmentPressure,
+								planetTemperature: environmentTemperature,
+							});
 						}
-					);
+					}
+				);
 
-					// delete building, so we can continue at index 0 with next one
-					handleDeleteBuilding(0);
-				}
-			);
-		});
+				// delete building, so we can continue at index 0 with next one
+				handleDeleteBuilding(0);
+			}
+		}
 
 		// calculate the max yield of all, then set the percent of max yield
 		const maxDailyYield: number = Math.max(
