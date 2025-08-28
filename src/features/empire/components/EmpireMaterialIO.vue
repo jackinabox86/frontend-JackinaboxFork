@@ -1,12 +1,12 @@
 <script setup lang="ts">
-	import { PropType, computed } from "vue";
+	import { PropType, computed, watch } from "vue";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 
 	// Composables
-	import { usePlanetData } from "@/features/game_data/usePlanetData";
-	const { getPlanetName } = usePlanetData();
+	import { usePlanetData } from "@/database/services/usePlanetData";
+	const { planetNames, loadPlanetNames } = usePlanetData();
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -26,6 +26,25 @@
 
 	// Local State
 	const localEmpireMaterialIO = computed(() => props.empireMaterialIO);
+
+	watch(
+		() => props.empireMaterialIO,
+		() =>
+			loadPlanetNames(
+				Array.from(
+					new Set(
+						props.empireMaterialIO
+							.map((e) => [
+								...e.inputPlanets.map((p) => p.planetId).flat(),
+								...e.outputPlanets
+									.map((p) => p.planetId)
+									.flat(),
+							])
+							.flat()
+					)
+				)
+			)
+	);
 </script>
 
 <template>
@@ -86,7 +105,7 @@
 					<router-link
 						:to="`/plan/${p.planetId}/${p.planUuid}`"
 						class="hover:underline">
-						{{ getPlanetName(p.planetId) }}:
+						{{ planetNames[p.planetId] || "Loading" }}:
 						<strong>
 							{{ formatNumber(p.output) }}
 						</strong>
@@ -102,7 +121,7 @@
 					<router-link
 						:to="`/plan/${p.planetId}/${p.planUuid}`"
 						class="hover:underline">
-						{{ getPlanetName(p.planetId) }}:
+						{{ planetNames[p.planetId] || "Loading" }}:
 						<strong>
 							{{ formatNumber(p.input) }}
 						</strong>

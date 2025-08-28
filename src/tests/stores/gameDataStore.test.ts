@@ -6,8 +6,6 @@ import recipes from "@/tests/test_data/api_data_recipes.json";
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import planets from "@/tests/test_data/api_data_planets.json";
-import planet_single from "@/tests/test_data/api_data_planet_single.json";
 import fio_sites from "@/tests/test_data/api_data_fio_sites.json";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 
@@ -71,15 +69,7 @@ describe("GameData Store", async () => {
 				gameDataStore.setBuildings(buildings);
 				expect(Object.keys(gameDataStore.buildings).length).toBe(84);
 			});
-			it("setPlanet", async () => {
-				gameDataStore.setPlanet(planet_single);
-				expect(Object.keys(gameDataStore.planets).length).toBe(1);
-			});
-			it("setMultiplePlanets", async () => {
-				gameDataStore.planets = {};
-				gameDataStore.setMultiplePlanets(planets);
-				expect(Object.keys(gameDataStore.planets).length).toBe(9);
-			});
+
 			it("setFIOSitesData", async () => {
 				gameDataStore.setFIOSitesData(fio_sites);
 				expect(
@@ -100,29 +90,6 @@ describe("GameData Store", async () => {
 				expect(
 					Object.keys(gameDataStore.fio_storage_warehouses).length
 				).toBe(5);
-			});
-		});
-
-		describe("getPlanet", async () => {
-			it("No force, has planet data", async () => {
-				// mock
-				gameDataStore.planets["foo"] = true;
-
-				const result = await gameDataStore.getPlanet("foo");
-
-				expect(result).toBe(true);
-			});
-
-			it("No force, needs to fetch planet data but getting error", async () => {
-				await expect(
-					gameDataStore.getPlanet("KW-020c")
-				).rejects.toThrowError();
-			});
-
-			it("Force, needs to fetch planet data but getting error", async () => {
-				await expect(
-					gameDataStore.getPlanet("KW-020c", true)
-				).rejects.toThrowError();
 			});
 		});
 	});

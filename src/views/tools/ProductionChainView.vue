@@ -18,7 +18,7 @@
 	// Composables
 	import { useGraph } from "@/features/production_chain/useGraph";
 	const { create } = useGraph();
-	import { useMaterialData } from "@/features/game_data/useMaterialData";
+	import { useMaterialData } from "@/database/services/useMaterialData";
 	const { materialSelectOptions } = useMaterialData();
 
 	// Types & Interfaces

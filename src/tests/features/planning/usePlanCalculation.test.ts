@@ -6,9 +6,6 @@ import { createPinia, setActivePinia } from "pinia";
 import { useGameDataStore } from "@/stores/gameDataStore";
 import { usePlanningStore } from "@/stores/planningStore";
 
-// Composables
-import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
-
 // Util
 import { inertClone } from "@/util/data";
 
@@ -20,7 +17,22 @@ import buildings from "@/tests/test_data/api_data_buildings.json";
 import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 
-const etherwindPlanetId: string = "KW-688c";
+vi.mock("@/database/services/usePlanetData", async () => {
+	const actual: any = await vi.importActual(
+		"@/database/services/usePlanetData"
+	);
+
+	return {
+		usePlanetData: vi.fn(() => ({
+			getPlanet: vi.fn().mockResolvedValue(planet_etherwind),
+			getPlanetSpecialMaterials:
+				actual.usePlanetData().getPlanetSpecialMaterials,
+		})),
+	};
+});
+
+// Composables
+import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 
 describe("usePlanCalculation", async () => {
 	let gameDataStore: ReturnType<typeof useGameDataStore>;
@@ -30,9 +42,6 @@ describe("usePlanCalculation", async () => {
 		setActivePinia(createPinia());
 		gameDataStore = useGameDataStore();
 		planningStore = usePlanningStore();
-
-		// @ts-expect-error mock data
-		gameDataStore.planets[etherwindPlanetId] = planet_etherwind;
 
 		buildings.forEach((b) => {
 			// @ts-expect-error mock data
@@ -59,13 +68,15 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("refreshkey", async () => {
-		const { refreshKey } = usePlanCalculation(
+		const calculation = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
 			ref(undefined),
 			ref(undefined)
 		);
+
+		const { refreshKey } = calculation;
 
 		expect(refreshKey.value).toBe(0);
 
@@ -77,13 +88,15 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("validate result", async () => {
-		const { result } = usePlanCalculation(
+		const calculation = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
 			ref(undefined),
 			ref(undefined)
 		);
+
+		const { result } = calculation;
 
 		expect(result.value.corphq).toBeFalsy();
 		expect(result.value.cogc).toBe("RESOURCE_EXTRACTION");
@@ -100,38 +113,42 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("validate overviewData", async () => {
-		const { overviewData } = usePlanCalculation(
+		const calculation = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
 			ref(undefined),
 			ref(undefined)
 		);
+		const { overviewData } = calculation;
 
 		expect(overviewData.value.dailyCost).toBe(38364.71626045736);
 		expect(overviewData.value.roi).toBe(25.909127634141438);
 	});
 
 	it("validate visitationData", async () => {
-		const { visitationData } = usePlanCalculation(
+		const calculation = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
 			ref(undefined),
 			ref(undefined)
 		);
+		const { visitationData } = calculation;
 
 		expect(visitationData.value.storageFilled).toBe(22.342256698594255);
 	});
 
 	it("validate constructionMaterials", async () => {
-		const { constructionMaterials } = usePlanCalculation(
+		const calculation = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
 			ref(undefined),
 			ref(undefined)
 		);
+		const { constructionMaterials } = calculation;
+
 		expect(constructionMaterials.value).toBeDefined();
 		expect(constructionMaterials.value.length).toBe(9);
 	});
@@ -143,7 +160,7 @@ describe("usePlanCalculation", async () => {
 			amount: 1,
 		};
 
-		const { result } = usePlanCalculation(
+		const calculation = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(manipData),
 			ref(undefined),
@@ -151,30 +168,34 @@ describe("usePlanCalculation", async () => {
 			ref(undefined)
 		);
 
+		const { result } = calculation;
+
 		expect(() => result.value).toThrowError();
 	});
 
 	it("validate existing and saveable", async () => {
-		const { existing, saveable } = usePlanCalculation(
+		const calculation = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
 			ref(undefined),
 			ref(undefined)
 		);
+		const { existing, saveable } = calculation;
 
 		expect(existing.value).toBeTruthy();
 		expect(saveable.value).toBeTruthy();
 	});
 
 	it("backendData", async () => {
-		const { backendData } = usePlanCalculation(
+		const calculation = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
 			ref(undefined),
 			ref(undefined)
 		);
+		const { backendData } = calculation;
 
 		expect(backendData.value).toStrictEqual({
 			buildings: [

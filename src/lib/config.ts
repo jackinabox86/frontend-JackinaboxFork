@@ -9,6 +9,8 @@ class Config {
 	public readonly GAME_DATA_STALE_MINUTES_EXCHANGES: number;
 	public readonly GAME_DATA_STALE_MINUTES_PLANETS: number;
 
+	public readonly INDEXEDDB_DBNAME: string;
+
 	constructor() {
 		this.API_BASE_URL =
 			import.meta.env.VITE_API_BASE_URL || "https://api.prunplanner.org";
@@ -27,6 +29,9 @@ class Config {
 			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_EXCHANGES || 30;
 		this.GAME_DATA_STALE_MINUTES_PLANETS =
 			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_PLANETS || 3 * 60;
+
+		this.INDEXEDDB_DBNAME =
+			import.meta.env.VITE_INDEXEDDB_DBNANAME || "prunplanner";
 	}
 }
 

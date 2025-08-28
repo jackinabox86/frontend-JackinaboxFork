@@ -11,7 +11,7 @@ import {
 	boundaryPressureLow,
 	boundaryTemperatureHigh,
 	boundaryTemperatureLow,
-} from "@/features/game_data/usePlanetData";
+} from "@/database/services/usePlanetData";
 
 // Types & Interfaces
 import { IPlanet } from "@/features/api/gameData.types";

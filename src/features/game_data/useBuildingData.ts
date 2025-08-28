@@ -2,7 +2,7 @@
 import { useGameDataStore } from "@/stores/gameDataStore";
 
 // Composables
-import { usePlanetData } from "@/features/game_data/usePlanetData";
+import { usePlanetData } from "@/database/services/usePlanetData";
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 import { useWorkforceCalculation } from "@/features/planning/calculations/workforceCalculations";
 

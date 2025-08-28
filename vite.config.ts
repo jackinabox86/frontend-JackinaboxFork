@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import path from "path";
+import path, { resolve } from "path";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -9,6 +9,17 @@ import Components from "unplugin-vue-components/vite";
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { Plugin } from "vite";
+import { readFileSync } from "fs";
+
+// read package.json version for indexeddb
+const packageJson = JSON.parse(
+	readFileSync(resolve(__dirname, "package.json"), "utf-8")
+);
+const versionString = packageJson.version;
+
+// convert to numeric version
+const [major, minor, patch] = versionString.split(".").map(Number);
+const INDEXEDDB_VERSION = major * 10000 + minor * 100 + patch;
 
 export function skipEmptyChunks(): Plugin {
 	return {
@@ -38,6 +49,9 @@ export function skipEmptyChunks(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
 	base: "/",
+	define: {
+		__INDEXEDDB_VERSION__: INDEXEDDB_VERSION,
+	},
 	plugins: [
 		vue(),
 		tailwindcss(),

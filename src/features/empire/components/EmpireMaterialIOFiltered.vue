@@ -7,7 +7,7 @@
 	import EmpireAnalysis from "@/features/empire/components/EmpireAnalysis.vue";
 
 	// Composables
-	import { usePlanetData } from "@/features/game_data/usePlanetData";
+	import { usePlanetData } from "@/database/services/usePlanetData";
 	const { getPlanetName } = usePlanetData();
 
 	// Util
@@ -73,7 +73,7 @@
 	 *
 	 * @returns {void}
 	 */
-	function createFilter(): void {
+	async function createFilter(): Promise<void> {
 		refMaterialSelectOptions.value = localEmpireMaterialIO.value.map(
 			(m) => {
 				return {
@@ -98,12 +98,14 @@
 			);
 		});
 
-		refPlanetSelectOptions.value = [...new Set(availPlanetIds)].map((o) => {
-			return {
-				label: getPlanetName(o),
-				value: o,
-			};
-		});
+		refPlanetSelectOptions.value = await Promise.all(
+			[...new Set(availPlanetIds)].map(async (o) => {
+				return {
+					label: await getPlanetName(o),
+					value: o,
+				};
+			})
+		);
 	}
 
 	/**

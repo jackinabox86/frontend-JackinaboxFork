@@ -37,6 +37,7 @@ const config = {
 	ignore: [
 		"src/lib/piniaBroadcastWorker.ts",
 		"src/lib/piniaBroadcastPlugin.ts",
+		"src/global.d.ts",
 	],
 	ignoreDependencies: ["fast-equals"],
 } satisfies KnipConfig;

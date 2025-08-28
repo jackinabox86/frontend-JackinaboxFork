@@ -50,11 +50,12 @@ pnpm run test:ui
 | VITE_APP_VERSION                  | string | "0.xx"                           |
 | VITE_API_BASE_URL                 | string | "https://api.prunplanner.org"    |
 | VITE_SHARE_BASE_URL               | string | "https://prunplanner.org/shared" |
-| GAME_DATA_STALE_MINUTES_BUILDINGS | int    | 1440                             |
-| GAME_DATA_STALE_MINUTES_RECIPES   | int    | 1440                             |
-| GAME_DATA_STALE_MINUTES_MATERIALS | int    | 1440                             |
-| GAME_DATA_STALE_MINUTES_EXCHANGES | int    | 30                               |
-| GAME_DATA_STALE_MINUTES_PLANETS   | int    | 180                              |
+| VITE_GAME_DATA_STALE_MINUTES_BUILDINGS | int    | 1440                             |
+| VITE_GAME_DATA_STALE_MINUTES_RECIPES   | int    | 1440                             |
+| VITE_GAME_DATA_STALE_MINUTES_MATERIALS | int    | 1440                             |
+| VITE_GAME_DATA_STALE_MINUTES_EXCHANGES | int    | 30                               |
+| VITE_GAME_DATA_STALE_MINUTES_PLANETS   | int    | 180                              |
+
 
 ## Highcharts
 

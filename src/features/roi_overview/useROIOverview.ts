@@ -54,13 +54,14 @@ export function useROIOverview(
 		definition.value.baseplanner_data.planet.cogc =
 			`${building.Expertise}` as PLAN_COGCPROGRAM_TYPE;
 
-		buildingRecipes.forEach((recipe) => {
-			const { result, overviewData } = usePlanCalculation(
+		for (const recipe of buildingRecipes) {
+			const calculation = await usePlanCalculation(
 				definition,
 				undefined,
 				undefined,
 				cxUuid
 			);
+			const { result, overviewData } = calculation;
 
 			// set building
 			definition.value.baseplanner_data.buildings = [
@@ -109,7 +110,7 @@ export function useROIOverview(
 				planCost: overviewData.value.totalConstructionCost,
 				planROI: overviewData.value.roi,
 			});
-		});
+		}
 
 		// Yield control briefly
 		await new Promise((resolve) => setTimeout(resolve, 0));

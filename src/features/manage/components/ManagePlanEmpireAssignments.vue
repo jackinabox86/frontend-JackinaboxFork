@@ -10,11 +10,12 @@
 	} from "vue";
 
 	// Composables
-	import { usePlanetData } from "@/features/game_data/usePlanetData";
-	const { getPlanetName } = usePlanetData();
+	import { usePlanetData } from "@/database/services/usePlanetData";
+	const { planetNames, loadPlanetName } = usePlanetData();
 	import { useQuery } from "@/lib/query_cache/useQuery";
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
+
 	// Util
 	import { inertClone } from "@/util/data";
 
@@ -330,7 +331,11 @@
 		<x-n-data-table-column key="planetId" title="Planet" sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="w-[175px] text-wrap">
-					{{ getPlanetName(rowData.planetId) }}
+					{{
+						planetNames[rowData.planetId] ||
+						loadPlanetName(rowData.planetId) ||
+						"Loading..."
+					}}
 				</div>
 			</template>
 		</x-n-data-table-column>

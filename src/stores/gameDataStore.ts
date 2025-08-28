@@ -42,8 +42,6 @@ export const useGameDataStore = defineStore(
 		const recipes: Ref<IRecipesRecord> = ref({});
 		/** Key: Building.Ticker */
 		const buildings: Ref<IBuildingsRecord> = ref({});
-		/** Key: Planet.PlanetNaturalId */
-		const planets: Ref<IPlanetsRecord> = ref({});
 
 		const fio_storage_planets: Ref<Record<string, IFIOStoragePlanet>> = ref(
 			{}
@@ -65,31 +63,11 @@ export const useGameDataStore = defineStore(
 			materials.value = {};
 			exchanges.value = {};
 			buildings.value = {};
-			planets.value = {};
 			fio_storage_planets.value = {};
 			fio_storage_ships.value = {};
 			fio_storage_warehouses.value = {};
 			fio_sites_planets.value = {};
 			fio_sites_ships.value = {};
-		}
-
-		/**
-		 * Gets a planet by its Natural Id
-		 * @author jplacht
-		 *
-		 * @async
-		 * @param {string} planetNaturalId Planet Natural ID (e.g. 'OT-580b')
-		 * @returns {Promise<IPlanet>} Planet
-		 */
-		async function getPlanet(planetNaturalId: string): Promise<IPlanet> {
-			const findPlanet: IPlanet | undefined =
-				planets.value[planetNaturalId];
-
-			if (findPlanet) return inertClone(findPlanet);
-
-			throw new Error(
-				`Planet ${planetNaturalId} not available. Make sure to load its game data.`
-			);
 		}
 
 		/**
@@ -159,26 +137,6 @@ export const useGameDataStore = defineStore(
 		}
 
 		/**
-		 * Sets Planets by their Natural Id
-		 * @author jplacht
-		 *
-		 * @param {IPlanet} data Planet Data
-		 */
-		function setPlanet(data: IPlanet): void {
-			planets.value[data.PlanetNaturalId] = data;
-		}
-
-		/**
-		 * Sets multiple planets each by their Natural Id
-		 * @author jplacht
-		 *
-		 * @param {IPlanet[]} data Planet Data
-		 */
-		function setMultiplePlanets(data: IPlanet[]): void {
-			data.forEach((e) => setPlanet(e));
-		}
-
-		/**
 		 * Sets FIO Sites data separated by Planet and Ship sites
 		 * @author jplacht
 		 *
@@ -216,7 +174,6 @@ export const useGameDataStore = defineStore(
 			exchanges,
 			recipes,
 			buildings,
-			planets,
 			fio_storage_planets,
 			fio_storage_warehouses,
 			fio_storage_ships,
@@ -229,12 +186,9 @@ export const useGameDataStore = defineStore(
 			setExchanges,
 			setRecipes,
 			setBuildings,
-			setPlanet,
-			setMultiplePlanets,
 			setFIOSitesData,
 			setFIOStorageData,
 			// functions
-			getPlanet,
 			getMaterials,
 		};
 	},
@@ -245,7 +199,6 @@ export const useGameDataStore = defineStore(
 				"exchanges",
 				"recipes",
 				"buildings",
-				"planets",
 				"fio_storage_planets",
 				"fio_storage_warehouses",
 				"fio_storage_ships",

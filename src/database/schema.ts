@@ -1,0 +1,28 @@
+interface StoreSchema {
+	keyPath: string;
+	indexes?: IndexDef[];
+}
+
+interface IndexDef {
+	name: string;
+	keyPath: string;
+	options?: IDBIndexParameters;
+}
+
+// define all stores in a schema object
+export const DB_SCHEMA: Record<string, StoreSchema> = {
+	gamedata_materials: {
+		keyPath: "Ticker",
+		indexes: [
+			{
+				name: "byMaterialId",
+				keyPath: "MaterialId",
+				options: { unique: true },
+			},
+			{ name: "byCategoryId", keyPath: "CategoryId" },
+		],
+	},
+	gamedata_planets: {
+		keyPath: "PlanetNaturalId",
+	},
+};
