@@ -52,6 +52,16 @@ export default defineConfig({
 	define: {
 		__INDEXEDDB_VERSION__: INDEXEDDB_VERSION,
 	},
+	server: {
+		watch: {
+			ignored: [
+				"**/node_modules/**",
+				"**/.git/**",
+				"**/dist/**",
+				"**/coverage/**",
+			],
+		},
+	},
 	plugins: [
 		vue(),
 		tailwindcss(),

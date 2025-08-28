@@ -39,7 +39,7 @@
 		canAddTickerPreference,
 		deleteTickerPreference,
 		updateTickerPreference,
-	} = useCXManagement();
+	} = await useCXManagement();
 
 	const sortedCXOptions: ComputedRef<ICXDataTickerOption[]> = computed(() => {
 		return [...localCXOptions.value].sort((a, b) =>

@@ -35,8 +35,8 @@ describe("usePrice", async () => {
 		cx.value = "foo";
 	});
 
-	describe("calculateInfrastructureCosts", () => {
-		it("should calculate infrastructure costs using mocked getMaterialIOTotalPrice", () => {
+	describe("calculateInfrastructureCosts", async () => {
+		it("should calculate infrastructure costs using mocked getMaterialIOTotalPrice", async () => {
 			const mockPlanet = planet_single;
 
 			vi.mock("@/features/game_data/useBuildingData", () => ({
@@ -48,7 +48,7 @@ describe("usePrice", async () => {
 				}),
 			}));
 
-			const { calculateInfrastructureCosts, getPrice } = usePrice(
+			const { calculateInfrastructureCosts, getPrice } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -65,34 +65,40 @@ describe("usePrice", async () => {
 
 	describe("getPrice", async () => {
 		it("unknown cx uuid", async () => {
-			const { getPrice } = usePrice(ref("meow"), ref("foo"));
+			const { getPrice } = await usePrice(ref("meow"), ref("foo"));
 
 			expect(getPrice("LSE", "BUY")).toBe(0);
 		});
 
 		it("with cx uuid and planet material and ticker preference", async () => {
-			const { getPrice } = usePrice(ref(fakeCXUuid), ref("OT-580c"));
+			const { getPrice } = await usePrice(
+				ref(fakeCXUuid),
+				ref("OT-580c")
+			);
 
 			expect(getPrice("LSE", "BUY")).toBe(25);
 			expect(getPrice("FEO", "BUY")).toBe(500);
 		});
 
 		it("with cx uuid and planet exchange pref", async () => {
-			const { getPrice } = usePrice(ref(fakeCXUuid), ref("UV-796b"));
+			const { getPrice } = await usePrice(
+				ref(fakeCXUuid),
+				ref("UV-796b")
+			);
 
 			expect(getPrice("LSE", "BUY")).toBe(9240);
 			expect(getPrice("FEO", "BUY")).toBe(500);
 		});
 
 		it("with cx uuid and empire exchange pref", async () => {
-			const { getPrice } = usePrice(ref(fakeCXUuid), ref("foo"));
+			const { getPrice } = await usePrice(ref(fakeCXUuid), ref("foo"));
 
 			expect(getPrice("LSE", "BUY")).toBe(9240);
 		});
 
 		it("nothing set on empire", async () => {
 			planningStore.cxs[fakeCXUuid].cx_data.cx_empire = [];
-			const { getPrice } = usePrice(ref(fakeCXUuid), ref("foo"));
+			const { getPrice } = await usePrice(ref(fakeCXUuid), ref("foo"));
 
 			expect(getPrice("LSE", "BUY")).toBe(9030.470166275736);
 		});
@@ -100,7 +106,7 @@ describe("usePrice", async () => {
 
 	describe("getMaterialIOTotalPrice", async () => {
 		it("undefined empire uuid", async () => {
-			const { getMaterialIOTotalPrice } = usePrice(
+			const { getMaterialIOTotalPrice } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -119,7 +125,7 @@ describe("usePrice", async () => {
 
 	describe("enhanceMaterialIOMaterial", async () => {
 		it("undefined empire uuid", async () => {
-			const { enhanceMaterialIOMaterial } = usePrice(
+			const { enhanceMaterialIOMaterial } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -138,7 +144,7 @@ describe("usePrice", async () => {
 
 	describe("getExchangeCodeKey", async () => {
 		it("Too many splits", async () => {
-			const { getExchangeCodeKey } = usePrice(
+			const { getExchangeCodeKey } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -147,7 +153,7 @@ describe("usePrice", async () => {
 		});
 
 		it("UNIVERSE", async () => {
-			const { getExchangeCodeKey } = usePrice(
+			const { getExchangeCodeKey } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -159,7 +165,7 @@ describe("usePrice", async () => {
 		});
 
 		it("PP7Ds", async () => {
-			const { getExchangeCodeKey } = usePrice(
+			const { getExchangeCodeKey } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -171,7 +177,7 @@ describe("usePrice", async () => {
 		});
 
 		it("PP30Ds", async () => {
-			const { getExchangeCodeKey } = usePrice(
+			const { getExchangeCodeKey } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -183,7 +189,7 @@ describe("usePrice", async () => {
 		});
 
 		it("CX BUY", async () => {
-			const { getExchangeCodeKey } = usePrice(
+			const { getExchangeCodeKey } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -195,7 +201,7 @@ describe("usePrice", async () => {
 		});
 
 		it("CX SELL", async () => {
-			const { getExchangeCodeKey } = usePrice(
+			const { getExchangeCodeKey } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -207,7 +213,7 @@ describe("usePrice", async () => {
 		});
 
 		it("CX AVG", async () => {
-			const { getExchangeCodeKey } = usePrice(
+			const { getExchangeCodeKey } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
@@ -219,7 +225,7 @@ describe("usePrice", async () => {
 		});
 
 		it("Invalid two part", async () => {
-			const { getExchangeCodeKey } = usePrice(
+			const { getExchangeCodeKey } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);

@@ -25,4 +25,26 @@ export const DB_SCHEMA: Record<string, StoreSchema> = {
 	gamedata_planets: {
 		keyPath: "PlanetNaturalId",
 	},
+	gamedata_exchanges: {
+		keyPath: "TickerId",
+		indexes: [
+			{
+				name: "byMaterialTicker",
+				keyPath: "MaterialTicker",
+			},
+			{
+				name: "byExchangeCode",
+				keyPath: "ExchangeCode",
+			},
+		],
+	},
+	gamedata_recipes: {
+		keyPath: "RecipeId",
+		indexes: [
+			{
+				name: "byBuildingTicker",
+				keyPath: "BuildingTicker",
+			},
+		],
+	},
 };

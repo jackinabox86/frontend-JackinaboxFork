@@ -19,12 +19,12 @@ import {
 	IStaticOptimalProduction,
 } from "@/features/roi_overview/useROIOverview.types";
 
-export function useROIOverview(
+export async function useROIOverview(
 	definition: Ref<IPlan>,
 	cxUuid: Ref<string | undefined>
 ) {
 	const gameDataStore = useGameDataStore();
-	const { getBuilding } = useBuildingData();
+	const { getBuilding } = await useBuildingData();
 
 	// Filter for all non-extracting and non-fertility needing buildings
 	const filteredOptimalProduction = optimalProduction.filter(

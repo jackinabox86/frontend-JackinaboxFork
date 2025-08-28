@@ -3,6 +3,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axiosSetup from "@/util/axiosSetup";
+import { flushPromises } from "@vue/test-utils";
 
 // Services
 import { apiService } from "@/lib/apiService";
@@ -12,6 +13,8 @@ import { useResourceROIOverview } from "@/features/resource_roi_overview/useReso
 
 // stores
 import { useGameDataStore } from "@/stores/gameDataStore";
+import { materialsStore } from "@/database/stores";
+import { useMaterialData } from "@/database/services/useMaterialData";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -25,13 +28,19 @@ import planet_search_results from "@/tests/test_data/api_data_planet_search.json
 const mock = new AxiosMockAdapter(apiService.client);
 
 describe("useResourceROIOverview", async () => {
-	beforeAll(() => {
+	beforeAll(async () => {
 		setActivePinia(createPinia());
 		axiosSetup();
 
 		const gameDataStore = useGameDataStore();
 
-		gameDataStore.setMaterials(materials);
+		await materialsStore.setMany(materials);
+
+		const { preload } = useMaterialData();
+
+		await preload();
+		await flushPromises();
+
 		gameDataStore.setExchanges(exchanges);
 		gameDataStore.setRecipes(recipes);
 		// @ts-expect-error mock data

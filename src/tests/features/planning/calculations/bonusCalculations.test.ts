@@ -191,7 +191,7 @@ describe("Planning: Bonus Calculations ", async () => {
 		test.each(bonusCases)(
 			"Bonus: $amount => $expected",
 			async ({ amount, expected }) => {
-				const { calculateExpertBonus } = useBonusCalculation();
+				const { calculateExpertBonus } = await useBonusCalculation();
 
 				expect(calculateExpertBonus(amount)).toBe(expected);
 			}
@@ -203,7 +203,7 @@ describe("Planning: Bonus Calculations ", async () => {
 			"Efficiency: $expected",
 			async ({ building, workforce, expected }) => {
 				const { calculateBuildingWorkforceEfficiency } =
-					useBonusCalculation();
+					await useBonusCalculation();
 
 				expect(
 					calculateBuildingWorkforceEfficiency(building, workforce)
@@ -215,8 +215,9 @@ describe("Planning: Bonus Calculations ", async () => {
 	describe("calculateBuildingFactionBonus", async () => {
 		test.each(factionBonusCases)(
 			"Faction Bonus: $description => $expected",
-			async ({ building, empire, expected, description }) => {
-				const { calculateBuildingFactionBonus } = useBonusCalculation();
+			async ({ building, empire, expected }) => {
+				const { calculateBuildingFactionBonus } =
+					await useBonusCalculation();
 
 				if (typeof expected === "object") {
 					expect(
@@ -235,7 +236,7 @@ describe("Planning: Bonus Calculations ", async () => {
 
 	describe("calculateBuildingEfficiency", async () => {
 		it("Calculate all Efficiency factors and total, advertising COGC", async () => {
-			const { calculateBuildingEfficiency } = useBonusCalculation();
+			const { calculateBuildingEfficiency } = await useBonusCalculation();
 
 			const testBuilding = {
 				Ticker: "FRM",
@@ -347,7 +348,7 @@ describe("Planning: Bonus Calculations ", async () => {
 			});
 		});
 		it("Calculate all Efficiency factors and total, workforce COGC", async () => {
-			const { calculateBuildingEfficiency } = useBonusCalculation();
+			const { calculateBuildingEfficiency } = await useBonusCalculation();
 
 			const testBuilding = {
 				Ticker: "FRM",
@@ -459,7 +460,7 @@ describe("Planning: Bonus Calculations ", async () => {
 			});
 		});
 		it("Calculate all Efficiency factors and total, workforce COGC", async () => {
-			const { calculateBuildingEfficiency } = useBonusCalculation();
+			const { calculateBuildingEfficiency } = await useBonusCalculation();
 
 			const testBuilding = {
 				Ticker: "FRM",

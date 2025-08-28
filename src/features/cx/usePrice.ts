@@ -44,14 +44,15 @@ import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
  * the system uses the PP30D_Universe data to return the PriceAverage
  */
 
-export function usePrice(
+export async function usePrice(
 	cxUuid: Ref<string | undefined>,
 	planetNaturalId: Ref<string | undefined>
 ) {
 	const planningStore = usePlanningStore();
 
 	const { getExchangeTicker } = useExchangeData();
-	const { getBuilding, getBuildingConstructionMaterials } = useBuildingData();
+	const { getBuilding, getBuildingConstructionMaterials } =
+		await useBuildingData();
 
 	/**
 	 * Composable internal caching:

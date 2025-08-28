@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { Ref, ref, ComputedRef, computed } from "vue";
+	import { Ref, ref, ComputedRef, computed, onMounted } from "vue";
 	import { useHead } from "@unhead/vue";
 
 	useHead({
@@ -7,7 +7,9 @@
 	});
 
 	// Stores
-	import { useGameDataStore } from "@/stores/gameDataStore";
+	import { useMaterialData } from "@/database/services/useMaterialData";
+	const { materialSelectOptions, preload: preloadMaterials } =
+		useMaterialData();
 
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
@@ -29,19 +31,13 @@
 	import { formatDate } from "@/util/date";
 	import { formatAmount } from "@/util/numbers";
 
-	const gameDataStore = useGameDataStore();
-
 	const exchangeOptions: Ref<PSelectOption[]> = ref(
 		["AI1", "CI1", "CI2", "IC1", "NC1", "NC2"].map((e) => {
 			return { label: e, value: e };
 		})
 	);
 
-	const materialOptions: ComputedRef<PSelectOption[]> = computed(() =>
-		gameDataStore.getMaterials().map((e) => {
-			return { label: e.Ticker, value: e.Ticker };
-		})
-	);
+	const materialOptions = ref<PSelectOption[]>([]);
 
 	const selectedExchange: Ref<string> = ref("AI1");
 	const selectedMaterial: Ref<string> = ref("RAT");
@@ -61,6 +57,11 @@
 		});
 		fetchData();
 	}
+
+	onMounted(async () => {
+		await preloadMaterials();
+		materialOptions.value = materialSelectOptions.value;
+	});
 </script>
 
 <template>

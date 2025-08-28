@@ -34,8 +34,8 @@ export const expertNames: string[] = [
 	"Resource_Extraction",
 ];
 
-export function useBonusCalculation() {
-	const { getTotalWorkforce } = useBuildingData();
+export async function useBonusCalculation() {
+	const { getTotalWorkforce } = await useBuildingData();
 
 	/**
 	 * Static, map of building expertise and plan calculation

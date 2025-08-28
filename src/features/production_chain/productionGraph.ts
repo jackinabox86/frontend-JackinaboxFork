@@ -21,22 +21,27 @@ export class ProductionGraph {
 
 	constructor() {
 		this.nodes = {};
+	}
 
-		// initialize all nodes from building data
-		Object.values(useBuildingData().getAllBuildingRecipes()).forEach(
-			(buildingRecipes: IRecipe[]) =>
-				buildingRecipes.forEach((recipe: IRecipe) => {
-					// outputs, also get added the recipe
-					recipe.Outputs.forEach((output) => {
-						const node = this.getOrCreateNode(output.Ticker);
-						node.addRecipe(recipe);
-					});
-					// inputs just get added as nodes
-					recipe.Inputs.forEach((input) =>
-						this.getOrCreateNode(input.Ticker)
-					);
-				})
+	async init() {
+		const buildingData = await useBuildingData(); // can preload data first
+		const allRecipes = Object.values(
+			await buildingData.getAllBuildingRecipes() // async version
 		);
+
+		allRecipes.forEach((buildingRecipes: IRecipe[]) => {
+			buildingRecipes.forEach((recipe: IRecipe) => {
+				// outputs
+				recipe.Outputs.forEach((output) => {
+					const node = this.getOrCreateNode(output.Ticker);
+					node.addRecipe(recipe);
+				});
+				// inputs
+				recipe.Inputs.forEach((input) =>
+					this.getOrCreateNode(input.Ticker)
+				);
+			});
+		});
 	}
 
 	getOrCreateNode(materialTicker: string): ProductionNode {

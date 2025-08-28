@@ -17,7 +17,7 @@
 
 	// Composables
 	import { useGraph } from "@/features/production_chain/useGraph";
-	const { create } = useGraph();
+	const { create } = await useGraph();
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	const { materialSelectOptions } = useMaterialData();
 
@@ -48,10 +48,10 @@
 	const recipeOptions: Ref<Record<string, PSelectOption[]>> = ref({});
 	const selectedNodeColorType: Ref<NodeColorType> = ref("Material");
 
-	function generate(resetSelection: boolean = false): void {
+	async function generate(resetSelection: boolean = false) {
 		if (resetSelection) selectedRecipes.value = {};
 
-		graphData.value = create(
+		graphData.value = await create(
 			selectedMaterial.value,
 			selectedAmount.value,
 			Object.values(selectedRecipes.value),
@@ -62,7 +62,7 @@
 		recipeOptions.value = graphData.value.recipeOptions;
 	}
 
-	onMounted(() => generate());
+	onMounted(async () => await generate());
 </script>
 
 <template>

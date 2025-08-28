@@ -1,9 +1,12 @@
 import { ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import { describe, it, expect, beforeAll } from "vitest";
+import { flushPromises } from "@vue/test-utils";
 
 // Stores
 import { useGameDataStore } from "@/stores/gameDataStore";
+import { materialsStore } from "@/database/stores";
+import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Composables
 import { useBurnXITAction } from "@/features/xit/useBurnXITAction";
@@ -17,13 +20,16 @@ import materials from "@/tests/test_data/api_data_materials.json";
 describe("useBurnXITAction", async () => {
 	let gameDataStore: any;
 
-	beforeAll(() => {
+	beforeAll(async () => {
 		setActivePinia(createPinia());
 		gameDataStore = useGameDataStore();
 
-		materials.forEach((m) => {
-			gameDataStore.materials[m.Ticker] = m;
-		});
+		await materialsStore.setMany(materials);
+
+		const { preload } = useMaterialData();
+
+		await preload();
+		await flushPromises();
 	});
 
 	const elements: IXITActionElement[] = [
@@ -61,7 +67,7 @@ describe("useBurnXITAction", async () => {
 	const materialInactives: Set<string> = new Set(["FEO"]);
 
 	it("materialTable", async () => {
-		const { materialTable } = useBurnXITAction(
+		const { materialTable } = await useBurnXITAction(
 			ref(elements),
 			ref(resupplyDays),
 			ref(hideInfinite),
@@ -76,7 +82,7 @@ describe("useBurnXITAction", async () => {
 	});
 
 	it("totalWeightVolume", async () => {
-		const { totalWeightVolume } = useBurnXITAction(
+		const { totalWeightVolume } = await useBurnXITAction(
 			ref(elements),
 			ref(resupplyDays),
 			ref(hideInfinite),

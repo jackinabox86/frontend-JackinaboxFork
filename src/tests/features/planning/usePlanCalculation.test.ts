@@ -1,10 +1,14 @@
 import { nextTick, ref } from "vue";
 import { describe, it, expect, beforeAll, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
+import { flushPromises } from "@vue/test-utils";
 
 // Stores
 import { useGameDataStore } from "@/stores/gameDataStore";
 import { usePlanningStore } from "@/stores/planningStore";
+
+import { materialsStore } from "@/database/stores";
+import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Util
 import { inertClone } from "@/util/data";
@@ -38,7 +42,7 @@ describe("usePlanCalculation", async () => {
 	let gameDataStore: ReturnType<typeof useGameDataStore>;
 	let planningStore: ReturnType<typeof usePlanningStore>;
 
-	beforeAll(() => {
+	beforeAll(async () => {
 		setActivePinia(createPinia());
 		gameDataStore = useGameDataStore();
 		planningStore = usePlanningStore();
@@ -56,9 +60,12 @@ describe("usePlanCalculation", async () => {
 			gameDataStore.recipes[r.BuildingTicker].push(r);
 		});
 
-		materials.forEach((m) => {
-			gameDataStore.materials[m.Ticker] = m;
-		});
+		await materialsStore.setMany(materials);
+
+		const { preload } = useMaterialData();
+
+		await preload();
+		await flushPromises();
 
 		exchanges.forEach((e) => {
 			gameDataStore.exchanges[e.TickerId] = e;

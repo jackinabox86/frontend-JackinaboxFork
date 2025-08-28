@@ -1,11 +1,11 @@
 <script setup lang="ts">
-	import { computed, type PropType } from "vue";
+	import { computed, onMounted, type PropType } from "vue";
 
 	// Vue Flow
 	import { Handle, Position } from "@vue-flow/core";
 
 	// Composables
-	import { useMaterialData } from "@/features/game_data/useMaterialData";
+	import { useMaterialData } from "@/database/services/useMaterialData";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -34,14 +34,9 @@
 		},
 	});
 
-	const { getMaterial } = useMaterialData();
+	const { preload: preloadMaterials, getMaterialClass } = useMaterialData();
 
-	const materialClass = `material-category-${getMaterial(
-		props.data.materialTicker
-	)
-		.CategoryName.replaceAll(" ", "-")
-		.replaceAll("(", "")
-		.replaceAll(")", "")}`;
+	const materialClass = getMaterialClass(props.data.materialTicker);
 
 	const nodeClass = computed(() => {
 		if (props.colorType === "Material")
@@ -116,6 +111,8 @@
 
 		return gradient;
 	});
+
+	onMounted(async () => await preloadMaterials());
 </script>
 
 <template>

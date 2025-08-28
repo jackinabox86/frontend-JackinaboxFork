@@ -1,23 +1,16 @@
 import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
 
-// Util
-import { inertClone } from "@/util/data";
-
 // Types & Interfaces
 import {
 	IBuildingsRecord,
 	IExchangesRecord,
-	IMaterialsRecord,
-	IPlanetsRecord,
 	IRecipesRecord,
 } from "@/stores/gameDataStore.types";
 import {
-	IMaterial,
 	IExchange,
 	IRecipe,
 	IBuilding,
-	IPlanet,
 	IFIOStorage,
 	IFIOStorageShip,
 	IFIOStorageWarehouse,
@@ -34,8 +27,6 @@ export const useGameDataStore = defineStore(
 
 		// state
 
-		/** Key: Material.Ticker */
-		const materials: Ref<IMaterialsRecord> = ref({});
 		/** Key: Exchange.TickerId */
 		const exchanges: Ref<IExchangesRecord> = ref({});
 		/** Key: Recipe.BuildingTicker */
@@ -60,7 +51,6 @@ export const useGameDataStore = defineStore(
 		 * @author jplacht
 		 */
 		function $reset(): void {
-			materials.value = {};
 			exchanges.value = {};
 			buildings.value = {};
 			fio_storage_planets.value = {};
@@ -68,29 +58,6 @@ export const useGameDataStore = defineStore(
 			fio_storage_warehouses.value = {};
 			fio_sites_planets.value = {};
 			fio_sites_ships.value = {};
-		}
-
-		/**
-		 * Gets all stored material information
-		 * @author jplacht
-		 *
-		 * @returns {IMaterial[]} Material Data
-		 */
-		function getMaterials(): IMaterial[] {
-			return Object.values(materials.value).map((e) => inertClone(e));
-		}
-
-		/**
-		 * Sets material values by their Ticker
-		 * @author jplacht
-		 *
-		 * @param {IMaterial[]} data Material Data
-		 */
-		function setMaterials(data: IMaterial[]): void {
-			materials.value = {};
-			data.forEach((e) => {
-				materials.value[e.Ticker] = e;
-			});
 		}
 
 		/**
@@ -170,7 +137,6 @@ export const useGameDataStore = defineStore(
 
 		return {
 			// state
-			materials,
 			exchanges,
 			recipes,
 			buildings,
@@ -182,20 +148,17 @@ export const useGameDataStore = defineStore(
 			// reset
 			$reset,
 			// setters
-			setMaterials,
 			setExchanges,
 			setRecipes,
 			setBuildings,
 			setFIOSitesData,
 			setFIOStorageData,
 			// functions
-			getMaterials,
 		};
 	},
 	{
 		persist: {
 			pick: [
-				"materials",
 				"exchanges",
 				"recipes",
 				"buildings",

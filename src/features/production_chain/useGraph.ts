@@ -26,18 +26,19 @@ import {
 // Util
 import { formatNumber } from "@/util/numbers";
 
-export function useGraph() {
+export async function useGraph() {
 	const graph: ProductionGraph = new ProductionGraph();
+	await graph.init();
 
-	function createFlowNodes(
+	async function createFlowNodes(
 		nodes: ProductionNode[],
 		selectedRecipes: string[]
-	): IFlowNode[] {
+	): Promise<IFlowNode[]> {
 		const flowNodes: IFlowNode[] = [];
 
-		nodes.forEach((node) => {
+		for (const node of nodes) {
 			const buildingData: IBuilding | undefined =
-				node.getBuildingData(selectedRecipes);
+				await node.getBuildingData(selectedRecipes);
 
 			flowNodes.push({
 				id: node.id,
@@ -63,7 +64,7 @@ export function useGraph() {
 					hasOutput: node.hasOutput,
 				},
 			});
-		});
+		}
 
 		return flowNodes;
 	}
@@ -125,12 +126,12 @@ export function useGraph() {
 		return nodes;
 	}
 
-	function create(
+	async function create(
 		materialTicker: string,
 		recipeAmount: number = 1,
 		selectedRecipes: string[] = [],
 		selectedTerminals: string = ""
-	): IGraphFlow {
+	): Promise<IGraphFlow> {
 		// terminals from String, replace whitespace, uppercase & split by ,
 		const terminals: string[] = selectedTerminals
 			.replace(/\s/g, "")
@@ -144,8 +145,8 @@ export function useGraph() {
 			terminals
 		);
 
-		let flowNodes = createFlowNodes(graphData.nodes, selectedRecipes);
-		const flowEdges = createFlowEdges(graphData.edges);
+		let flowNodes = await createFlowNodes(graphData.nodes, selectedRecipes);
+		const flowEdges = await createFlowEdges(graphData.edges);
 
 		// apply dagrejs layouting
 		flowNodes = applyDagreLayout(flowNodes, flowEdges);

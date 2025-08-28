@@ -46,7 +46,7 @@
 		materialData,
 		totalCost,
 		totalWeightVolume,
-	} = useHQUpgradeCalculator(
+	} = await useHQUpgradeCalculator(
 		selectedStart,
 		selectedTo,
 		selectedOverride,

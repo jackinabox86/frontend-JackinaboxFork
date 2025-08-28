@@ -92,7 +92,7 @@
 	const refMaterialOverrides: Ref<Record<string, number>> = ref({});
 	const refMaterialInactives: Ref<Set<string>> = ref(new Set([]));
 
-	const { materialTable, totalWeightVolume } = useBurnXITAction(
+	const { materialTable, totalWeightVolume } = await useBurnXITAction(
 		localElements,
 		burnResupplyDays,
 		refHideInfinite,

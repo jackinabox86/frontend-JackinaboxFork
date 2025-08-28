@@ -26,7 +26,7 @@ describe("useBuildingData", async () => {
 
 		const TNP: IBuilding = gameDataStore.buildings["TNP"];
 
-		const { getTotalWorkforce } = useBuildingData();
+		const { getTotalWorkforce } = await useBuildingData();
 
 		expect(TNP).toBeDefined();
 		expect(getTotalWorkforce(TNP)).toBe(80);
@@ -35,13 +35,15 @@ describe("useBuildingData", async () => {
 	describe("getBuilding", async () => {
 		it("Get valid building", async () => {
 			gameDataStore.buildings["TNP"] = building_single_tnp;
-			const { getBuilding } = useBuildingData();
+			const { getBuilding } = await useBuildingData();
 
-			expect(getBuilding("TNP")).toStrictEqual(gameDataStore.buildings["TNP"]);
+			expect(getBuilding("TNP")).toStrictEqual(
+				gameDataStore.buildings["TNP"]
+			);
 		});
 
 		it("Get invalid, non-existing building", async () => {
-			const { getBuilding } = useBuildingData();
+			const { getBuilding } = await useBuildingData();
 
 			expect(() => getBuilding("FOO")).toThrowError();
 		});
@@ -50,7 +52,7 @@ describe("useBuildingData", async () => {
 	describe("getProductionBuildingOptions", async () => {
 		it("Available production building", async () => {
 			gameDataStore.buildings["TNP"] = building_single_tnp;
-			const { getProductionBuildingOptions } = useBuildingData();
+			const { getProductionBuildingOptions } = await useBuildingData();
 
 			const result = getProductionBuildingOptions();
 
@@ -61,7 +63,7 @@ describe("useBuildingData", async () => {
 
 		it("Skip non-production building", async () => {
 			gameDataStore.buildings["HBL"] = building_single_hbl;
-			const { getProductionBuildingOptions } = useBuildingData();
+			const { getProductionBuildingOptions } = await useBuildingData();
 
 			const result = getProductionBuildingOptions();
 
@@ -70,7 +72,7 @@ describe("useBuildingData", async () => {
 
 		it("Available production building matching COGC", async () => {
 			gameDataStore.buildings["TNP"] = building_single_tnp;
-			const { getProductionBuildingOptions } = useBuildingData();
+			const { getProductionBuildingOptions } = await useBuildingData();
 
 			const result = getProductionBuildingOptions([], "CHEMISTRY");
 
@@ -81,7 +83,7 @@ describe("useBuildingData", async () => {
 
 		it("Available production building not matching COGC", async () => {
 			gameDataStore.buildings["TNP"] = building_single_tnp;
-			const { getProductionBuildingOptions } = useBuildingData();
+			const { getProductionBuildingOptions } = await useBuildingData();
 
 			const result = getProductionBuildingOptions([], "AGRICULTURE");
 
@@ -91,14 +93,14 @@ describe("useBuildingData", async () => {
 
 	describe("getBuildingRecipes", async () => {
 		it("Resource Building, no planet resource", async () => {
-			const { getBuildingRecipes } = useBuildingData();
+			const { getBuildingRecipes } = await useBuildingData();
 
 			const result = getBuildingRecipes("EXT");
 			expect(result.length).toBe(0);
 		});
 
 		it("Resource Building, planet resources", async () => {
-			const { getBuildingRecipes } = useBuildingData();
+			const { getBuildingRecipes } = await useBuildingData();
 
 			const fakePlanetResources: IPlanetResource[] = [
 				{
@@ -118,12 +120,12 @@ describe("useBuildingData", async () => {
 		});
 
 		it("Production Building, error", async () => {
-			const { getBuildingRecipes } = useBuildingData();
+			const { getBuildingRecipes } = await useBuildingData();
 			expect(() => getBuildingRecipes("PP1")).toThrowError();
 		});
 
 		it("Production Building, with recipe", async () => {
-			const { getBuildingRecipes } = useBuildingData();
+			const { getBuildingRecipes } = await useBuildingData();
 			const fakeRecipe = {
 				RecipeId: "PP1#150xPE=>1xBDE",
 				BuildingTicker: "PP1",
@@ -167,15 +169,21 @@ describe("useBuildingData", async () => {
 
 			vi.mock("@/features/game_data/usePlanetData", async () => {
 				return {
-					...(await vi.importActual("@/features/game_data/usePlanetData")),
+					...(await vi.importActual(
+						"@/features/game_data/usePlanetData"
+					)),
 					getPlanetSpecialMaterials: vi.fn().mockResolvedValue([]),
 				};
 			});
 
-			const { getBuildingConstructionMaterials } = useBuildingData();
+			const { getBuildingConstructionMaterials } =
+				await useBuildingData();
 
-			// @ts-expect-error mock data
-			const result = getBuildingConstructionMaterials(testBuilding, undefined);
+			const result = getBuildingConstructionMaterials(
+				// @ts-expect-error mock data
+				testBuilding,
+				undefined
+			);
 			expect(result).toStrictEqual([
 				{
 					input: 2,
@@ -199,7 +207,8 @@ describe("useBuildingData", async () => {
 				],
 			};
 
-			const { getBuildingConstructionMaterials } = useBuildingData();
+			const { getBuildingConstructionMaterials } =
+				await useBuildingData();
 
 			// @ts-expect-error mock data
 			const result = getBuildingConstructionMaterials(testBuilding, {
@@ -227,7 +236,7 @@ describe("useBuildingData", async () => {
 
 	describe("getBuildingWorkforceMaterials", async () => {
 		it("Calculate a buildings workforce material io", async () => {
-			const { getBuildingWorkforceMaterials } = useBuildingData();
+			const { getBuildingWorkforceMaterials } = await useBuildingData();
 
 			const testBuilding = {
 				Pioneers: 20,

@@ -5,6 +5,7 @@ import { ProductionNode } from "@/features/production_chain/productionNode";
 import { useGameDataStore } from "@/stores/gameDataStore";
 
 // test data
+
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import recipes from "@/tests/test_data/api_data_recipes.json";
 
@@ -134,11 +135,11 @@ describe("productionNode", async () => {
 		const node = new ProductionNode("RAT");
 		rat_recipes.forEach((r) => node.addRecipe(r));
 
-		const result = node.getBuildingData([]);
+		const result = await node.getBuildingData([]);
 		expect(result?.Ticker).toBe("FP");
 
 		node.recipes = [];
-		const building = node.getBuildingData(["foo"]);
+		const building = await node.getBuildingData(["foo"]);
 		expect(building).toBeUndefined();
 	});
 });

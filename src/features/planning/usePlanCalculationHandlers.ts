@@ -35,7 +35,7 @@ import { clamp } from "@/util/numbers";
  * @param {Ref<string | undefined>} planName Plan Name
  * @param {Ref<IPlanResult>} planResult Plan Calculation Result
  */
-export function usePlanCalculationHandlers(
+export async function usePlanCalculationHandlers(
 	planet: Ref<IPlanDataPlanet>,
 	planData: Ref<IPlanData>,
 	planName: Ref<string | undefined>,
@@ -45,7 +45,7 @@ export function usePlanCalculationHandlers(
 	const modified: Ref<boolean> = ref(false);
 
 	// Composables
-	const { getBuilding } = useBuildingData();
+	const { getBuilding } = await useBuildingData();
 
 	function handleResetModified(): void {
 		modified.value = false;

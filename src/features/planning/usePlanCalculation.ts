@@ -111,16 +111,16 @@ export async function usePlanCalculation(
 
 	// composables
 
-	const { getBuilding } = useBuildingData();
+	const { getBuilding } = await useBuildingData();
 	const { combineMaterialIOMinimal, enhanceMaterialIOMinimal } =
-		useMaterialIOUtil();
+		await useMaterialIOUtil();
 	const { calculateExpertBonus, calculateBuildingEfficiency } =
-		useBonusCalculation();
+		await useBonusCalculation();
 	const { calculateSatisfaction, calculateWorkforceConsumption } =
-		useWorkforceCalculation();
+		await useWorkforceCalculation();
 	const { getPrice, getMaterialIOTotalPrice, enhanceMaterialIOMaterial } =
-		usePrice(cxUuid, planetNaturalId);
-	const { calculateMaterialIO } = useBuildingCalculation();
+		await usePrice(cxUuid, planetNaturalId);
+	const { calculateMaterialIO } = await useBuildingCalculation();
 
 	// computations
 
@@ -138,7 +138,7 @@ export async function usePlanCalculation(
 		computedActiveEmpire,
 		computedBuildingInformation,
 		infrastructureBuildingInformation,
-	} = usePlanCalculationPreComputes(
+	} = await usePlanCalculationPreComputes(
 		buildings,
 		cxUuid,
 		empireUuid,
@@ -901,7 +901,12 @@ export async function usePlanCalculation(
 	});
 
 	// submodules
-	const handlers = usePlanCalculationHandlers(planet, data, planName, result);
+	const handlers = await usePlanCalculationHandlers(
+		planet,
+		data,
+		planName,
+		result
+	);
 
 	return {
 		existing,

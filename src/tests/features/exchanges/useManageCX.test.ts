@@ -11,7 +11,7 @@ import {
 import { useCXManagement } from "@/features/exchanges/useManageCX";
 import { createPinia, setActivePinia } from "pinia";
 
-describe("useCXManagement", () => {
+describe("useCXManagement", async () => {
 	setActivePinia(createPinia());
 
 	const {
@@ -21,7 +21,7 @@ describe("useCXManagement", () => {
 		updateTickerPreference,
 		deleteExchangePreference,
 		deleteTickerPreference,
-	} = useCXManagement();
+	} = await useCXManagement();
 
 	describe("canAddExchangePreference", () => {
 		it("should allow adding when list is empty", () => {

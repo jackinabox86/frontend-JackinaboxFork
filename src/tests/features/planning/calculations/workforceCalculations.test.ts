@@ -69,12 +69,13 @@ describe("Planning: Workforce Calculations", async () => {
 
 		it.each(satisfactionCases)(
 			"Test $description",
-			async ({ capacity, required, lux1, lux2, expected, description }) => {
-				const { calculateSatisfaction } = useWorkforceCalculation();
+			async ({ capacity, required, lux1, lux2, expected }) => {
+				const { calculateSatisfaction } =
+					await useWorkforceCalculation();
 
-				expect(calculateSatisfaction(capacity, required, lux1, lux2)).toBe(
-					expected
-				);
+				expect(
+					calculateSatisfaction(capacity, required, lux1, lux2)
+				).toBe(expected);
 			}
 		);
 	});
@@ -218,7 +219,8 @@ describe("Planning: Workforce Calculations", async () => {
 						ticker: "OVE",
 					},
 				],
-				description: "Regular Pioneer with required over capacity, no luxuries",
+				description:
+					"Regular Pioneer with required over capacity, no luxuries",
 			},
 		];
 
@@ -226,19 +228,20 @@ describe("Planning: Workforce Calculations", async () => {
 			"Test $description",
 			async ({ workforce, expected }) => {
 				const { calculateSingleWorkforceConsumption } =
-					useWorkforceCalculation();
+					await useWorkforceCalculation();
 
-				// @ts-expect-error test mock data
-				expect(calculateSingleWorkforceConsumption(workforce)).toStrictEqual(
-					expected
-				);
+				expect(
+					// @ts-expect-error test mock data
+					calculateSingleWorkforceConsumption(workforce)
+				).toStrictEqual(expected);
 			}
 		);
 	});
 
 	describe("calculateWorkforceConsumption", async () => {
 		it("Full workforce record", async () => {
-			const { calculateWorkforceConsumption } = useWorkforceCalculation();
+			const { calculateWorkforceConsumption } =
+				await useWorkforceCalculation();
 
 			const testData = {
 				pioneer: {
@@ -406,7 +409,9 @@ describe("Planning: Workforce Calculations", async () => {
 			];
 
 			// @ts-expect-error mock data
-			expect(calculateWorkforceConsumption(testData)).toStrictEqual(result);
+			expect(calculateWorkforceConsumption(testData)).toStrictEqual(
+				result
+			);
 		});
 	});
 });

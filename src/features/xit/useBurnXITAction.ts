@@ -1,7 +1,7 @@
 import { computed, ComputedRef, Ref } from "vue";
 
 // Composables
-import { useMaterialData } from "@/features/game_data/useMaterialData";
+import { useMaterialData } from "@/database/services/useMaterialData";
 
 // Types & Interfaces
 import {
@@ -10,14 +10,16 @@ import {
 } from "@/features/xit/xitAction.types";
 import { IMaterial } from "@/features/api/gameData.types";
 
-export function useBurnXITAction(
+export async function useBurnXITAction(
 	elements: Ref<IXITActionElement[]>,
 	resupplyDays: Ref<number>,
 	hideInfinite: Ref<boolean>,
 	materialOverrides: Ref<Record<string, number>>,
 	materialInactives: Ref<Set<string>>
 ) {
-	const { getMaterial } = useMaterialData();
+	// get materials and preload all
+	const { preload: preloadMaterials, materialsMap } = useMaterialData();
+	await preloadMaterials();
 
 	/**
 	 * Computes a material table to be used in a XIT Resupply Action
@@ -87,7 +89,7 @@ export function useBurnXITAction(
 		materialTable.value
 			.filter((f) => f.total !== Infinity && f.active)
 			.forEach((material) => {
-				const mat: IMaterial = getMaterial(material.ticker);
+				const mat: IMaterial = materialsMap.value[material.ticker];
 
 				totalWeight += mat.Weight * material.total;
 				totalVolume += mat.Volume * material.total;

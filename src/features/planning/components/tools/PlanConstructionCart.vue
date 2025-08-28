@@ -6,10 +6,11 @@
 		ref,
 		watchEffect,
 		ComputedRef,
+		onMounted,
 	} from "vue";
 
 	// Composables
-	import { useMaterialData } from "@/features/game_data/useMaterialData";
+	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { usePrice } from "@/features/cx/usePrice";
 
 	// Components
@@ -61,11 +62,13 @@
 		(e: "close"): void;
 	}>();
 
-	const { getMaterial } = useMaterialData();
-	const { getPrice } = usePrice(
+	const { preload: preloadMaterials, materialsMap } = useMaterialData();
+	const { getPrice } = await usePrice(
 		ref(props.cxUuid),
 		ref(props.planetNaturalId)
 	);
+
+	onMounted(async () => await preloadMaterials());
 
 	const localBuildingAmount: Ref<Record<string, number>> = ref({});
 	const localBuildingMaterials: Ref<Record<string, Record<string, number>>> =
@@ -145,7 +148,7 @@
 		let price: number = 0;
 
 		xitTransferElements.value.forEach((m) => {
-			const materialInfo: IMaterial = getMaterial(m.ticker);
+			const materialInfo: IMaterial = materialsMap.value[m.ticker];
 			weight += materialInfo.Weight * m.value;
 			volume += materialInfo.Volume * m.value;
 
