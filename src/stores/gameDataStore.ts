@@ -199,7 +199,6 @@ export const useGameDataStore = defineStore(
 				"exchanges",
 				"recipes",
 				"buildings",
-				"planets",
 				"fio_storage_planets",
 				"fio_storage_warehouses",
 				"fio_storage_ships",
