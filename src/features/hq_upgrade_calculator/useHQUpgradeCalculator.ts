@@ -25,6 +25,7 @@ export async function useHQUpgradeCalculator(
 	refOverride: Ref<Record<string, number | null>>,
 	cxUuid: Ref<string | undefined>
 ) {
+	const { getPrice } = await usePrice(cxUuid, ref(undefined));
 	const { findMaterial } = useFIOStorage();
 	const { materialsMap } = useMaterialData();
 
@@ -63,67 +64,61 @@ export async function useHQUpgradeCalculator(
 		() => to.value < start.value
 	);
 
-	const materialData = ref<IHQMaterial[]>([]);
+	const materialData: ComputedRef<IHQMaterial[]> = computed(() => {
+		const sumData: Record<string, IHQMaterialData> = {};
 
-	watchEffect(async () => {
-		{
-			const sumData: Record<string, IHQMaterialData> = {};
-			const { getPrice } = await usePrice(cxUuid, ref(undefined));
+		if (hasError.value) return [];
 
-			if (hasError.value) return [];
+		// iterate over all upgrade costs from "start" to "to"
+		// do not count the materials for the start value (+1)
+		for (let index = start.value + 1; index <= to.value; index++) {
+			const element = data[index];
 
-			// iterate over all upgrade costs from "start" to "to"
-			// do not count the materials for the start value (+1)
-			for (let index = start.value + 1; index <= to.value; index++) {
-				const element = data[index];
+			// check and create or add to sumData
+			element.forEach((point) => {
+				if (sumData[point.ticker])
+					sumData[point.ticker].amount += point.amount;
+				else {
+					const {
+						amount: storageAmount,
+						locations: storageLocations,
+					} = findMaterial(point.ticker);
 
-				// check and create or add to sumData
-				element.forEach((point) => {
-					if (sumData[point.ticker])
-						sumData[point.ticker].amount += point.amount;
-					else {
-						const {
-							amount: storageAmount,
-							locations: storageLocations,
-						} = findMaterial(point.ticker);
-
-						// initialize material, combined values added later
-						sumData[point.ticker] = {
-							amount: point.amount,
-							required: 0,
-							storage:
-								refOverride.value[point.ticker] ??
-								storageAmount,
-							storageLocations: storageLocations,
-							override: refOverride.value[point.ticker] ?? 0,
-							unitCost: 0,
-							totalCost: 0,
-						};
-					}
-				});
-			}
-
-			// calculate required and cost values
-			Object.entries(sumData).map(([ticker, e]) => {
-				e.required = clamp(e.amount - e.storage, 0, Infinity);
-				e.unitCost = getPrice(ticker, "BUY");
-				e.totalCost = e.required * e.unitCost;
+					// initialize material, combined values added later
+					sumData[point.ticker] = {
+						amount: point.amount,
+						required: 0,
+						storage:
+							refOverride.value[point.ticker] ?? storageAmount,
+						storageLocations: storageLocations,
+						override: refOverride.value[point.ticker] ?? 0,
+						unitCost: 0,
+						totalCost: 0,
+					};
+				}
 			});
-
-			// transform to array, sort by ticker, required for datatable
-			materialData.value = [
-				...Object.entries(sumData).map(([ticker, value]) => ({
-					ticker: ticker,
-					amount: value.amount,
-					override: value.override,
-					required: value.required,
-					unitCost: value.unitCost,
-					totalCost: value.totalCost,
-					storage: value.storage,
-					storageLocations: value.storageLocations,
-				})),
-			].sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 		}
+
+		// calculate required and cost values
+		Object.entries(sumData).map(([ticker, e]) => {
+			e.required = clamp(e.amount - e.storage, 0, Infinity);
+			e.unitCost = getPrice(ticker, "BUY");
+			e.totalCost = e.required * e.unitCost;
+		});
+
+		// transform to array, sort by ticker, required for datatable
+		return [
+			...Object.entries(sumData).map(([ticker, value]) => ({
+				ticker: ticker,
+				amount: value.amount,
+				override: value.override,
+				required: value.required,
+				unitCost: value.unitCost,
+				totalCost: value.totalCost,
+				storage: value.storage,
+				storageLocations: value.storageLocations,
+			})),
+		].sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 	});
 
 	/**

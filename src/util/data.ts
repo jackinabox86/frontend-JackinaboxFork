@@ -109,3 +109,10 @@ export function redact<T>(obj: T, keysToRedact: string[]): T {
 	// primitive value
 	return obj;
 }
+
+export function deepClone<T>(obj: T): T {
+	const raw = toRaw(obj);
+	return typeof structuredClone === "function"
+		? structuredClone(raw)
+		: JSON.parse(JSON.stringify(raw));
+}

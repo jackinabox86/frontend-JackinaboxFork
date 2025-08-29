@@ -1,3 +1,8 @@
+# 2025-08-29
+
+- Fixes ROI Overview calculation by isolating per-item plan state to prevent parallel mutation conflicts.
+- Improve HQ upgrade calculator by using using a regular computed expression.
+
 # 2025-08-28
 
 - Introduces first parts and core logic to have PRUNplanner use IndexedDB instead of localStorage to persist data. This firstly only involves storing Planets and Materials. You'll notice that some behaviour is different as calculation work will be done asynchronously as well. The goal is to fully replace Pinia for storing Game Data soon and building the foundation for cross-tab syncing via Broadcasts eventually. Learn more about it in the [PR-210](https://github.com/PRUNplanner/frontend/pull/210)
