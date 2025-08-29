@@ -2,6 +2,7 @@
 
 - Fixes ROI Overview calculation by isolating per-item plan state to prevent parallel mutation conflicts.
 - Improve HQ upgrade calculator by using using a regular computed expression.
+- Adjust paddings and spacing on Plan view and Navigation
 
 # 2025-08-28
 

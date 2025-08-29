@@ -32,21 +32,21 @@
 				<td>Storage</td>
 				<td>
 					{{ formatNumber(visitationData.storageFilled) }}
-					<span class="pl-1 font-light text-white/50"> d </span>
+					<span class="font-light text-white/50"> d </span>
 				</td>
 			</tr>
 			<tr>
 				<td>Daily Cost</td>
 				<td>
 					{{ formatNumber(overviewData.dailyCost) }}
-					<span class="pl-1 font-light text-white/50"> $ </span>
+					<span class="font-light text-white/50"> $ </span>
 				</td>
 			</tr>
 			<tr>
-				<td>Daily Degradation</td>
+				<td>Degradation</td>
 				<td>
 					{{ formatNumber(overviewData.dailyDegradationCost) }}
-					<span class="pl-1 font-light text-white/50"> $ </span>
+					<span class="font-light text-white/50"> $ </span>
 				</td>
 			</tr>
 			<tr>
@@ -58,14 +58,14 @@
 							: '!text-negative'
 					">
 					{{ formatNumber(overviewData.profit) }}
-					<span class="pl-1 font-light text-white/50"> $ </span>
+					<span class="font-light text-white/50"> $ </span>
 				</td>
 			</tr>
 			<tr>
 				<td>Plan Cost</td>
 				<td>
 					{{ formatNumber(overviewData.totalConstructionCost) }}
-					<span class="pl-1 font-light text-white/50"> $ </span>
+					<span class="font-light text-white/50"> $ </span>
 				</td>
 			</tr>
 			<tr>
@@ -77,7 +77,7 @@
 							: '!text-negative'
 					">
 					{{ formatNumber(overviewData.roi) }}
-					<span class="pl-1 font-light text-white/50"> d </span>
+					<span class="font-light text-white/50"> d </span>
 				</td>
 			</tr>
 		</tbody>

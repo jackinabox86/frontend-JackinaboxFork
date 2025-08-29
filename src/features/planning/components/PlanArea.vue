@@ -37,7 +37,8 @@
 				:disabled="disabled"
 				show-buttons
 				:min="1"
-				:max="3" />
+				:max="3"
+				class="w-full" />
 		</PFormItem>
 		<PFormItem label="Area">
 			<div class="flex flex-row w-full">

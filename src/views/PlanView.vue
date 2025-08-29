@@ -53,7 +53,7 @@
 	);
 
 	// UI
-	import { PButton, PTooltip } from "@/ui";
+	import { PButton, PButtonGroup, PTooltip } from "@/ui";
 	import { NIcon, NSpin } from "naive-ui";
 	import {
 		AutoAwesomeMosaicOutlined,
@@ -437,7 +437,7 @@
 		<div
 			class="border-r border-white/10"
 			:class="!refVisualShowConfiguration ? 'hidden' : 'visible'">
-			<div class="p-6">
+			<div class="p-3">
 				<div class="pb-6">
 					<h1 class="text-2xl font-bold text-white">
 						{{ planetData.PlanetName }}
@@ -470,14 +470,14 @@
 					@update:plan-name="handleChangePlanName" />
 			</div>
 
-			<div class="p-6 pt-0">
+			<div class="p-3 pt-0">
 				<h2 class="text-white/80 font-bold text-lg pb-3">Area</h2>
 				<PlanArea
 					:disabled="disabled"
 					:area-data="result.area"
 					@update:permits="handleUpdatePermits" />
 			</div>
-			<div class="p-6 pt-0">
+			<div class="p-3 pt-0">
 				<h2 class="text-white/80 font-bold text-lg pb-3">
 					Infrastructure
 				</h2>
@@ -486,7 +486,7 @@
 					:infrastructure-data="result.infrastructure"
 					@update:infrastructure="handleUpdateInfrastructure" />
 			</div>
-			<div class="p-6 pt-0">
+			<div class="p-3 pt-0">
 				<h2 class="text-white/80 font-bold text-lg pb-3">Bonuses</h2>
 
 				<PlanBonuses
@@ -496,7 +496,7 @@
 					@update:corphq="handleUpdateCorpHQ"
 					@update:cogc="handleUpdateCOGC" />
 			</div>
-			<div class="p-6 pt-0">
+			<div class="p-3 pt-0">
 				<h2 class="text-white/80 font-bold text-lg pb-3">Experts</h2>
 				<PlanExperts
 					:disabled="disabled"
@@ -505,7 +505,7 @@
 			</div>
 		</div>
 		<div class="">
-			<div class="border-b border-white/10 p-6">
+			<div class="border-b border-white/10 p-3">
 				<div class="flex flex-row">
 					<div class="child:mt-1 pr-6 child:cursor-pointer">
 						<n-icon
@@ -549,31 +549,33 @@
 							</div>
 						</div>
 						<div class="flex flex-row flex-wrap gap-1">
-							<PButton
-								v-if="saveable"
-								:loading="refIsSaving"
-								:type="modified ? 'error' : 'success'"
-								:disabled="disabled"
-								@click="save">
-								<template #icon><SaveSharp /></template>
-								{{ existing ? "Save" : "Create" }}
-							</PButton>
-							<PButton
-								v-if="existing"
-								:disabled="disabled"
-								:loading="refIsReloading"
-								@click="reloadPlan">
-								<template #icon>
-									<ChangeCircleOutlined />
-								</template>
-								Reload
-							</PButton>
+							<PButtonGroup>
+								<PButton
+									v-if="saveable"
+									:loading="refIsSaving"
+									:type="modified ? 'error' : 'success'"
+									:disabled="disabled"
+									@click="save">
+									<template #icon><SaveSharp /></template>
+									{{ existing ? "Save" : "Create" }}
+								</PButton>
+								<PButton
+									v-if="existing"
+									:disabled="disabled"
+									:loading="refIsReloading"
+									@click="reloadPlan">
+									<template #icon>
+										<ChangeCircleOutlined />
+									</template>
+									Reload
+								</PButton>
 
-							<ShareButton
-								v-if="!disabled && refPlanData.uuid"
-								:plan-uuid="refPlanData.uuid" />
+								<ShareButton
+									v-if="!disabled && refPlanData.uuid"
+									:plan-uuid="refPlanData.uuid" />
 
-							<HelpDrawer file-name="plan" />
+								<HelpDrawer file-name="plan" />
+							</PButtonGroup>
 						</div>
 					</div>
 				</div>
@@ -630,10 +632,10 @@
 					</template>
 				</Suspense>
 			</div>
-			<div class="p-6 grid grid-cols-1 2xl:grid-cols-[auto_400px] gap-6">
+			<div class="p-3 grid grid-cols-1 2xl:grid-cols-[auto_450px] gap-3">
 				<div>
 					<div
-						class="grid grid-cols-1 2xl:grid-cols-[60%_auto] gap-6">
+						class="grid grid-cols-1 2xl:grid-cols-[auto_250px] gap-6">
 						<div>
 							<h2 class="text-white/80 font-bold text-lg pb-3">
 								Workforce

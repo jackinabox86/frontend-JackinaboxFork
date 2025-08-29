@@ -28,7 +28,6 @@
 		LogOutRound,
 		ShoppingBasketSharp,
 		CandlestickChartSharp,
-		UpgradeSharp,
 		CompareSharp,
 		ProductionQuantityLimitsSharp,
 		StarsSharp,
@@ -128,24 +127,24 @@
 					icon: CandlestickChartSharp,
 					children: [
 						{
-							label: "Market Exploration",
+							label: "Exploration",
 							display: true,
 							routerLink: "/market-exploration",
 						},
 						{
-							label: "ROI Overview",
+							label: "Recipe ROI",
 							display: true,
 							routerLink: "/roi-overview",
 						},
 						{
-							label: "Resource ROI Overview",
+							label: "Resource ROI",
 							display: true,
 							routerLink: "/resource-roi-overview",
 						},
 					],
 				},
 				{
-					label: "HQ Upgrade Calculator",
+					label: "HQ Calculator",
 					display: true,
 					routerLink: "/hq-upgrade-calculator",
 					icon: ProductionQuantityLimitsSharp,
@@ -156,12 +155,12 @@
 					routerLink: "/production-chain",
 					icon: CompareSharp,
 				},
-				{
-					label: "Base Compare",
-					display: true,
-					routerLink: "/not-implemented",
-					icon: UpgradeSharp,
-				},
+				// {
+				// 	label: "Base Compare",
+				// 	display: true,
+				// 	routerLink: "/not-implemented",
+				// 	icon: UpgradeSharp,
+				// },
 				{
 					label: "Government",
 					display: true,
@@ -215,7 +214,7 @@
 					icon: PersonSharp,
 				},
 				{
-					label: "Help & Changelog",
+					label: "Help",
 					display: true,
 					routerLink: "/help",
 					icon: HelpOutlineSharp,
@@ -239,13 +238,12 @@
 	<input id="menu-toggle" type="checkbox" class="hidden peer" />
 	<!-- Sidebar -->
 	<div
-		class="hidden peer-checked:flex md:flex border-r border-white/5 flex-col w-60 bg-gray-dark transition-all duration-300 ease-in-out">
+		class="hidden peer-checked:flex md:flex border-r border-white/5 flex-col w-[200px] bg-gray-dark transition-all duration-300 ease-in-out">
 		<div class="items-center justify-between h-16 px-4 sm:hidden md:flex">
 			<div class="flex w-full">
 				<div class="flex-grow text-prunplanner text-xl font-light">
 					<span class="font-bold">PRUN</span>planner
 				</div>
-				<div class="my-auto text-white/50 text-xs">v0.21</div>
 			</div>
 		</div>
 		<div class="flex flex-col flex-1 overflow-y-auto">
@@ -341,7 +339,7 @@
 												:class="
 													children.icon
 														? 'pl-6'
-														: 'pl-12'
+														: 'pl-8'
 												"
 												active-class="bg-white/10 rounded-sm">
 												<n-icon

@@ -47,12 +47,12 @@
 		<thead>
 			<tr>
 				<th>Type</th>
-				<th>Required</th>
-				<th>Capacity</th>
+				<th>Req.</th>
+				<th>Capa</th>
 				<th>Open</th>
-				<th>Lux 1</th>
-				<th>Lux 2</th>
-				<th>Efficiency</th>
+				<th class="!text-center">L1</th>
+				<th class="!text-center">L2</th>
+				<th class="!text-end">%Eff</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -145,7 +145,9 @@
 						</template>
 					</PButton>
 				</td>
-				<td :class="workforce.efficiency === 0 ? '!text-white/50' : ''">
+				<td
+					class="text-end"
+					:class="workforce.efficiency === 0 ? '!text-white/50' : ''">
 					{{ formatNumber(workforce.efficiency * 100) }} %
 				</td>
 			</tr>
