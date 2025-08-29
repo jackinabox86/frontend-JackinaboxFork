@@ -229,7 +229,7 @@
 					<div class="text-end">Plan Cost</div>
 				</template>
 				<template #render-cell="{ rowData }">
-					<div class="text-end">
+					<div class="text-end text-nowrap">
 						{{ formatNumber(rowData.planCost) }}
 						<span class="pl-1 font-light text-white/50"> $ </span>
 					</div>
@@ -244,7 +244,7 @@
 				</template>
 				<template #render-cell="{ rowData }">
 					<div
-						class="text-end"
+						class="text-end text-nowrap"
 						:class="
 							rowData.outputProfit > 0
 								? 'text-positive'
@@ -264,7 +264,7 @@
 				</template>
 				<template #render-cell="{ rowData }">
 					<div
-						class="text-end"
+						class="text-end text-nowrap"
 						:class="
 							rowData.dailyProfit > 0
 								? 'text-positive'
@@ -282,7 +282,7 @@
 				</template>
 				<template #render-cell="{ rowData }">
 					<div
-						class="text-end"
+						class="text-end text-nowrap"
 						:class="
 							rowData.planROI > 0
 								? 'text-positive'

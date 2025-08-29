@@ -10,6 +10,7 @@ import {
 import { ref, reactive, isReactive } from "vue";
 import {
 	copyToClipboard,
+	deepClone,
 	inertClone as inertCloneDefault,
 	redact,
 } from "@/util/data";
@@ -192,5 +193,69 @@ describe("redact", async () => {
 				},
 			},
 		});
+	});
+});
+
+describe("deepClone: structured clone available", () => {
+	it("clones plain objects deeply", () => {
+		const obj = { a: 1, b: { c: 2 } };
+		const clone = deepClone(obj);
+
+		expect(clone).toEqual(obj);
+		expect(clone).not.toBe(obj); // not same ref
+		expect(clone.b).not.toBe(obj.b);
+	});
+
+	it("works with Vue ref", () => {
+		const source = ref({ a: 1, b: { c: 2 } });
+		const clone = deepClone(source.value);
+
+		expect(clone).toEqual({ a: 1, b: { c: 2 } });
+		expect(clone).not.toBe(source.value);
+		expect(clone.b).not.toBe(source.value.b);
+	});
+
+	it("works with Vue reactive", () => {
+		const source = reactive({ a: 1, nested: { b: 2 } });
+		const clone = deepClone(source);
+
+		expect(clone).toEqual({ a: 1, nested: { b: 2 } });
+		expect(clone).not.toBe(source);
+		expect(clone.nested).not.toBe(source.nested);
+	});
+
+	it("does not mutate the original", () => {
+		const obj = { a: 1 };
+		const clone = deepClone(obj);
+
+		clone.a = 42;
+		expect(obj.a).toBe(1);
+		expect(clone.a).toBe(42);
+	});
+});
+
+describe("deepClone (JSON fallback)", () => {
+	let originalStructuredClone: typeof structuredClone;
+
+	beforeAll(() => {
+		originalStructuredClone = globalThis.structuredClone;
+
+		// Remove it so fallback is triggered
+		// @ts-expect-error override global
+		delete globalThis.structuredClone;
+	});
+
+	afterAll(() => {
+		// Restore original
+		globalThis.structuredClone = originalStructuredClone;
+	});
+
+	it("clones using JSON.parse fallback", () => {
+		const source = ref({ a: 1, b: { c: 2 } });
+		const clone = deepClone(source.value);
+
+		expect(clone).toEqual({ a: 1, b: { c: 2 } });
+		expect(clone).not.toBe(source.value);
+		expect(clone.b).not.toBe(source.value.b);
 	});
 });

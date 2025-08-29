@@ -8,6 +8,9 @@ import { useGameDataStore } from "@/stores/gameDataStore";
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 import { useBuildingData } from "@/features/game_data/useBuildingData";
 
+// Util
+import { deepClone } from "@/util/data";
+
 // Static
 import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
 
@@ -44,27 +47,23 @@ export async function useROIOverview(
 	async function calculateItem(
 		optimal: IStaticOptimalProduction
 	): Promise<void> {
+		// get a deep copy of the definition as otherwise parallel runs would
+		// overwrite each other in terms of setup
+		const definitionCopy = deepClone(definition.value);
+
 		const buildingRecipes: IRecipe[] =
 			gameDataStore.recipes[optimal.ticker];
 
 		// get building data
 		const building = getBuilding(optimal.ticker);
 
-		// as we're using production buildings, they all have a COGC
-		definition.value.baseplanner_data.planet.cogc =
-			`${building.Expertise}` as PLAN_COGCPROGRAM_TYPE;
-
 		for (const recipe of buildingRecipes) {
-			const calculation = await usePlanCalculation(
-				definition,
-				undefined,
-				undefined,
-				cxUuid
-			);
-			const { result, overviewData } = calculation;
+			// as we're using production buildings, they all have a COGC
+			definitionCopy.baseplanner_data.planet.cogc =
+				`${building.Expertise}` as PLAN_COGCPROGRAM_TYPE;
 
 			// set building
-			definition.value.baseplanner_data.buildings = [
+			definitionCopy.baseplanner_data.buildings = [
 				{
 					name: optimal.ticker,
 					amount: optimal.amount,
@@ -73,7 +72,7 @@ export async function useROIOverview(
 			];
 
 			// set infrastructure
-			definition.value.baseplanner_data.infrastructure = [
+			definitionCopy.baseplanner_data.infrastructure = [
 				{ building: "HB1", amount: optimal.HB1 },
 				{ building: "HB2", amount: optimal.HB2 },
 				{ building: "HB3", amount: optimal.HB3 },
@@ -87,12 +86,20 @@ export async function useROIOverview(
 			];
 
 			// set recipe
-			definition.value.baseplanner_data.buildings[0].active_recipes = [
+			definitionCopy.baseplanner_data.buildings[0].active_recipes = [
 				{
 					recipeid: recipe.RecipeId,
 					amount: 1,
 				},
 			];
+
+			const calculation = await usePlanCalculation(
+				ref(definitionCopy),
+				undefined,
+				undefined,
+				cxUuid
+			);
+			const { result, overviewData } = calculation;
 
 			resultData.value.push({
 				buildingTicker: optimal.ticker,
@@ -111,9 +118,6 @@ export async function useROIOverview(
 				planROI: overviewData.value.roi,
 			});
 		}
-
-		// Yield control briefly
-		await new Promise((resolve) => setTimeout(resolve, 0));
 	}
 
 	/**
