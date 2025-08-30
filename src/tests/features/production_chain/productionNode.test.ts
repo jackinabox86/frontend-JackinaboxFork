@@ -1,8 +1,9 @@
-import { setActivePinia, createPinia } from "pinia";
-import { beforeEach, describe, expect, it } from "vitest";
+import { flushPromises } from "@vue/test-utils";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { ProductionNode } from "@/features/production_chain/productionNode";
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { buildingsStore } from "@/database/stores";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // test data
 
@@ -10,14 +11,13 @@ import buildings from "@/tests/test_data/api_data_buildings.json";
 import recipes from "@/tests/test_data/api_data_recipes.json";
 
 describe("productionNode", async () => {
-	let gameDataStore: ReturnType<typeof useGameDataStore>;
+	beforeAll(async () => {
+		//@ts-expect-error mock data
+		await buildingsStore.setMany(buildings);
+		const { preloadBuildings } = await useBuildingData();
 
-	beforeEach(() => {
-		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
-
-		// @ts-expect-error mock data
-		gameDataStore.setBuildings(buildings);
+		await preloadBuildings();
+		await flushPromises();
 	});
 
 	it("constructor, id, type", async () => {

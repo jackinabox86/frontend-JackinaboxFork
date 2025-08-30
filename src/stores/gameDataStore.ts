@@ -2,15 +2,9 @@ import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
 
 // Types & Interfaces
-import {
-	IBuildingsRecord,
-	IExchangesRecord,
-	IRecipesRecord,
-} from "@/stores/gameDataStore.types";
+import { IExchangesRecord } from "@/stores/gameDataStore.types";
 import {
 	IExchange,
-	IRecipe,
-	IBuilding,
 	IFIOStorage,
 	IFIOStorageShip,
 	IFIOStorageWarehouse,
@@ -29,10 +23,6 @@ export const useGameDataStore = defineStore(
 
 		/** Key: Exchange.TickerId */
 		const exchanges: Ref<IExchangesRecord> = ref({});
-		/** Key: Recipe.BuildingTicker */
-		const recipes: Ref<IRecipesRecord> = ref({});
-		/** Key: Building.Ticker */
-		const buildings: Ref<IBuildingsRecord> = ref({});
 
 		const fio_storage_planets: Ref<Record<string, IFIOStoragePlanet>> = ref(
 			{}
@@ -52,7 +42,6 @@ export const useGameDataStore = defineStore(
 		 */
 		function $reset(): void {
 			exchanges.value = {};
-			buildings.value = {};
 			fio_storage_planets.value = {};
 			fio_storage_ships.value = {};
 			fio_storage_warehouses.value = {};
@@ -70,36 +59,6 @@ export const useGameDataStore = defineStore(
 			exchanges.value = {};
 			data.forEach((e) => {
 				exchanges.value[e.TickerId] = e;
-			});
-		}
-
-		/**
-		 * Sets recipes by their BuildingTicker as list per Building
-		 * @author jplacht
-		 *
-		 * @param {IRecipe[]} data Recipe Data
-		 */
-		function setRecipes(data: IRecipe[]): void {
-			recipes.value = {};
-			data.forEach((e) => {
-				if (recipes.value[e.BuildingTicker]) {
-					recipes.value[e.BuildingTicker].push(e);
-				} else {
-					recipes.value[e.BuildingTicker] = [e];
-				}
-			});
-		}
-
-		/**
-		 * Sets buildings by their Ticker
-		 * @author jplacht
-		 *
-		 * @param {IBuilding[]} data Building Data
-		 */
-		function setBuildings(data: IBuilding[]): void {
-			buildings.value = {};
-			data.forEach((e) => {
-				buildings.value[e.Ticker] = e;
 			});
 		}
 
@@ -138,8 +97,6 @@ export const useGameDataStore = defineStore(
 		return {
 			// state
 			exchanges,
-			recipes,
-			buildings,
 			fio_storage_planets,
 			fio_storage_warehouses,
 			fio_storage_ships,
@@ -149,8 +106,6 @@ export const useGameDataStore = defineStore(
 			$reset,
 			// setters
 			setExchanges,
-			setRecipes,
-			setBuildings,
 			setFIOSitesData,
 			setFIOStorageData,
 			// functions
@@ -160,8 +115,6 @@ export const useGameDataStore = defineStore(
 		persist: {
 			pick: [
 				"exchanges",
-				"recipes",
-				"buildings",
 				"fio_storage_planets",
 				"fio_storage_warehouses",
 				"fio_storage_ships",

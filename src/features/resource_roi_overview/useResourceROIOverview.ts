@@ -26,6 +26,7 @@ import { boundaryDescriptor } from "@/util/numbers";
 // Types & Interfaces
 import { IPlanet } from "@/features/api/gameData.types";
 import { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
+import { until } from "@vueuse/core";
 
 export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	const { createBlankDefinition } = usePlan();
@@ -79,19 +80,6 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		await loadPlanetNames(planets.map((p) => p.PlanetNaturalId));
 
 		for (const planetData of planets) {
-			// create a blank definition from planet data
-			const definition = ref(
-				createBlankDefinition(
-					planetData.PlanetNaturalId,
-					planetData.COGCProgramActive
-				)
-			);
-
-			// set all the experts to 5
-			definition.value.baseplanner_data.planet.experts.forEach(
-				(expert) => (expert.amount = 5)
-			);
-
 			// environmental material additions
 			const environmentSurface: string[] = [];
 			const environmentGravity: string[] = [];
@@ -133,6 +121,19 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 
 			// iterate over optimal buildings
 			for (const optimal of filteredOptimalProduction) {
+				// create a blank definition from planet data
+				const definition = ref(
+					createBlankDefinition(
+						planetData.PlanetNaturalId,
+						planetData.COGCProgramActive
+					)
+				);
+
+				// set all the experts to 5
+				definition.value.baseplanner_data.planet.experts.forEach(
+					(expert) => (expert.amount = 5)
+				);
+
 				// set infrastructure
 				definition.value.baseplanner_data.infrastructure = [
 					{ building: "HB1", amount: optimal.HB1 },
@@ -159,91 +160,94 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 				);
 
 				const {
-					result,
-					overviewData,
 					handleCreateBuilding,
-					handleDeleteBuilding,
-					handleAddBuildingRecipe,
-					handleChangeBuildingRecipe,
-					handleUpdateBuildingAmount,
-				} = calculation;
 
-				// create building
-				handleCreateBuilding(optimal.ticker);
-
-				// add recipe
-				result.value.production.buildings.forEach(
-					(productionBuilding) => {
-						if (
-							productionBuilding.recipeOptions
-								.map((e) => e.Outputs.map((m) => m.Ticker))
-								.flat()
-								.includes(materialTicker)
-						) {
-							// found it, update amount
-							handleUpdateBuildingAmount(0, optimal.amount);
-							// add a recipe
-							handleAddBuildingRecipe(0);
-							// change to the correct extraction recipe
-							handleChangeBuildingRecipe(
-								0,
-								0,
-								`${productionBuilding.name}#${materialTicker}`
-							);
-
-							// find daily yield from material i/o for given materialticker
-							const dailyYield: number =
-								result.value.materialio.find(
-									(f) => f.ticker === materialTicker
-								)?.output ?? 0;
-
-							// all matches, push the result
-							localResults.push({
-								planetNaturalId: planetData.PlanetNaturalId,
-								planetName:
-									planetNames.value[
-										planetData.PlanetNaturalId
-									],
-								buildingTicker: productionBuilding.name,
-								dailyYield,
-								percentMaxDailyYield: 0,
-								cogm: result.value.production.buildings[0]
-									.activeRecipes[0].cogm,
-								outputProfit:
-									result.value.production.buildings[0]
-										.activeRecipes[0].cogm?.totalProfit ??
-									0,
-								dailyProfit: overviewData.value.profit,
-								planCost:
-									overviewData.value.totalConstructionCost,
-								planROI: overviewData.value.roi,
-								distanceAI1:
-									planetData.Distances.find(
-										(e) => e.name === "Antares Station"
-									)?.distance ?? 0,
-								distanceCI1:
-									planetData.Distances.find(
-										(e) => e.name === "Benten Station"
-									)?.distance ?? 0,
-								distanceIC1:
-									planetData.Distances.find(
-										(e) => e.name === "Hortus Station"
-									)?.distance ?? 0,
-								distanceNC1:
-									planetData.Distances.find(
-										(e) => e.name === "Moria Station"
-									)?.distance ?? 0,
-								planetSurface: environmentSurface,
-								planetGravity: environmentGravity,
-								planetPressure: environmentPressure,
-								planetTemperature: environmentTemperature,
-							});
-						}
-					}
+					overviewData,
+					calculate,
+				} = await usePlanCalculation(
+					definition,
+					undefined,
+					undefined,
+					cxUuid
 				);
 
-				// delete building, so we can continue at index 0 with next one
-				handleDeleteBuilding(0);
+				// create building
+				await handleCreateBuilding(optimal.ticker);
+				const resultData = await calculate();
+
+				// add recipe
+
+				for (const productionBuilding of resultData.production
+					.buildings) {
+					if (
+						productionBuilding.recipeOptions
+							.map((e) => e.Outputs.map((m) => m.Ticker))
+							.flat()
+							.includes(materialTicker)
+					) {
+						// manipulate definition daata
+
+						definition.value.baseplanner_data.buildings[0].amount =
+							optimal.amount;
+						definition.value.baseplanner_data.buildings[0].active_recipes =
+							[
+								{
+									recipeid: `${productionBuilding.name}#${materialTicker}`,
+									amount: 1,
+								},
+							];
+
+						const newResult = await calculate();
+
+						// find daily yield from material i/o for given materialticker
+						const dailyYield: number =
+							newResult.materialio.find(
+								(f) => f.ticker === materialTicker
+							)?.output ?? 0;
+
+						await until(calculation.overviewData).toMatch(
+							(v) => v.dailyProfit != 0
+						);
+
+						// all matches, push the result
+						localResults.push({
+							planetNaturalId: planetData.PlanetNaturalId,
+							planetName:
+								planetNames.value[planetData.PlanetNaturalId],
+							buildingTicker: productionBuilding.name,
+							dailyYield,
+							percentMaxDailyYield: 0,
+							cogm: newResult.production.buildings[0]
+								.activeRecipes[0].cogm,
+							outputProfit:
+								newResult.production.buildings[0]
+									.activeRecipes[0].cogm?.totalProfit ?? 0,
+							dailyProfit: overviewData.value.profit,
+							planCost: overviewData.value.totalConstructionCost,
+							planROI: overviewData.value.roi,
+							distanceAI1:
+								planetData.Distances.find(
+									(e) => e.name === "Antares Station"
+								)?.distance ?? 0,
+							distanceCI1:
+								planetData.Distances.find(
+									(e) => e.name === "Benten Station"
+								)?.distance ?? 0,
+							distanceIC1:
+								planetData.Distances.find(
+									(e) => e.name === "Hortus Station"
+								)?.distance ?? 0,
+							distanceNC1:
+								planetData.Distances.find(
+									(e) => e.name === "Moria Station"
+								)?.distance ?? 0,
+							planetSurface: environmentSurface,
+							planetGravity: environmentGravity,
+							planetPressure: environmentPressure,
+							planetTemperature: environmentTemperature,
+						});
+					}
+				}
 			}
 		}
 

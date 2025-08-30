@@ -1,33 +1,34 @@
-import { setActivePinia, createPinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { ProductionGraph } from "@/features/production_chain/productionGraph";
-import { useGameDataStore } from "@/stores/gameDataStore";
 
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import recipes from "@/tests/test_data/api_data_recipes.json";
-import { materialsStore } from "@/database/stores";
+import {
+	materialsStore,
+	buildingsStore,
+	recipesStore,
+} from "@/database/stores";
+import { useBuildingData } from "@/database/services/useBuildingData";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { flushPromises } from "@vue/test-utils";
 
 describe("productionNode", async () => {
-	let gameDataStore: ReturnType<typeof useGameDataStore>;
-
 	beforeEach(async () => {
-		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
-
 		await materialsStore.setMany(materials);
+		//@ts-expect-error mock data
+		await buildingsStore.setMany(buildings);
+		await recipesStore.setMany(recipes);
+		const { preloadBuildings, preloadRecipes } = await useBuildingData();
+
 		const { preload } = useMaterialData();
 
+		await preloadBuildings();
+		await preloadRecipes();
 		await preload();
 		await flushPromises();
-
-		// @ts-expect-error mock data
-		gameDataStore.setBuildings(buildings);
-		gameDataStore.setRecipes(recipes);
 	});
 
 	it("constructor", async () => {

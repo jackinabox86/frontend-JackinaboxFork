@@ -13,7 +13,7 @@ import { useMaterialData } from "@/database/services/useMaterialData";
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import { ComputedRef, nextTick, Ref, ref } from "vue";
+import { ref } from "vue";
 
 describe("useHQUpgradeCalculator", async () => {
 	const refStart = ref(1);

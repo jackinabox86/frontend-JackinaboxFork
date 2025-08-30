@@ -1,7 +1,7 @@
 import { computed, ComputedRef, Ref } from "vue";
 
 // Composables
-import { useBuildingData } from "@/features/game_data/useBuildingData";
+import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
@@ -90,75 +90,54 @@ export async function usePlanCalculationPreComputes(
 		() => buildings.value.map((b) => b.name)
 	);
 
-	/**
-	 * Holds a computed record of additional information on the plans
-	 * active buildings containing building data, construction materials,
-	 * the buildings recipe options and construction cost
-	 *
-	 * @remark Recalculates if the plan buildings are modified or cx
-	 * information changes
-	 *
-	 * @author jplacht
-	 *
-	 * @type {ComputedRef<IPreBuildingRecord>} Record of building informatio
-	 * per building ticker for all plans active in the building
-	 */
-	const computedBuildingInformation: ComputedRef<IPreBuildingRecord> =
-		computed<IPreBuildingRecord>(() => {
-			const map: IPreBuildingRecord = {};
+	async function computeBuildingInformation(): Promise<IPreBuildingRecord> {
+		const map: IPreBuildingRecord = {};
 
-			computedBuildingTicker.value.forEach((ticker) => {
-				const buildingData: IBuilding = getBuilding(ticker);
-				const constructionMaterials: IMaterialIOMinimal[] =
-					getBuildingConstructionMaterials(buildingData, planetData);
+		for (const ticker of computedBuildingTicker.value) {
+			const buildingData: IBuilding = await getBuilding(ticker);
+			const constructionMaterials: IMaterialIOMinimal[] =
+				getBuildingConstructionMaterials(buildingData, planetData);
 
-				const workforceMaterials: IMaterialIOMinimal[] =
-					getBuildingWorkforceMaterials(buildingData, true, true);
+			const workforceMaterials: IMaterialIOMinimal[] =
+				getBuildingWorkforceMaterials(buildingData, true, true);
 
-				map[ticker] = {
-					ticker: ticker,
-					buildingData: buildingData,
-					buildingRecipes: getBuildingRecipes(
-						ticker,
-						planetData.Resources
-					),
-					constructionMaterials: constructionMaterials,
-					constructionCost: getMaterialIOTotalPrice(
-						constructionMaterials,
-						"BUY"
-					),
-					workforceMaterials: workforceMaterials,
-				};
-			});
+			map[ticker] = {
+				ticker: ticker,
+				buildingData: buildingData,
+				buildingRecipes: getBuildingRecipes(
+					ticker,
+					planetData.Resources
+				),
+				constructionMaterials: constructionMaterials,
+				constructionCost: getMaterialIOTotalPrice(
+					constructionMaterials,
+					"BUY"
+				),
+				workforceMaterials: workforceMaterials,
+			};
+		}
+		return map;
+	}
 
-			return map;
-		});
-
-	/**
-	 * Holds a record of all infrastructures construction materials
-	 * taking the planetary building requirements into account
-	 *
-	 * @author jplacht
-	 *
-	 * @type {IBuildingConstruction[]} Array of infrastructure
-	 * construction materials
-	 */
-	const infrastructureBuildingInformation: IBuildingConstruction[] = [
-		"CM",
-		...infrastructureBuildingNames,
-	].map((inf) => ({
-		ticker: inf,
-		materials: getBuildingConstructionMaterials(
-			getBuilding(inf),
-			planetData
-		),
-		amount: 1,
-	}));
+	async function computeInfrastructureBuildingInformation(): Promise<
+		IBuildingConstruction[]
+	> {
+		return await Promise.all(
+			["CM", ...infrastructureBuildingNames].map(async (inf) => ({
+				ticker: inf,
+				materials: getBuildingConstructionMaterials(
+					await getBuilding(inf),
+					planetData
+				),
+				amount: 1,
+			}))
+		);
+	}
 
 	return {
 		computedActiveEmpire,
 		computedBuildingTicker,
-		computedBuildingInformation,
-		infrastructureBuildingInformation,
+		computeBuildingInformation,
+		computeInfrastructureBuildingInformation,
 	};
 }

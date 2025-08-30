@@ -1,16 +1,9 @@
-// Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { computed } from "vue";
 
-// Composables
-import { usePlanetData } from "@/database/services/usePlanetData";
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
-import { useWorkforceCalculation } from "@/features/planning/calculations/workforceCalculations";
+import { recipesStore, buildingsStore } from "@/database/stores";
+import { useDB } from "@/database/composables/useDB";
 
-// Util
-import { calculateExtraction } from "@/features/planning/calculations/extractionCalculations";
-import { inertClone } from "@/util/data";
-
-// Interfaces & Types
+// Types & Interfaces
 import {
 	IBuilding,
 	IPlanet,
@@ -19,74 +12,80 @@ import {
 	PLANET_RESOURCETYPE_TYPE,
 } from "@/features/api/gameData.types";
 import { PSelectOption } from "@/ui/ui.types";
+import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+import { calculateExtraction } from "@/features/planning/calculations/extractionCalculations";
 import {
 	IMaterialIOMinimal,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
-import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
-import { IRecipesRecord } from "@/stores/gameDataStore.types";
+import { usePlanetData } from "./usePlanetData";
+import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
+import { useWorkforceCalculation } from "@/features/planning/calculations/workforceCalculations";
+
+const buildingsCache = new Map<string, IBuilding>();
 
 export async function useBuildingData() {
-	const gameDataStore = useGameDataStore();
+	const {
+		allData: allDataBuildings,
+		get: getStoreBuilding,
+		preload: preloadBuildings,
+	} = useDB(buildingsStore);
+
+	const {
+		allData: allDataRecipes,
+		get: getStoreRecipe,
+		preload: preloadRecipes,
+	} = useDB(recipesStore);
 
 	const { getPlanetSpecialMaterials } = usePlanetData();
 	const { combineMaterialIOMinimal } = await useMaterialIOUtil();
 	const { calculateWorkforceConsumption } = await useWorkforceCalculation();
 
-	/**
-	 * Maps resource buildings to their respective extraction / collection
-	 * types to check against planetary resources
-	 * @author jplacht
-	 *
-	 * @type {Record<string, PLANET_RESOURCETYPE_TYPE>} e.g. {EXT: "MINERAL"}
-	 */
-	const resourceBuildingTicker: Record<string, PLANET_RESOURCETYPE_TYPE> = {
-		EXT: "MINERAL",
-		COL: "GASEOUS",
-		RIG: "LIQUID",
-	};
+	const buildingsMap = computed((): Record<string, IBuilding> => {
+		return allDataBuildings.value
+			? allDataBuildings.value.reduce((acc, building) => {
+					acc[building.Ticker] = building;
+					return acc;
+			  }, {} as Record<string, IBuilding>)
+			: {};
+	});
 
-	/**
-	 * Gets building data by building ticker from gamedata store
-	 *
-	 * @author jplacht
-	 *
-	 * @param {string} buildingTicker Ticker, e.g. "PP1"
-	 * @returns {IBuilding} Building Data
-	 */
-	function getBuilding(buildingTicker: string): IBuilding {
-		const findBuilding: IBuilding | undefined =
-			gameDataStore.buildings[buildingTicker];
+	const recipeBuildingMap = computed((): Record<string, IRecipe[]> => {
+		return allDataRecipes.value
+			? allDataRecipes.value.reduce((acc, recipe) => {
+					if (acc[recipe.BuildingTicker])
+						acc[recipe.BuildingTicker].push(recipe);
+					else acc[recipe.BuildingTicker] = [recipe];
 
-		if (findBuilding) return inertClone(findBuilding);
+					return acc;
+			  }, {} as Record<string, IRecipe[]>)
+			: {};
+	});
 
-		throw new Error(
-			`No data: Building '${buildingTicker}'. Ensure ticker is valid and game data has been loaded.`
-		);
+	async function getBuilding(buildingTicker: string): Promise<IBuilding> {
+		if (buildingsCache.has(buildingTicker))
+			return buildingsCache.get(buildingTicker)!;
+
+		const building = await getStoreBuilding(buildingTicker);
+
+		if (!building)
+			throw new Error(`Building ${buildingTicker} not available.`);
+
+		buildingsCache.set(buildingTicker, building);
+		return building;
 	}
 
-	function getAllBuildingRecipes(): IRecipesRecord {
-		return gameDataStore.recipes;
+	function getAllBuildingRecipes(): Record<string, IRecipe[]> {
+		return recipeBuildingMap.value;
 	}
 
-	/**
-	 * Transforms all gamedata store building information to Naive UI
-	 * n-select component options, allows to check for COGC and only
-	 * return those options where the cogc matches
-	 *
-	 * @author jplacht
-	 *
-	 * @param {string[]} [existing=[]] Buildingticker to be excluded
-	 * @param {(PLAN_COGCPROGRAM_TYPE | undefined)} [cogc=undefined] COGC to match against
-	 * @returns {PSelectOption[]} {label: string, value: string}[]
-	 */
 	function getProductionBuildingOptions(
-		existing: string[] = [],
+		existing: string[],
 		cogc: PLAN_COGCPROGRAM_TYPE | undefined = undefined
 	): PSelectOption[] {
 		const options: PSelectOption[] = [];
 
-		Object.values(gameDataStore.buildings)
+		Object.values(buildingsMap.value)
 			.filter(
 				(b) =>
 					b.Habitation === null &&
@@ -121,17 +120,13 @@ export async function useBuildingData() {
 		return options;
 	}
 
-	/**
-	 * Gets all available recipes for given buildingTicker and
-	 * available planetary resources, creates new recipes for resource
-	 * extraction as those are not part of the recipe data payloads.
-	 *
-	 * @author jplacht
-	 *
-	 * @param {string} buildingTicker Buildigticker e.g. "EXT"
-	 * @param {IPlanetResource[]} [planetResources=[]] Planetary Resource
-	 * @returns {IRecipe[]} Recipe Data
-	 */
+	// static data
+	const resourceBuildingTicker: Record<string, PLANET_RESOURCETYPE_TYPE> = {
+		EXT: "MINERAL",
+		COL: "GASEOUS",
+		RIG: "LIQUID",
+	};
+
 	function getBuildingRecipes(
 		buildingTicker: string,
 		planetResources: IPlanetResource[] = []
@@ -175,7 +170,9 @@ export async function useBuildingData() {
 
 			return resourceRecipes;
 		} else {
-			if (!Object.keys(gameDataStore.recipes).includes(buildingTicker)) {
+			if (
+				!Object.keys(recipeBuildingMap.value).includes(buildingTicker)
+			) {
 				throw new Error(
 					`No recipe data: Building '${buildingTicker}'. Ensure ticker is valid and game data has been loaded.`
 				);
@@ -186,18 +183,10 @@ export async function useBuildingData() {
 			 * plan calculations. E.g. by setting the correct times based
 			 * on building efficiency
 			 */
-			return inertClone(gameDataStore.recipes[buildingTicker]);
+			return recipeBuildingMap.value[buildingTicker];
 		}
 	}
 
-	/**
-	 * Sums up all building workforces
-	 *
-	 * @author jplacht
-	 *
-	 * @param {IBuilding} building Building Data
-	 * @returns {number} Sum of all workforce types
-	 */
 	function getTotalWorkforce(building: IBuilding): number {
 		return (
 			building.Pioneers +
@@ -208,17 +197,6 @@ export async function useBuildingData() {
 		);
 	}
 
-	/**
-	 * Gets a buildings construction materials based on the
-	 * building costs itself and potentially existing additional
-	 * planetary building requirements based on the planets conditions.
-	 *
-	 * @author jplacht
-	 *
-	 * @param {IBuilding} building Building data
-	 * @param {(IPlanet | undefined)} planet Planet data
-	 * @returns {IMaterialIOMinimal[]} Array of construction materials
-	 */
 	function getBuildingConstructionMaterials(
 		building: IBuilding,
 		planet: IPlanet | undefined
@@ -244,18 +222,6 @@ export async function useBuildingData() {
 		}
 	}
 
-	/**
-	 * Gets a buildings workforce consumption materials by using its
-	 * required workforce to fake a WorkforceRecord and calculate
-	 * consumption materials based on this
-	 *
-	 * @author jplacht
-	 *
-	 * @param {IBuilding} building Building Data
-	 * @param {boolean} [lux1=true] Lux1 given
-	 * @param {boolean} [lux2=true] Lux2 given
-	 * @returns {IMaterialIOMinimal[]} Workforce Consumption Material IO
-	 */
 	function getBuildingWorkforceMaterials(
 		building: IBuilding,
 		lux1: boolean = true,
@@ -314,6 +280,14 @@ export async function useBuildingData() {
 	}
 
 	return {
+		preloadBuildings,
+		preloadRecipes,
+		//
+		allDataBuildings,
+		// computed maps
+		buildingsMap,
+		recipeBuildingMap,
+		// functions
 		getBuilding,
 		getAllBuildingRecipes,
 		getProductionBuildingOptions,
@@ -321,5 +295,7 @@ export async function useBuildingData() {
 		getTotalWorkforce,
 		getBuildingConstructionMaterials,
 		getBuildingWorkforceMaterials,
+		// static data
+		resourceBuildingTicker,
 	};
 }

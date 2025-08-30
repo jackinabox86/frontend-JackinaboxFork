@@ -5,8 +5,13 @@ import { flushPromises } from "@vue/test-utils";
 
 // stores
 import { useGameDataStore } from "@/stores/gameDataStore";
-import { materialsStore } from "@/database/stores";
+import {
+	materialsStore,
+	recipesStore,
+	buildingsStore,
+} from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -41,29 +46,32 @@ describe("useROIOverview", async () => {
 		setActivePinia(createPinia());
 		const gameDataStore = useGameDataStore();
 
+		//@ts-expect-error mock data
+		await buildingsStore.setMany(buildings);
+		await recipesStore.setMany(recipes);
 		await materialsStore.setMany(materials);
 
 		const { preload } = useMaterialData();
+		const { preloadBuildings, preloadRecipes } = await useBuildingData();
 
 		await preload();
+		await preloadBuildings();
+		await preloadRecipes();
 		await flushPromises();
 
 		gameDataStore.setExchanges(exchanges);
-		gameDataStore.setRecipes(recipes);
-		// @ts-expect-error mock data
-		gameDataStore.setBuildings(buildings);
 	});
 
 	it("calculateItem", async () => {
-		const { calculateItem, resultData } = await useROIOverview(
+		const { calculateItem } = await useROIOverview(
 			// @ts-expect-error mock definition
 			definition,
 			ref(undefined)
 		);
 
-		await calculateItem(tnp);
+		const result = await calculateItem(tnp);
 
-		expect(resultData.value.length).toBe(3);
+		expect(result.length).toBe(3);
 	});
 
 	it("calculate", async () => {

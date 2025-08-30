@@ -1,7 +1,7 @@
 {
 	"name": "frontend",
 	"private": true,
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -10,6 +10,7 @@
 		"tsc:watch": "vue-tsc --project tsconfig.typecheck.json --watch",
 		"preview": "vite preview",
 		"test": "vitest --run --silent",
+		"test:watch": "vitest watch",
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest run --coverage",
 		"lint": "eslint .",
@@ -26,6 +27,7 @@
 		"@vue-flow/core": "^1.46.0",
 		"@vue-flow/minimap": "^1.5.4",
 		"@vue/test-utils": "2.4.0-alpha.2",
+		"@vueuse/core": "^13.8.0",
 		"axios": "^1.11.0",
 		"dayjs": "^1.11.13",
 		"fast-equals": "^5.2.2",

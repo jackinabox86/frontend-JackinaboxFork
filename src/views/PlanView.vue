@@ -20,7 +20,6 @@
 	const { getPlanet } = usePlanetData();
 	import { useCXData } from "@/features/cx/useCXData";
 	const { findEmpireCXUuid } = useCXData();
-	import { usePrice } from "@/features/cx/usePrice";
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { usePlan } from "@/features/planning_data/usePlan";
 	const {
@@ -107,7 +106,6 @@
 		backendData,
 		computedActiveEmpire,
 		planEmpires,
-		constructionMaterials,
 		visitationData,
 		overviewData,
 		handleResetModified,
@@ -132,11 +130,6 @@
 	const refVisualShowConfiguration: Ref<boolean> = ref(true);
 	const refMaterialIOShowBasked: Ref<boolean> = ref(false);
 	const refMaterialIOSplitted: Ref<boolean> = ref(false);
-
-	const { calculateInfrastructureCosts } = await usePrice(
-		refCXUuid,
-		ref(planetData.PlanetNaturalId)
-	);
 
 	/**
 	 * Handle initial empire uuid assignment
@@ -292,8 +285,7 @@
 				return {
 					props: {
 						workforceData: result.value.workforce,
-						habitationCost:
-							calculateInfrastructureCosts(planetData),
+						habitationCost: result.value.infrastructureCosts,
 					},
 					listeners: {
 						"update:habitation": (d: {
@@ -311,7 +303,7 @@
 					props: {
 						planetNaturalId: planetData.PlanetNaturalId,
 						cxUuid: refCXUuid.value,
-						constructionData: constructionMaterials.value,
+						constructionData: result.value.constructionMaterials,
 						productionBuildingData:
 							result.value.production.buildings,
 						infrastructureData: result.value.infrastructure,

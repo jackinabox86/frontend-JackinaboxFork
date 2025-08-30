@@ -5,8 +5,13 @@ import { flushPromises } from "@vue/test-utils";
 
 // Stores
 import { useGameDataStore } from "@/stores/gameDataStore";
-import { materialsStore } from "@/database/stores";
+import {
+	materialsStore,
+	buildingsStore,
+	recipesStore,
+} from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Composables
 import { usePlanCalculationPreComputes } from "@/features/planning/usePlanCalculationPreComputes";
@@ -25,23 +30,19 @@ describe("usePlanCalculationPreComputes", async () => {
 		gameDataStore = useGameDataStore();
 
 		await materialsStore.setMany(materials);
+		//@ts-expect-error mock data
+		await buildingsStore.setMany(buildings);
+		await recipesStore.setMany(recipes);
 
 		const { preload } = useMaterialData();
+		const { preloadBuildings, preloadRecipes } = await useBuildingData();
+
+		await preloadBuildings();
+		await preloadRecipes();
 
 		await preload();
+		await preloadBuildings();
 		await flushPromises();
-
-		buildings.map((b) => {
-			gameDataStore.buildings[b.Ticker] = b;
-		});
-
-		recipes.map((r) => {
-			if (!gameDataStore.recipes[r.BuildingTicker]) {
-				gameDataStore.recipes[r.BuildingTicker] = [];
-			}
-
-			gameDataStore.recipes[r.BuildingTicker].push(r);
-		});
 
 		exchanges.map((e) => {
 			gameDataStore.exchanges[e.TickerId] = e;
@@ -65,25 +66,26 @@ describe("usePlanCalculationPreComputes", async () => {
 	});
 
 	it("computedBuildingInformation", async () => {
-		const fakeBuildings = [{ name: "PP1" }];
-
-		const { computedBuildingInformation } =
+		const { computeBuildingInformation } =
 			await usePlanCalculationPreComputes(
-				// @ts-expect-error mock data
-				ref(fakeBuildings),
+				ref([{ name: "BMP", amount: 1, active_recipes: [] }]),
 				ref(undefined),
 				ref(undefined),
 				ref(undefined),
 				ref(""),
+				// @ts-expect-error mock data
 				ref({})
 			);
 
-		const pp1Data = computedBuildingInformation.value.PP1;
+		const computedData = await computeBuildingInformation();
 
-		expect(pp1Data.buildingData.AreaCost).toBe(19);
+		const pp1Data = computedData["BMP"];
+
+		expect(pp1Data).toBeDefined();
+		expect(pp1Data.buildingData.AreaCost).toBe(12);
 		expect(pp1Data.buildingData.BuildingCosts.length).toBe(3);
-		expect(pp1Data.buildingRecipes.length).toBe(4);
-		expect(pp1Data.constructionCost).toBe(-54453.42685699004);
+		expect(pp1Data.buildingRecipes.length).toBe(20);
+		expect(pp1Data.constructionCost).toBe(-43627.318995589914);
 		expect(pp1Data.constructionMaterials.length).toBe(4);
 		expect(pp1Data.workforceMaterials.length).toBe(5);
 	});

@@ -15,6 +15,7 @@ import {
 	planetsStore,
 	exchangesStore,
 	recipesStore,
+	buildingsStore,
 } from "@/database/stores";
 import { useDB } from "@/database/composables/useDB";
 
@@ -172,8 +173,6 @@ export function useQueryRepository() {
 			key: () => ["gamedata", "recipes"],
 			fetchFn: async () => {
 				const data: IRecipe[] = await callDataRecipes();
-				gameDataStore.setRecipes(data);
-
 				// set in indexeddb
 				await recipesStore.setMany(data, true);
 				await useDB(recipesStore).preload(true);
@@ -187,7 +186,9 @@ export function useQueryRepository() {
 			key: () => ["gamedata", "buildings"],
 			fetchFn: async () => {
 				const data: IBuilding[] = await callDataBuildings();
-				gameDataStore.setBuildings(data);
+				// set in indexeddb
+				await buildingsStore.setMany(data, true);
+				await useDB(buildingsStore).preload(true);
 				return data;
 			},
 			autoRefetch: true,

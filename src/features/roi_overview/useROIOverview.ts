@@ -1,12 +1,9 @@
 // Composables
 import { Ref, ref } from "vue";
 
-// Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
-
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
-import { useBuildingData } from "@/features/game_data/useBuildingData";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Util
 import { deepClone } from "@/util/data";
@@ -21,13 +18,13 @@ import {
 	IROIResult,
 	IStaticOptimalProduction,
 } from "@/features/roi_overview/useROIOverview.types";
+import { until } from "@vueuse/core";
 
 export async function useROIOverview(
 	definition: Ref<IPlan>,
 	cxUuid: Ref<string | undefined>
 ) {
-	const gameDataStore = useGameDataStore();
-	const { getBuilding } = await useBuildingData();
+	const { getBuilding, getBuildingRecipes } = await useBuildingData();
 
 	// Filter for all non-extracting and non-fertility needing buildings
 	const filteredOptimalProduction = optimalProduction.filter(
@@ -46,16 +43,20 @@ export async function useROIOverview(
 	 */
 	async function calculateItem(
 		optimal: IStaticOptimalProduction
-	): Promise<void> {
+	): Promise<IROIResult[]> {
 		// get a deep copy of the definition as otherwise parallel runs would
 		// overwrite each other in terms of setup
 		const definitionCopy = deepClone(definition.value);
 
-		const buildingRecipes: IRecipe[] =
-			gameDataStore.recipes[optimal.ticker];
+		const buildingRecipes: IRecipe[] = await getBuildingRecipes(
+			optimal.ticker,
+			[]
+		);
 
 		// get building data
-		const building = getBuilding(optimal.ticker);
+		const building = await getBuilding(optimal.ticker);
+
+		const itemResults: IROIResult[] = [];
 
 		for (const recipe of buildingRecipes) {
 			// as we're using production buildings, they all have a COGC
@@ -99,25 +100,30 @@ export async function useROIOverview(
 				undefined,
 				cxUuid
 			);
-			const { result, overviewData } = calculation;
+			const result = await calculation.calculate();
 
-			resultData.value.push({
+			const overviewData = await until(calculation.overviewData).toMatch(
+				(v) => v.roi !== Infinity
+			);
+
+			itemResults.push({
 				buildingTicker: optimal.ticker,
 				optimalSetup: optimal,
 				recipeId: recipe.RecipeId,
 				recipeInputs: recipe.Inputs,
 				recipeOutputs: recipe.Outputs,
-				cogc: result.value.cogc,
-				cogm: result.value.production.buildings[0].activeRecipes[0]
-					.cogm,
+				cogc: result.cogc,
+				cogm: result.production.buildings[0].activeRecipes[0].cogm,
 				outputProfit:
-					result.value.production.buildings[0].activeRecipes[0].cogm
+					result.production.buildings[0].activeRecipes[0].cogm
 						?.totalProfit ?? 0,
-				dailyProfit: overviewData.value.profit,
-				planCost: overviewData.value.totalConstructionCost,
-				planROI: overviewData.value.roi,
+				dailyProfit: overviewData.profit,
+				planCost: overviewData.totalConstructionCost,
+				planROI: overviewData.roi,
 			});
 		}
+
+		return itemResults;
 	}
 
 	/**
@@ -135,13 +141,15 @@ export async function useROIOverview(
 			(expert) => (expert.amount = 5)
 		);
 
-		await Promise.all(
-			filteredOptimalProduction.map(
-				async (optimal) => await calculateItem(optimal)
-			)
+		// do calculations in parallel
+		const nestedResults = await Promise.all(
+			filteredOptimalProduction.map((optimal) => calculateItem(optimal))
 		);
 
-		return resultData.value;
+		const results = nestedResults.flat();
+		resultData.value = results;
+
+		return results;
 	}
 
 	/**

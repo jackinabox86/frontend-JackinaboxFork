@@ -1,4 +1,4 @@
-import { computed, ComputedRef, ref, Ref, watchEffect } from "vue";
+import { computed, ComputedRef, ref, Ref } from "vue";
 
 // Composables
 import { usePrice } from "@/features/cx/usePrice";

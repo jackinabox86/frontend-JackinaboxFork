@@ -7,11 +7,13 @@ import { flushPromises } from "@vue/test-utils";
 import { useGameDataStore } from "@/stores/gameDataStore";
 import { usePlanningStore } from "@/stores/planningStore";
 
-import { materialsStore } from "@/database/stores";
+import {
+	materialsStore,
+	recipesStore,
+	buildingsStore,
+} from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
-
-// Util
-import { inertClone } from "@/util/data";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // test data
 import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
@@ -37,6 +39,7 @@ vi.mock("@/database/services/usePlanetData", async () => {
 
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
+import { until } from "@vueuse/core";
 
 describe("usePlanCalculation", async () => {
 	let gameDataStore: ReturnType<typeof useGameDataStore>;
@@ -47,24 +50,17 @@ describe("usePlanCalculation", async () => {
 		gameDataStore = useGameDataStore();
 		planningStore = usePlanningStore();
 
-		buildings.forEach((b) => {
-			// @ts-expect-error mock data
-			gameDataStore.buildings[b.Ticker] = b;
-		});
-
-		recipes.forEach((r) => {
-			if (!gameDataStore.recipes[r.BuildingTicker]) {
-				gameDataStore.recipes[r.BuildingTicker] = [];
-			}
-
-			gameDataStore.recipes[r.BuildingTicker].push(r);
-		});
-
+		//@ts-expect-error mock data
+		await buildingsStore.setMany(buildings);
+		await recipesStore.setMany(recipes);
 		await materialsStore.setMany(materials);
 
 		const { preload } = useMaterialData();
+		const { preloadBuildings, preloadRecipes } = await useBuildingData();
 
 		await preload();
+		await preloadBuildings();
+		await preloadRecipes();
 		await flushPromises();
 
 		exchanges.forEach((e) => {
@@ -103,15 +99,15 @@ describe("usePlanCalculation", async () => {
 			ref(undefined)
 		);
 
-		const { result } = calculation;
+		const result = await until(calculation.result).toMatch((v) => v.done);
 
-		expect(result.value.corphq).toBeFalsy();
-		expect(result.value.cogc).toBe("RESOURCE_EXTRACTION");
-		expect(result.value.workforce.pioneer.required).toBe(2170);
-		expect(result.value.materialio.length).toBe(18);
+		expect(result.corphq).toBeFalsy();
+		expect(result.cogc).toBe("RESOURCE_EXTRACTION");
+		expect(result.workforce.pioneer.required).toBe(2170);
+		expect(result.materialio.length).toBe(18);
 
 		// area
-		expect(result.value.area).toStrictEqual({
+		expect(result.area).toStrictEqual({
 			areaLeft: 6,
 			areaTotal: 1000,
 			areaUsed: 994,
@@ -127,10 +123,16 @@ describe("usePlanCalculation", async () => {
 			ref(undefined),
 			ref(undefined)
 		);
-		const { overviewData } = calculation;
+		await until(calculation.result.value.materialio.length).toMatch(
+			(v) => v !== 0
+		);
 
-		expect(overviewData.value.dailyCost).toBe(38364.71626045736);
-		expect(overviewData.value.roi).toBe(25.909127634141438);
+		const overviewData = await until(calculation.overviewData).toMatch(
+			(v) => v.roi !== Infinity
+		);
+
+		expect(overviewData.dailyCost).toBe(38364.71626045736);
+		expect(overviewData.roi).toBe(25.909127634141438);
 	});
 
 	it("validate visitationData", async () => {
@@ -141,43 +143,14 @@ describe("usePlanCalculation", async () => {
 			ref(undefined),
 			ref(undefined)
 		);
-		const { visitationData } = calculation;
-
-		expect(visitationData.value.storageFilled).toBe(22.342256698594255);
-	});
-
-	it("validate constructionMaterials", async () => {
-		const calculation = await usePlanCalculation(
-			// @ts-expect-error mock data
-			ref(plan_etherwind),
-			ref(undefined),
-			ref(undefined),
-			ref(undefined)
+		await until(calculation.result.value.materialio.length).toMatch(
+			(v) => v !== 0
 		);
-		const { constructionMaterials } = calculation;
-
-		expect(constructionMaterials.value).toBeDefined();
-		expect(constructionMaterials.value.length).toBe(9);
-	});
-
-	it("unknown recipe error", async () => {
-		const manipData = inertClone(plan_etherwind);
-		manipData.baseplanner_data.buildings[0].active_recipes[0] = {
-			recipeid: "foo",
-			amount: 1,
-		};
-
-		const calculation = await usePlanCalculation(
-			// @ts-expect-error mock data
-			ref(manipData),
-			ref(undefined),
-			ref(undefined),
-			ref(undefined)
+		const visitationData = await until(calculation.visitationData).toMatch(
+			(v) => v.storageFilled !== Infinity
 		);
 
-		const { result } = calculation;
-
-		expect(() => result.value).toThrowError();
+		expect(visitationData.storageFilled).toBe(22.342256698594255);
 	});
 
 	it("validate existing and saveable", async () => {
