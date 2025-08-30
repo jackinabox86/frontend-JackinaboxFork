@@ -1,10 +1,7 @@
 {
 	"include": [
 		"src/**/*",
-		"src/classes/**/*",
-		"src/**/*.vue",
 		"src/vite-env.d.ts",
-		"src/**/*.json",
 	],
 	"exclude": [
 		"dist/**/*",
