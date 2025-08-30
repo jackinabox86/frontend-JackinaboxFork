@@ -3,9 +3,7 @@ import { IDBPDatabase, openDB } from "idb";
 import config from "@/lib/config";
 import { DB_SCHEMA } from "@/database/schema";
 
-export type KeyOfStore<T, K extends keyof T> = T[K] extends IDBValidKey
-	? T[K]
-	: never;
+type KeyOfStore<T, K extends keyof T> = T[K] extends IDBValidKey ? T[K] : never;
 
 let dbPromise: Promise<IDBPDatabase> | null = null;
 
