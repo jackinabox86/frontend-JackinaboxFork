@@ -12,6 +12,7 @@ import {
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
 import { usePlanetData } from "@/database/services/usePlanetData";
+import { asyncComputed } from "@vueuse/core";
 
 // Calculation Utils
 import {
@@ -67,7 +68,6 @@ import {
 	PLAN_COGCPROGRAM_TYPE,
 } from "@/stores/planningStore.types";
 import { IPlanCreateData } from "@/features/planning_data/usePlan.types";
-import { asyncComputed } from "@vueuse/core";
 
 export async function usePlanCalculation(
 	plan: Ref<IPlan>,
@@ -159,12 +159,6 @@ export async function usePlanCalculation(
 	 * Calculates plan workforce based on infrastructure provisioning and
 	 * production building needs. This also includes the efficiency calculation
 	 * based on capacity and required workforce under given luxury provision.
-	 *
-	 * @author jplacht
-	 *
-	 * @returns {Required<
-	 * 		Record<WORKFORCE_TYPE, IWorkforceElement>
-	 * 	>} Calculated Workforce Result
 	 */
 	async function calculateWorkforceResult(): Promise<
 		Required<Record<WORKFORCE_TYPE, IWorkforceElement>>
@@ -260,10 +254,6 @@ export async function usePlanCalculation(
 	 * and production buildings. C
 	 *
 	 * @remark Core Modul Area of 25 is always included
-	 *
-	 * @author jplacht
-	 *
-	 * @returns {IAreaResult} Plan Area Result
 	 */
 	async function calculateAreaResult(): Promise<IAreaResult> {
 		// Core Module holds 25 area
@@ -302,10 +292,6 @@ export async function usePlanCalculation(
 	/**
 	 * Calculates a result record with all infrastructure buildings and
 	 * their currently used amount in the plan
-	 *
-	 * @author jplacht
-	 *
-	 * @returns {IInfrastructureRecord} Infrastructure Record
 	 */
 	function calculateInfrastructureResult(): IInfrastructureRecord {
 		const result: IInfrastructureRecord = Object.fromEntries(
@@ -327,8 +313,6 @@ export async function usePlanCalculation(
 	 * Calculates the result for expert setup of the plan returning a
 	 * record with each expert type, its planned amount and the bonus
 	 * efficiency provided by it
-	 *
-	 * @author jplacht
 	 *
 	 * @returns {IExpertRecord} Expert Result Record
 	 */
@@ -689,10 +673,6 @@ export async function usePlanCalculation(
 	 * Combines all result calculations into a single result definition
 	 * while also applying enhancements to data (e.g. prices on Material IO)
 	 * and structures for further use.
-	 *
-	 * @author jplacht
-	 *
-	 * @type {Ref<IPlanResult>} Plan Calculation Result
 	 */
 	const result: Ref<IPlanResult> = ref(planEmptyResult);
 
@@ -924,7 +904,10 @@ export async function usePlanCalculation(
 		result
 	);
 
-	// trigger calculation: plan data, refresh key (cx updates), empire change
+	// trigger calculation on changes of:
+	// - plan data
+	// - refresh key (cx updates)
+	// - empire change
 	watch(
 		[plan, refreshKey, empireUuid],
 		async () => {

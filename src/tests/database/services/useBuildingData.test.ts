@@ -1,7 +1,9 @@
 import { flushPromises } from "@vue/test-utils";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
 import { buildingsStore, recipesStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
+
 import { IBuilding, IPlanetResource } from "@/features/api/gameData.types";
 
 // test data

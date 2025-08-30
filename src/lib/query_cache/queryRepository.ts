@@ -142,8 +142,6 @@ export function useQueryRepository() {
 			key: () => ["gamedata", "materials"],
 			fetchFn: async () => {
 				const data: IMaterial[] = await callDataMaterials();
-
-				// set in indexeddb
 				await materialsStore.setMany(data, true);
 				await useDB(materialsStore).preload(true);
 
@@ -159,7 +157,6 @@ export function useQueryRepository() {
 				const data: IExchange[] = await callDataExchanges();
 				gameDataStore.setExchanges(data);
 
-				// set in indexeddb
 				await exchangesStore.setMany(data, true);
 				await useDB(exchangesStore).preload(true);
 
@@ -173,9 +170,9 @@ export function useQueryRepository() {
 			key: () => ["gamedata", "recipes"],
 			fetchFn: async () => {
 				const data: IRecipe[] = await callDataRecipes();
-				// set in indexeddb
 				await recipesStore.setMany(data, true);
 				await useDB(recipesStore).preload(true);
+
 				return data;
 			},
 			autoRefetch: true,
@@ -186,7 +183,6 @@ export function useQueryRepository() {
 			key: () => ["gamedata", "buildings"],
 			fetchFn: async () => {
 				const data: IBuilding[] = await callDataBuildings();
-				// set in indexeddb
 				await buildingsStore.setMany(data, true);
 				await useDB(buildingsStore).preload(true);
 				return data;
@@ -205,8 +201,6 @@ export function useQueryRepository() {
 				const data: IPlanet = await callDataPlanet(
 					params.planetNaturalId
 				);
-
-				// set in indexeddb
 				await planetsStore.set(data);
 				await useDB(planetsStore).preload(true);
 

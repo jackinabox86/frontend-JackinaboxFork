@@ -1,14 +1,15 @@
 import { ref } from "vue";
 import { beforeAll, describe, expect, it } from "vitest";
 import { flushPromises } from "@vue/test-utils";
+
 import { buildingsStore, recipesStore } from "@/database/stores";
-import { useBuildingData } from "@/database/services/useBuildingData";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
 import recipes from "@/tests/test_data/api_data_recipes.json";
 
 // Composables
+import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePlanCalculationHandlers } from "@/features/planning/usePlanCalculationHandlers";
 
 describe("Planning: Workforce Calculations", async () => {

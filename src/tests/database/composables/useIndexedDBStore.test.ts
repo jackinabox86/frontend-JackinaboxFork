@@ -1,13 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { openDB } from "idb";
+
+import config from "@/lib/config";
 import {
 	getDB,
 	resetDB,
 	useIndexedDBStore,
 } from "@/database/composables/useIndexedDBStore";
-import config from "@/lib/config";
-import { IMaterial } from "@/features/api/gameData.types";
 import { DB_SCHEMA } from "@/database/schema";
-import { openDB } from "idb";
+
+import { IMaterial } from "@/features/api/gameData.types";
 
 const fakeMaterial_1: IMaterial = {
 	MaterialId: "foo",
@@ -29,7 +31,10 @@ const fakeMaterial_2: IMaterial = {
 };
 
 describe("useIndexedDBStore", () => {
-	const store = useIndexedDBStore<IMaterial>("gamedata_materials");
+	const store = useIndexedDBStore<IMaterial, "Ticker">(
+		"gamedata_materials",
+		"Ticker"
+	);
 
 	// Before each test, clear the store
 	beforeEach(async () => {

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ref } from "vue";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock the planets store (could be empty)
 vi.mock("@/database/stores", () => ({
@@ -32,9 +32,6 @@ const mockPlanet2 = {
 	Pressure: 0.5,
 	Temperature: -20,
 };
-
-// test data
-import planet_single from "@/tests/test_data/api_data_planet_single.json";
 
 describe("usePlanetData", () => {
 	let getMock: any;

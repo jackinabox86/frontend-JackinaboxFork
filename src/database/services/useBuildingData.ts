@@ -1,7 +1,11 @@
 import { computed } from "vue";
 
-import { recipesStore, buildingsStore } from "@/database/stores";
 import { useDB } from "@/database/composables/useDB";
+import { recipesStore, buildingsStore } from "@/database/stores";
+import { usePlanetData } from "@/database/services/usePlanetData";
+
+import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
+import { useWorkforceCalculation } from "@/features/planning/calculations/workforceCalculations";
 
 // Types & Interfaces
 import {
@@ -18,9 +22,6 @@ import {
 	IMaterialIOMinimal,
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
-import { usePlanetData } from "./usePlanetData";
-import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
-import { useWorkforceCalculation } from "@/features/planning/calculations/workforceCalculations";
 
 const buildingsCache = new Map<string, IBuilding>();
 
@@ -33,7 +34,7 @@ export async function useBuildingData() {
 
 	const {
 		allData: allDataRecipes,
-		get: getStoreRecipe,
+		get: _getStoreRecipe,
 		preload: preloadRecipes,
 	} = useDB(recipesStore);
 
