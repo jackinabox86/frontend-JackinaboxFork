@@ -34,6 +34,11 @@ export function usePostHog() {
 			name: posthogName ?? "localhost",
 		});
 
+		// register global versions
+		posthog.register({
+			app_version: __APP_VERSION__,
+		});
+
 		// flush event queue on load
 		posthog.onFeatureFlags(() => {
 			eventQueue.forEach(([event, props]) =>
