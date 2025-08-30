@@ -102,7 +102,7 @@ export default defineConfig({
 		cssCodeSplit: true,
 		outDir: "dist",
 		emptyOutDir: true,
-		sourcemap: false,
+		sourcemap: true,
 		minify: "esbuild",
 		commonjsOptions: {
 			transformMixedEsModules: true,
