@@ -15,6 +15,7 @@ const storeStateMap = new WeakMap<
 	SharedState<any>
 >();
 
+// Ensures a store is created and stored in the map
 function ensureState<T extends object, K extends keyof T & string>(
 	store: ReturnType<typeof useIndexedDBStore<T, K>>
 ): SharedState<T> {

@@ -1,11 +1,15 @@
-import { IPlanet } from "@/features/api/gameData.types";
-import { useDB } from "../composables/useDB";
-import { planetsStore } from "../stores";
 import { ref } from "vue";
 
-import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import { useDB } from "@/database/composables/useDB";
+import { planetsStore } from "@/database/stores";
+
+// Util
 import { BOUNDARY_DESCRIPTOR } from "@/util/numbers.types";
 import { boundaryDescriptor } from "@/util/numbers";
+
+// Types & Interfaces
+import { IPlanet } from "@/features/api/gameData.types";
+import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
 
 /**
  * Planetary type static boundaries

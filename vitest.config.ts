@@ -8,6 +8,7 @@ const alias = { "@": path.resolve(__dirname, "./src") };
 export default defineConfig({
 	define: {
 		__INDEXEDDB_VERSION__: Date.now(), // force db upgrade each test run
+		__APP_VERSION__: JSON.stringify(process.env.npm_package_version),
 	},
 	test: {
 		setupFiles: "./src/tests/vitest.setup.ts",

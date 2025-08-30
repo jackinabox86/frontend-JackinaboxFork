@@ -3,7 +3,7 @@ import { ProductionEdge } from "@/features/production_chain/productionEdge";
 import { ProductionNode } from "@/features/production_chain/productionNode";
 
 // Composables
-import { useBuildingData } from "@/features/game_data/useBuildingData";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Types & Interfaces
 import { IRecipe } from "@/features/api/gameData.types";

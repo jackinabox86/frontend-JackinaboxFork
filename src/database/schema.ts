@@ -47,4 +47,7 @@ export const DB_SCHEMA: Record<string, StoreSchema> = {
 			},
 		],
 	},
+	gamedata_buildings: {
+		keyPath: "Ticker",
+	},
 };

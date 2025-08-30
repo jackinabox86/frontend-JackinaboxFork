@@ -1,30 +1,32 @@
-import { setActivePinia, createPinia } from "pinia";
+import { flushPromises } from "@vue/test-utils";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useGameDataStore } from "@/stores/gameDataStore";
-import { useBuildingData } from "@/features/game_data/useBuildingData";
+import { buildingsStore, recipesStore } from "@/database/stores";
+import { useBuildingData } from "@/database/services/useBuildingData";
+
 import { IBuilding, IPlanetResource } from "@/features/api/gameData.types";
 
 // test data
+import buildings from "@/tests/test_data/api_data_buildings.json";
+import recipes from "@/tests/test_data/api_data_recipes.json";
 import building_single_tnp from "@/tests/test_data/api_data_building_single_tnp.json";
-import building_single_hbl from "@/tests/test_data/api_data_building_single_hbl.json";
 
 describe("useBuildingData", async () => {
-	let gameDataStore: any;
+	beforeAll(async () => {
+		//@ts-expect-error mock data
+		await buildingsStore.setMany(buildings);
+		await recipesStore.setMany(recipes);
+		const { preloadBuildings, preloadRecipes } = await useBuildingData();
 
-	beforeAll(() => {
-		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
-	});
-
-	beforeEach(() => {
-		gameDataStore.buildings = {};
+		await preloadBuildings();
+		await preloadRecipes();
+		await flushPromises();
 	});
 
 	it("getTotalWorkforce", async () => {
-		gameDataStore.buildings["TNP"] = building_single_tnp;
+		const { getBuilding } = await useBuildingData();
 
-		const TNP: IBuilding = gameDataStore.buildings["TNP"];
+		const TNP: IBuilding = await getBuilding("TNP");
 
 		const { getTotalWorkforce } = await useBuildingData();
 
@@ -34,60 +36,53 @@ describe("useBuildingData", async () => {
 
 	describe("getBuilding", async () => {
 		it("Get valid building", async () => {
-			gameDataStore.buildings["TNP"] = building_single_tnp;
 			const { getBuilding } = await useBuildingData();
+			const TNP: IBuilding = await getBuilding("TNP");
 
-			expect(getBuilding("TNP")).toStrictEqual(
-				gameDataStore.buildings["TNP"]
-			);
+			expect(TNP.Ticker).toBe(building_single_tnp.Ticker);
 		});
 
 		it("Get invalid, non-existing building", async () => {
 			const { getBuilding } = await useBuildingData();
 
-			expect(() => getBuilding("FOO")).toThrowError();
+			await expect(() => getBuilding("FOO")).rejects.toThrowError();
 		});
 	});
 
 	describe("getProductionBuildingOptions", async () => {
 		it("Available production building", async () => {
-			gameDataStore.buildings["TNP"] = building_single_tnp;
 			const { getProductionBuildingOptions } = await useBuildingData();
 
-			const result = getProductionBuildingOptions();
+			const result = getProductionBuildingOptions([]);
 
-			expect(result.length).toBe(1);
-			expect(result[0].value).toBe("TNP");
-			expect(result[0].label).toBe("TNP (Technetium Processing)");
+			expect(result.length).toBe(49);
+			expect(result[0].value).toBe("AAF");
+			expect(result[0].label).toContain("AAF");
 		});
 
 		it("Skip non-production building", async () => {
-			gameDataStore.buildings["HBL"] = building_single_hbl;
 			const { getProductionBuildingOptions } = await useBuildingData();
 
-			const result = getProductionBuildingOptions();
+			const result = getProductionBuildingOptions([]);
 
-			expect(result.length).toBe(0);
+			expect(result.length).toBe(49);
 		});
 
 		it("Available production building matching COGC", async () => {
-			gameDataStore.buildings["TNP"] = building_single_tnp;
 			const { getProductionBuildingOptions } = await useBuildingData();
 
 			const result = getProductionBuildingOptions([], "CHEMISTRY");
 
-			expect(result.length).toBe(1);
-			expect(result[0].value).toBe("TNP");
-			expect(result[0].label).toBe("TNP (Technetium Processing)");
+			expect(result.length).toBe(7);
+			expect(result[0].value).toBe("AML");
 		});
 
 		it("Available production building not matching COGC", async () => {
-			gameDataStore.buildings["TNP"] = building_single_tnp;
 			const { getProductionBuildingOptions } = await useBuildingData();
 
 			const result = getProductionBuildingOptions([], "AGRICULTURE");
 
-			expect(result.length).toBe(0);
+			expect(result.length).toBe(3);
 		});
 	});
 
@@ -121,36 +116,16 @@ describe("useBuildingData", async () => {
 
 		it("Production Building, error", async () => {
 			const { getBuildingRecipes } = await useBuildingData();
-			expect(() => getBuildingRecipes("PP1")).toThrowError();
+			expect(() => getBuildingRecipes("FOO")).toThrowError();
 		});
 
 		it("Production Building, with recipe", async () => {
 			const { getBuildingRecipes } = await useBuildingData();
-			const fakeRecipe = {
-				RecipeId: "PP1#150xPE=>1xBDE",
-				BuildingTicker: "PP1",
-				RecipeName: "150xPE=>1xBDE",
-				TimeMs: 25920000,
-				Inputs: [
-					{
-						Ticker: "PE",
-						Amount: 150,
-					},
-				],
-				Outputs: [
-					{
-						Ticker: "BDE",
-						Amount: 1,
-					},
-				],
-			};
 
-			gameDataStore.recipes[fakeRecipe.BuildingTicker] = [fakeRecipe];
+			const result = getBuildingRecipes("BMP");
 
-			const result = getBuildingRecipes(fakeRecipe.BuildingTicker);
-
-			expect(result.length).toBe(1);
-			expect(result[0].BuildingTicker).toBe(fakeRecipe.BuildingTicker);
+			expect(result.length).toBe(20);
+			expect(result[0].BuildingTicker).toBe("BMP");
 		});
 	});
 

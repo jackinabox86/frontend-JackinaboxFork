@@ -1,17 +1,17 @@
 import { IDBPDatabase, openDB } from "idb";
 
 import config from "@/lib/config";
-
-import { KeyOfStore } from "@/database/composables/useIndexedDBStore.types";
 import { DB_SCHEMA } from "@/database/schema";
+
+type KeyOfStore<T, K extends keyof T> = T[K] extends IDBValidKey ? T[K] : never;
+
+let dbPromise: Promise<IDBPDatabase> | null = null;
 
 export async function requestPersistence() {
 	if (navigator && navigator.storage && navigator.storage.persist) {
 		await navigator.storage.persist();
 	}
 }
-
-let dbPromise: Promise<IDBPDatabase> | null = null;
 
 export async function getDB() {
 	if (!dbPromise) {
@@ -41,8 +41,8 @@ export async function getDB() {
 	// Request persistence after DB is ready
 	try {
 		await requestPersistence();
-	} catch {
-		// ignore
+	} catch (err) {
+		console.error("Error requesting store persistance.", err);
 	}
 
 	return dbPromise;

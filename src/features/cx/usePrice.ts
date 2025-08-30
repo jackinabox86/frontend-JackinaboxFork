@@ -5,7 +5,7 @@ import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
 import { useExchangeData } from "@/features/game_data/useExchangeData";
-import { useBuildingData } from "@/features/game_data/useBuildingData";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Types & Interfaces
 import {
@@ -305,9 +305,9 @@ export async function usePrice(
 	 * @param {IPlanet} planet Planet Information
 	 * @returns {IInfrastructureCosts} Infrastructure Construction Costs
 	 */
-	function calculateInfrastructureCosts(
+	async function calculateInfrastructureCosts(
 		planet: IPlanet
-	): IInfrastructureCosts {
+	): Promise<IInfrastructureCosts> {
 		const results: IInfrastructureCosts = {
 			HB1: 0,
 			HB2: 0,
@@ -321,16 +321,16 @@ export async function usePrice(
 			STO: 0,
 		};
 
-		infrastructureBuildingNames.map((buildingTicker) => {
-			results[buildingTicker] =
-				getMaterialIOTotalPrice(
-					getBuildingConstructionMaterials(
-						getBuilding(buildingTicker),
-						planet
-					),
-					"BUY"
-				) * -1;
-		});
+		await Promise.all(
+			infrastructureBuildingNames.map(async (buildingTicker) => {
+				const building = await getBuilding(buildingTicker);
+				results[buildingTicker] =
+					getMaterialIOTotalPrice(
+						getBuildingConstructionMaterials(building, planet),
+						"BUY"
+					) * -1;
+			})
+		);
 
 		return results;
 	}

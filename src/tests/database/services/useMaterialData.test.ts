@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ref } from "vue";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock the materials store
 vi.mock("@/database/stores", () => ({

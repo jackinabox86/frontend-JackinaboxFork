@@ -2,6 +2,7 @@ import { useIndexedDBStore } from "@/database/composables/useIndexedDBStore";
 
 // Types & Interfaces
 import {
+	IBuilding,
 	IExchange,
 	IMaterial,
 	IPlanet,
@@ -26,4 +27,9 @@ export const exchangesStore = useIndexedDBStore<IExchange, "TickerId">(
 export const recipesStore = useIndexedDBStore<IRecipe, "RecipeId">(
 	"gamedata_recipes",
 	"RecipeId" as const
+);
+
+export const buildingsStore = useIndexedDBStore<IBuilding, "Ticker">(
+	"gamedata_buildings",
+	"Ticker" as const
 );

@@ -13,7 +13,6 @@ import {
 	callSavePlan,
 	callPatchPlanMaterialIO,
 } from "@/features/api/planData.api";
-import { apiService } from "@/lib/apiService";
 import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 vi.mock("@/features/api/planData.api", async () => {

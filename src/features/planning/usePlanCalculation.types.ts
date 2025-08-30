@@ -1,6 +1,7 @@
 import { IBuilding, IRecipe } from "@/features/api/gameData.types";
 import { IBuildingEfficiency } from "@/features/planning/calculations/bonusCalculations.types";
 import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+import { IInfrastructureCosts } from "../cx/usePrice.types";
 
 export type WORKFORCE_TYPE =
 	| "pioneer"
@@ -70,14 +71,14 @@ export interface IRecipeBuildingOption extends IRecipe {
 	roi: number;
 }
 
-interface ICOGMMaterialCost {
+export interface ICOGMMaterialCost {
 	ticker: string;
 	amount: number;
 	costUnit: number;
 	costTotal: number;
 }
 
-interface ICOGMMaterialReturn {
+export interface ICOGMMaterialReturn {
 	ticker: string;
 	amount: number;
 	costSplit: number;
@@ -148,6 +149,7 @@ export interface IMaterialIO extends IMaterialIOMaterial {
 }
 
 export interface IPlanResult {
+	done: boolean;
 	corphq: boolean;
 	cogc: PLAN_COGCPROGRAM_TYPE;
 	workforce: IWorkforceRecord;
@@ -161,7 +163,87 @@ export interface IPlanResult {
 	profit: number;
 	cost: number;
 	revenue: number;
+	infrastructureCosts: IInfrastructureCosts;
+	constructionMaterials: IBuildingConstruction[];
 }
+
+export const planEmptyResult = {
+	done: false,
+	corphq: false,
+	cogc: "---" as PLAN_COGCPROGRAM_TYPE,
+	workforce: [
+		"pioneer",
+		"settler",
+		"technician",
+		"engineer",
+		"scientist",
+	].reduce((sum, w) => {
+		sum[w as WORKFORCE_TYPE] = {
+			name: w as WORKFORCE_TYPE,
+			required: 0,
+			capacity: 0,
+			left: 0,
+			lux1: true,
+			lux2: true,
+			efficiency: 0,
+		};
+		return sum;
+	}, {} as IWorkforceRecord),
+	area: { permits: 0, areaUsed: 0, areaTotal: 0, areaLeft: 0 },
+	infrastructure: {
+		HB1: 0,
+		HB2: 0,
+		HB3: 0,
+		HB4: 0,
+		HB5: 0,
+		HBB: 0,
+		HBC: 0,
+		HBM: 0,
+		HBL: 0,
+		STO: 0,
+	},
+	experts: [
+		"Agriculture",
+		"Chemistry",
+		"Construction",
+		"Electronics",
+		"Food_Industries",
+		"Fuel_Refining",
+		"Manufacturing",
+		"Metallurgy",
+		"Resource_Extraction",
+	].reduce((sum, e) => {
+		sum[e as EXPERT_TYPE] = {
+			name: e as EXPERT_TYPE,
+			amount: 0,
+			bonus: 0,
+		};
+		return sum;
+	}, {} as IExpertRecord),
+	production: {
+		buildings: [],
+		materialio: [],
+	},
+	materialio: [],
+	workforceMaterialIO: [],
+	productionMaterialIO: [],
+	profit: 0,
+	cost: 0,
+	revenue: 0,
+	infrastructureCosts: {
+		HB1: 0,
+		HB2: 0,
+		HB3: 0,
+		HB4: 0,
+		HB5: 0,
+		HBB: 0,
+		HBC: 0,
+		HBM: 0,
+		HBL: 0,
+		STO: 0,
+	},
+	constructionMaterials: [],
+};
 
 // Procomputational values
 interface IPreBuildingInformation {

@@ -13,8 +13,13 @@ import { useResourceROIOverview } from "@/features/resource_roi_overview/useReso
 
 // stores
 import { useGameDataStore } from "@/stores/gameDataStore";
-import { materialsStore } from "@/database/stores";
+import {
+	materialsStore,
+	recipesStore,
+	buildingsStore,
+} from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // test data
 import recipes from "@/tests/test_data/api_data_recipes.json";
@@ -34,17 +39,20 @@ describe("useResourceROIOverview", async () => {
 
 		const gameDataStore = useGameDataStore();
 
+		//@ts-expect-error mock data
+		await buildingsStore.setMany(buildings);
+		await recipesStore.setMany(recipes);
 		await materialsStore.setMany(materials);
 
 		const { preload } = useMaterialData();
+		const { preloadBuildings, preloadRecipes } = await useBuildingData();
 
 		await preload();
+		await preloadBuildings();
+		await preloadRecipes();
 		await flushPromises();
 
 		gameDataStore.setExchanges(exchanges);
-		gameDataStore.setRecipes(recipes);
-		// @ts-expect-error mock data
-		gameDataStore.setBuildings(buildings);
 	});
 
 	it("searchPlanets", async () => {

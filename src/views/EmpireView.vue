@@ -82,23 +82,35 @@
 	 * @async
 	 * @returns {Promise<void>}
 	 */
+	const alreadyCalculated = new Map<string, IPlanResult>();
+
 	async function calculateEmpire(): Promise<void> {
 		isCalculating.value = true;
-		// reset calculations
 		calculatedPlans.value = {};
 
-		// calculate all plans, pass in references as the
-		// empire might be updated
-		for (const plan of planData.value) {
-			const calculation = await usePlanCalculation(
+		// don't reset the whole map — only add/update plans as needed
+
+		const tasks = planData.value.map(async (plan) => {
+			if (alreadyCalculated.has(plan.uuid!)) {
+				calculatedPlans.value[plan.uuid!] = alreadyCalculated.get(
+					plan.uuid!
+				)!;
+				return;
+			}
+
+			const { calculate } = await usePlanCalculation(
 				toRef(plan),
 				selectedEmpireUuid,
 				refEmpireList,
 				selectedCXUuid
 			);
+			const result = await calculate();
+			calculatedPlans.value[plan.uuid!] = result;
 
-			calculatedPlans.value[plan.uuid!] = calculation.result.value;
-		}
+			alreadyCalculated.set(plan.uuid!, result);
+		});
+
+		await Promise.all(tasks);
 
 		isCalculating.value = false;
 	}

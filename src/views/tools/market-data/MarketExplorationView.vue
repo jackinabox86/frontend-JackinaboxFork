@@ -8,7 +8,8 @@
 
 	// Stores
 	import { useMaterialData } from "@/database/services/useMaterialData";
-	const { materialSelectOptions } = useMaterialData();
+	const { materialSelectOptions, preload: preloadMaterials } =
+		useMaterialData();
 
 	// Components
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
@@ -57,7 +58,8 @@
 		fetchData();
 	}
 
-	onMounted(() => {
+	onMounted(async () => {
+		await preloadMaterials();
 		materialOptions.value = materialSelectOptions.value;
 	});
 </script>

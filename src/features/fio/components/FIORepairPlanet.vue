@@ -28,11 +28,11 @@
 			sorter="default" />
 		<x-n-data-table-column
 			key="amountProductionBuildings"
-			title="Production Buildings"
+			title="Buildings"
 			sorter="default" />
 		<x-n-data-table-column
 			key="averageCondition"
-			title="Average Condition"
+			title="⌀ Condition"
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				{{ formatNumber(rowData.averageCondition * 100) }} %
@@ -40,7 +40,7 @@
 		</x-n-data-table-column>
 		<x-n-data-table-column
 			key="minCondition"
-			title="Minimum Condition"
+			title="Min. Condition"
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				{{ formatNumber(rowData.minCondition * 100) }} %
@@ -48,7 +48,7 @@
 		</x-n-data-table-column>
 		<x-n-data-table-column
 			key="maxLastRepairDays"
-			title="Longest Repair Age (days)"
+			title="Repair Age"
 			sorter="default">
 			<template #render-cell="{ rowData }">
 				{{ formatAmount(rowData.maxLastRepairDays) }}

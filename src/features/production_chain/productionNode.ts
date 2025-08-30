@@ -1,5 +1,5 @@
 // Composables
-import { useBuildingData } from "@/features/game_data/useBuildingData";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Types & Interfaces
 import {

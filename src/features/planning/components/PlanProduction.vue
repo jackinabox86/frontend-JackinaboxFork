@@ -2,7 +2,7 @@
 	import { computed, ComputedRef, PropType, ref, Ref } from "vue";
 
 	// Composables
-	import { useBuildingData } from "@/features/game_data/useBuildingData";
+	import { useBuildingData } from "@/database/services/useBuildingData";
 
 	// Components
 	import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";

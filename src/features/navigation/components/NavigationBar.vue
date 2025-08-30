@@ -231,6 +231,8 @@
 			],
 		},
 	]);
+
+	const appVersion = __APP_VERSION__;
 </script>
 
 <template>
@@ -240,9 +242,12 @@
 	<div
 		class="hidden peer-checked:flex md:flex border-r border-white/5 flex-col w-[200px] bg-gray-dark transition-all duration-300 ease-in-out">
 		<div class="items-center justify-between h-16 px-4 sm:hidden md:flex">
-			<div class="flex w-full">
+			<div class="flex flex-row w-full items-baseline">
 				<div class="flex-grow text-prunplanner text-xl font-light">
 					<span class="font-bold">PRUN</span>planner
+				</div>
+				<div class="text-end text-[10px] text-white/40">
+					{{ appVersion }}
 				</div>
 			</div>
 		</div>

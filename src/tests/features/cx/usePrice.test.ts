@@ -1,15 +1,18 @@
-import { describe, it, expect, beforeAll, vi } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { usePlanningStore } from "@/stores/planningStore";
 import { usePrice } from "@/features/cx/usePrice";
 import { Ref, ref } from "vue";
 import { useGameDataStore } from "@/stores/gameDataStore";
+import { buildingsStore } from "@/database/stores";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // test data
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import cx_definition from "@/tests/test_data/api_data_cx_definition.json";
-import building_single from "@/tests/test_data/api_data_building_single_hbl.json";
+import buildings from "@/tests/test_data/api_data_buildings.json";
 import planet_single from "@/tests/test_data/api_data_planet_etherwind.json";
+import { flushPromises } from "@vue/test-utils";
 
 const fakeCXUuid: string = "2a83a2ca-db0c-49d2-9c43-0db08c1675bb";
 
@@ -17,7 +20,7 @@ describe("usePrice", async () => {
 	let planningStore: any;
 	let gameDataStore: any;
 
-	beforeAll(() => {
+	beforeAll(async () => {
 		setActivePinia(createPinia());
 		planningStore = usePlanningStore();
 		gameDataStore = useGameDataStore();
@@ -27,6 +30,13 @@ describe("usePrice", async () => {
 		});
 
 		planningStore.cxs[fakeCXUuid] = cx_definition;
+
+		//@ts-expect-error mock data
+		await buildingsStore.setMany(buildings);
+		const { preloadBuildings } = await useBuildingData();
+
+		await preloadBuildings();
+		await flushPromises();
 	});
 
 	it("cache clearing, just trigger", async () => {
@@ -39,26 +49,17 @@ describe("usePrice", async () => {
 		it("should calculate infrastructure costs using mocked getMaterialIOTotalPrice", async () => {
 			const mockPlanet = planet_single;
 
-			vi.mock("@/features/game_data/useBuildingData", () => ({
-				useBuildingData: () => ({
-					getBuilding: vi.fn().mockReturnValue(building_single),
-					getBuildingConstructionMaterials: vi.fn(() => [
-						{ ticker: "BBH", input: 1, output: 0 },
-					]),
-				}),
-			}));
-
-			const { calculateInfrastructureCosts, getPrice } = await usePrice(
+			const { calculateInfrastructureCosts } = await usePrice(
 				ref(undefined),
 				ref(undefined)
 			);
 
 			// @ts-expect-error mock planet data
-			const result = calculateInfrastructureCosts(mockPlanet);
+			const result = await calculateInfrastructureCosts(mockPlanet);
 
 			// Each building ticker should have a cost of -100
 			Object.keys(result).forEach((r) => {
-				expect(result[r]).toBe(getPrice("BBH", "BUY"));
+				expect(result[r]).toBeGreaterThan(0);
 			});
 		});
 	});

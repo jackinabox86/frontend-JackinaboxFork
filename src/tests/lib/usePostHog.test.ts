@@ -5,6 +5,7 @@ vi.mock("posthog-js", () => {
 	const posthogMock = {
 		init: vi.fn(),
 		capture: vi.fn(),
+		register: vi.fn(),
 		people: {
 			set: vi.fn(),
 		},

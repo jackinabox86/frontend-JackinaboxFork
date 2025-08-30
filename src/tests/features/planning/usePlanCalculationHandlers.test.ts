@@ -1,19 +1,27 @@
 import { ref } from "vue";
-import { beforeEach, describe, expect, it } from "vitest";
-import { createPinia, setActivePinia } from "pinia";
+import { beforeAll, describe, expect, it } from "vitest";
+import { flushPromises } from "@vue/test-utils";
 
-// Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { buildingsStore, recipesStore } from "@/database/stores";
+
+// test data
+import buildings from "@/tests/test_data/api_data_buildings.json";
+import recipes from "@/tests/test_data/api_data_recipes.json";
 
 // Composables
+import { useBuildingData } from "@/database/services/useBuildingData";
 import { usePlanCalculationHandlers } from "@/features/planning/usePlanCalculationHandlers";
 
 describe("Planning: Workforce Calculations", async () => {
-	let gameDataStore: any;
+	beforeAll(async () => {
+		//@ts-expect-error mock data
+		await buildingsStore.setMany(buildings);
+		await recipesStore.setMany(recipes);
+		const { preloadBuildings, preloadRecipes } = await useBuildingData();
 
-	beforeEach(() => {
-		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
+		await preloadBuildings();
+		await preloadRecipes();
+		await flushPromises();
 	});
 
 	it("handleResetModified", async () => {
@@ -399,10 +407,6 @@ describe("Planning: Workforce Calculations", async () => {
 
 	describe("handleCreateBuilding", async () => {
 		it("Update, invalid value upper clamp", async () => {
-			gameDataStore.buildings["FOO"] = {
-				Ticker: "FOO",
-			};
-
 			const fakePlan = {
 				buildings: [],
 			};
@@ -416,7 +420,7 @@ describe("Planning: Workforce Calculations", async () => {
 			);
 
 			expect(fakePlan.buildings.length).toBe(0);
-			handleCreateBuilding("FOO");
+			await handleCreateBuilding("BMP");
 			expect(fakePlan.buildings.length).toBe(1);
 		});
 	});

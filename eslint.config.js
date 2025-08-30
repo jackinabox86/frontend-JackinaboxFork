@@ -17,6 +17,7 @@ export default [
 		languageOptions: {
 			ecmaVersion: "latest",
 			globals: {
+				__APP_VERSION__: "readonly",
 				...globals.browser,
 				...globals.node,
 			},

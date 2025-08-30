@@ -1,7 +1,7 @@
 import { ref, Ref } from "vue";
 
 // Composables
-import { useBuildingData } from "@/features/game_data/useBuildingData";
+import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Types & Interfaces
 import {
@@ -200,9 +200,9 @@ export async function usePlanCalculationHandlers(
 	 *
 	 * @param {string} ticker Building Ticker to add
 	 */
-	function handleCreateBuilding(ticker: string): void {
+	async function handleCreateBuilding(ticker: string): Promise<void> {
 		// validate building
-		const building: IBuilding = getBuilding(ticker);
+		const building: IBuilding = await getBuilding(ticker);
 
 		planData.value.buildings.push({
 			name: building.Ticker,

@@ -53,23 +53,42 @@
 	const refEmpireList: Ref<IPlanEmpireElement[]> = ref([]);
 	const refCalculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
 
+	/**
+	 * Calculates all given plans
+	 * @author jplacht
+	 *
+	 * @async
+	 * @returns {Promise<void>}
+	 */
+	const alreadyCalculated = new Map<string, IPlanResult>();
+
 	async function calculateEmpire(): Promise<void> {
 		refIsCalculating.value = true;
-
 		refCalculatedPlans.value = {};
 
-		// calculate all plans, pass in references as the
-		// empire might be updated
-		for (const plan of refPlanData.value) {
-			const calculation = await usePlanCalculation(
+		// don't reset the whole map — only add/update plans as needed
+
+		const tasks = refPlanData.value.map(async (plan) => {
+			if (alreadyCalculated.has(plan.uuid!)) {
+				refCalculatedPlans.value[plan.uuid!] = alreadyCalculated.get(
+					plan.uuid!
+				)!;
+				return;
+			}
+
+			const { calculate } = await usePlanCalculation(
 				toRef(plan),
 				refSelectedEmpireUuid,
 				refEmpireList,
 				refSelectedCXUuid
 			);
+			const result = await calculate();
+			refCalculatedPlans.value[plan.uuid!] = result;
 
-			refCalculatedPlans.value[plan.uuid!] = calculation.result.value;
-		}
+			alreadyCalculated.set(plan.uuid!, result);
+		});
+
+		await Promise.all(tasks);
 
 		refIsCalculating.value = false;
 	}

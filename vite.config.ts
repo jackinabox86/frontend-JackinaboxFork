@@ -51,6 +51,7 @@ export default defineConfig({
 	base: "/",
 	define: {
 		__INDEXEDDB_VERSION__: INDEXEDDB_VERSION,
+		__APP_VERSION__: JSON.stringify(process.env.npm_package_version),
 	},
 	server: {
 		watch: {
@@ -102,7 +103,7 @@ export default defineConfig({
 		cssCodeSplit: true,
 		outDir: "dist",
 		emptyOutDir: true,
-		sourcemap: false,
+		sourcemap: true,
 		minify: "esbuild",
 		commonjsOptions: {
 			transformMixedEsModules: true,

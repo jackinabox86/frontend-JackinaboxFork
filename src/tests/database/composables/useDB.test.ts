@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { ref, nextTick } from "vue";
 import { useDB } from "@/database/composables/useDB";
 
 // Define a fake type for testing
@@ -31,10 +30,7 @@ describe("useDB composable", () => {
 		];
 		fakeStore.getAll.mockResolvedValue(items);
 
-		const { preload, allData } = useDB<TestItem, "id">(
-			fakeStore as any,
-			"id"
-		);
+		const { preload, allData } = useDB<TestItem, "id">(fakeStore as any);
 
 		expect(allData.value).toEqual([]);
 
@@ -47,10 +43,7 @@ describe("useDB composable", () => {
 	it("preload() skips reload if already loaded", async () => {
 		fakeStore.getAll.mockResolvedValue([{ id: "1", name: "Alpha" }]);
 
-		const { preload, allData } = useDB<TestItem, "id">(
-			fakeStore as any,
-			"id"
-		);
+		const { preload, allData } = useDB<TestItem, "id">(fakeStore as any);
 
 		// First call loads
 		await preload();
@@ -70,7 +63,7 @@ describe("useDB composable", () => {
 		fakeStore.getAll.mockResolvedValue([item]);
 		fakeStore.get.mockResolvedValue(item);
 
-		const { preload, get } = useDB<TestItem, "id">(fakeStore as any, "id");
+		const { preload, get } = useDB<TestItem, "id">(fakeStore as any);
 
 		await preload();
 
@@ -87,7 +80,7 @@ describe("useDB composable", () => {
 		fakeStore.getAll.mockResolvedValue([]);
 		fakeStore.get.mockResolvedValue(item);
 
-		const { get } = useDB<TestItem, "id">(fakeStore as any, "id");
+		const { get } = useDB<TestItem, "id">(fakeStore as any);
 
 		const result = await get("1");
 		expect(result).toEqual(item);
@@ -102,7 +95,7 @@ describe("useDB composable", () => {
 	it("get() returns undefined if item not found", async () => {
 		fakeStore.get.mockResolvedValue(undefined);
 
-		const { get } = useDB<TestItem, "id">(fakeStore as any, "id");
+		const { get } = useDB<TestItem, "id">(fakeStore as any);
 
 		const result = await get("404");
 		expect(result).toBeUndefined();
