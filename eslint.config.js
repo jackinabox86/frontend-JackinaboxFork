@@ -5,9 +5,6 @@ import globals from "globals";
 
 export default [
 	{
-		globals: {
-			__APP_VERSION__: "readonly",
-		},
 		ignores: [
 			"**/dist/*",
 			"**/tests/*",
@@ -20,6 +17,7 @@ export default [
 		languageOptions: {
 			ecmaVersion: "latest",
 			globals: {
+				__APP_VERSION__: "readonly",
 				...globals.browser,
 				...globals.node,
 			},
