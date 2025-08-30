@@ -5,6 +5,9 @@ import globals from "globals";
 
 export default [
 	{
+		globals: {
+			__APP_VERSION__: "readonly",
+		},
 		ignores: [
 			"**/dist/*",
 			"**/tests/*",
