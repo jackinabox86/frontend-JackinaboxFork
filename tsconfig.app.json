@@ -1,31 +1,38 @@
 {
-	"extends": "./tsconfig.json",
+	"include": [
+		"src/**/*",
+		"src/classes/**/*",
+		"src/**/*.vue",
+		"src/vite-env.d.ts",
+		"src/**/*.json",
+	],
+	"exclude": [
+		"dist/**/*",
+		"coverage/**/*",
+		".vscode/**/*",
+		".github/**/*",
+	],
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "ESNext",
-		"moduleResolution": "Node",
-		"strict": true,
+		"skipLibCheck": true,
+		"ignoreDeprecations": "6.0",
+		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
+		"composite": true,
+		"lib": [
+			"ESNext",
+			"DOM",
+		],
+		"strict": true,
+		"moduleResolution": "node",
+		"outDir": "./dist",
 		"baseUrl": ".",
 		"paths": {
 			"@/*": [
 				"./src/*"
 			]
-		},
-		"forceConsistentCasingInFileNames": true,
-		"ignoreDeprecations": "6.0"
-	},
-	"include": [
-		"src/**/*",
-		"src/vite-env.d.ts"
-	],
-	"exclude": [
-		"dist",
-		"coverage",
-		".vscode",
-		".github"
-	]
+		}
+	}
 }
