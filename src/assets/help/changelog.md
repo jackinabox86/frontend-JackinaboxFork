@@ -1,3 +1,11 @@
+# 2025-08-30
+
+- Rewrite data logics for Buildings and Recipes to use IndexedDB instead of Pinia + localStorage
+- Adds current frontend package version to headline, also adds as global parameter on Posthog events
+- Add SourceMap on build during Preview phase
+- Empire View calculates plans that are in multiple empires only once, add Keys to Empire Material I/O tiles
+- Market Exploration now forces a material preload on mounting the view
+
 # 2025-08-29
 
 - Fixes ROI Overview calculation by isolating per-item plan state to prevent parallel mutation conflicts.
