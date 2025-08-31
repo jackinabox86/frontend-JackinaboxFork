@@ -87,30 +87,46 @@
 	 * @returns {Promise<void>}
 	 */
 
-	async function calculateEmpire(): Promise<void> {
+	const cacheCalculatedPlans = new Map<string, IPlanResult>();
+
+	async function calculateEmpire(clearCache = false): Promise<void> {
 		isCalculating.value = true;
 
 		calculatedPlans.value = {};
 		progressTotal.value = planData.value.length;
 		progressCurrent.value = 0;
 
+		if (clearCache) cacheCalculatedPlans.clear();
+
 		for (const plan of planData.value) {
-			await Promise.resolve();
+			// note, calculation depends on empire + cx, so a plan is only
+			// calculated properly within this context
 
-			const { calculate } = await usePlanCalculation(
-				toRef(plan),
-				selectedEmpireUuid,
-				refEmpireList,
-				selectedCXUuid
-			);
+			const cacheKey: string = `${plan.uuid}#${selectedCXUuid.value}#${selectedCXUuid.value}`;
 
-			const result = await calculate();
-			calculatedPlans.value[plan.uuid!] = result;
+			if (cacheCalculatedPlans.has(cacheKey)) {
+				calculatedPlans.value[plan.uuid!] =
+					cacheCalculatedPlans.get(cacheKey)!;
+				progressCurrent.value++;
+			} else {
+				await Promise.resolve();
 
-			progressCurrent.value++;
+				const { calculate } = await usePlanCalculation(
+					toRef(plan),
+					selectedEmpireUuid,
+					refEmpireList,
+					selectedCXUuid
+				);
 
-			// yield back to vue and update DOM
-			await new Promise((r) => setTimeout(r, 0));
+				const result = await calculate();
+				calculatedPlans.value[plan.uuid!] = result;
+				progressCurrent.value++;
+
+				// cache
+				cacheCalculatedPlans.set(cacheKey, result);
+				// yield back to vue and update DOM
+				await new Promise((r) => setTimeout(r, 0));
+			}
 		}
 
 		isCalculating.value = false;
@@ -121,15 +137,12 @@
 	 * @author jplacht
 	 *
 	 * @async
-	 * @returns {Promise<void>}
 	 */
-	async function reloadEmpires(): Promise<void> {
-		try {
-			// make a forced call to also update store
-			refEmpireList.value = await useQuery("GetAllEmpires").execute();
-		} catch (err) {
-			console.error("Error reloading empires", err);
-		}
+	async function reloadEmpires() {
+		// make a forced call to also update store
+		refEmpireList.value = await useQuery("GetAllEmpires").execute();
+		// trigger recalculation, changed config required new calculation
+		await calculateEmpire(true);
 	}
 
 	/**

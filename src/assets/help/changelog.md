@@ -3,6 +3,7 @@
 - Rework Empire / FIO Burn loading behavior, full parallel execution, overlay on computation. Replicate visual for ROI and Resource ROI.
 - Introduce PProgressBar component to UI.
 - Fix wrong material colors in Planet Search environment materials.
+- "Cache" calculated plan within empire + exchange, so accessing the result again won't trigger recalculation.
 
 # 2025-08-30
 
