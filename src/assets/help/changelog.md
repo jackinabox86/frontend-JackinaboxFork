@@ -1,10 +1,16 @@
 # 2025-08-30
 
-- Rewrite data logics for Buildings and Recipes to use IndexedDB instead of Pinia + localStorage
-- Adds current frontend package version to headline, also adds as global parameter on Posthog events
-- Add SourceMap on build during Preview phase
-- Empire View calculates plans that are in multiple empires only once, add Keys to Empire Material I/O tiles
-- Market Exploration now forces a material preload on mounting the view
+- Rework Empire / FIO Burn loading behavior, full parallel execution, overlay on computation. Replicate visual for ROI and Resource ROI.
+- Introduce PProgressBar component to UI.
+- Fix wrong material colors in Planet Search environment materials.
+
+# 2025-08-30
+
+- Rewrite data logics for Buildings and Recipes to use IndexedDB instead of Pinia + localStorage.
+- Adds current frontend package version to headline, also adds as global parameter on Posthog events.
+- Add SourceMap on build during Preview phase.
+- Empire View calculates plans that are in multiple empires only once, add Keys to Empire Material I/O tiles.
+- Market Exploration now forces a material preload on mounting the view.
 
 # 2025-08-29
 

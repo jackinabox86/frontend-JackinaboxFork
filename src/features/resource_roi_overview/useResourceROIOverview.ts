@@ -35,12 +35,18 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	const planetResults: Ref<IPlanet[]> = ref([]);
 	const resultData: Ref<IResourceROIResult[]> = ref([]);
 
+	const progressSearchingPlanets = ref(false);
+	const progressCurrent = ref(0);
+	const progressTotal = ref(0);
+
 	// Filter for all extraction buildings
 	const filteredOptimalProduction = optimalProduction.filter((e) =>
 		["RIG", "EXT", "COL"].includes(e.ticker)
 	);
 
 	async function searchPlanets(materialTicker: string): Promise<IPlanet[]> {
+		progressSearchingPlanets.value = true;
+
 		await useQuery("PostPlanetSearch", {
 			searchData: {
 				Materials: [materialTicker],
@@ -65,6 +71,11 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 			.then((data: IPlanet[]) => {
 				planetResults.value = data;
 			});
+
+		// reset total + current
+		progressCurrent.value = 0;
+		progressTotal.value = planetResults.value.length;
+		progressSearchingPlanets.value = false;
 
 		return planetResults.value;
 	}
@@ -249,6 +260,9 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 					}
 				}
 			}
+
+			progressCurrent.value++;
+			await new Promise((r) => setTimeout(r, 0));
 		}
 
 		// calculate the max yield of all, then set the percent of max yield
@@ -272,5 +286,9 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		calculate,
 		planetResults,
 		resultData,
+		// progress
+		progressCurrent,
+		progressTotal,
+		progressSearchingPlanets,
 	};
 }

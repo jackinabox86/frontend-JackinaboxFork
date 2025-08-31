@@ -112,6 +112,7 @@
 			<template #render-cell="{ rowData }">
 				<div class="child:text-nowrap">
 					<MaterialTile
+						:key="rowData.searchResources[sm].ticker"
 						:ticker="rowData.searchResources[sm].ticker"
 						:amount="rowData.searchResources[sm].dailyExtraction"
 						:max="rowData.searchResources[sm].maxExtraction" />
@@ -156,6 +157,7 @@
 						<template #trigger>
 							<div>
 								<MaterialTile
+									:key="rowData.environmentSurface[0]"
 									:ticker="rowData.environmentSurface[0]" />
 							</div>
 						</template>
@@ -165,6 +167,7 @@
 						<template #trigger>
 							<div>
 								<MaterialTile
+									:key="rowData.environmentGravity[0]"
 									:ticker="rowData.environmentGravity[0]" />
 							</div>
 						</template>
@@ -175,6 +178,7 @@
 						<template #trigger>
 							<div>
 								<MaterialTile
+									:key="rowData.environmentTemperature[0]"
 									:ticker="
 										rowData.environmentTemperature[0]
 									" />
@@ -186,6 +190,7 @@
 						<template #trigger>
 							<div>
 								<MaterialTile
+									:key="rowData.environmentPressure[0]"
 									:ticker="rowData.environmentPressure[0]" />
 							</div>
 						</template>
