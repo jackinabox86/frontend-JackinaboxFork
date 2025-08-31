@@ -15,6 +15,7 @@
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
+	import { PProgressBar } from "@/ui";
 	import CXPreferenceSelector from "@/features/exchanges/components/CXPreferenceSelector.vue";
 	import ResourceROITable from "@/features/resource_roi_overview/components/ResourceROITable.vue";
 
@@ -30,7 +31,13 @@
 	const refSearchMaterial: Ref<string | undefined> = ref(undefined);
 	const refIsLoading: Ref<boolean> = ref(false);
 
-	const { resultData, calculate } = useResourceROIOverview(refSelectedCXUuid);
+	const {
+		resultData,
+		calculate,
+		progressCurrent,
+		progressTotal,
+		progressSearchingPlanets,
+	} = useResourceROIOverview(refSelectedCXUuid);
 
 	async function performSearchAndCalculation(): Promise<void> {
 		if (refSearchMaterial.value) {
@@ -92,9 +99,26 @@
 					<div v-if="!refInitialized" class="text-center py-3">
 						Select a Resource and press "Search & Calculate"
 					</div>
-					<div v-else-if="refIsLoading" class="text-center py-3">
-						<n-spin />
-						<div>Getting Planets and Calculating Resource ROI</div>
+					<div
+						v-else-if="refIsLoading"
+						class="flex justify-center child:w-[400px] py-3">
+						<div class="text-center">
+							<div v-if="progressSearchingPlanets">
+								<n-spin />
+								<div class="pt-3 text-xs text-white/60">
+									Searching for planets with
+									{{ refSearchMaterial }}.
+								</div>
+							</div>
+							<div v-else>
+								<PProgressBar
+									:step="progressCurrent"
+									:total="progressTotal" />
+								<div class="pt-3 text-xs text-white/60">
+									Calculating resource ROI for planets.
+								</div>
+							</div>
+						</div>
 					</div>
 					<div v-else>
 						<ResourceROITable

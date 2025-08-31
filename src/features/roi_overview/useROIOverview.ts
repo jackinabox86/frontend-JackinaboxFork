@@ -31,6 +31,9 @@ export async function useROIOverview(
 		(e) => !["RIG", "EXT", "COL", "FRM"].includes(e.ticker)
 	);
 
+	const progressCurrent = ref(0);
+	const progressTotal = ref(0);
+
 	const resultData: Ref<IROIResult[]> = ref([]);
 
 	/**
@@ -135,21 +138,27 @@ export async function useROIOverview(
 	 */
 	async function calculate(): Promise<IROIResult[]> {
 		resultData.value = [];
+		progressCurrent.value = 0;
+		progressTotal.value = filteredOptimalProduction.length;
 
 		// set all the experts to 5
 		definition.value.baseplanner_data.planet.experts.forEach(
 			(expert) => (expert.amount = 5)
 		);
 
-		// do calculations in parallel
-		const nestedResults = await Promise.all(
-			filteredOptimalProduction.map((optimal) => calculateItem(optimal))
-		);
+		for (const optimal of filteredOptimalProduction) {
+			await Promise.resolve();
 
-		const results = nestedResults.flat();
-		resultData.value = results;
+			const result = await calculateItem(optimal);
+			result.forEach((r) => resultData.value.push(r));
 
-		return results;
+			progressCurrent.value++;
+
+			// yield back to vue and update dom
+			await new Promise((r) => setTimeout(r, 0));
+		}
+
+		return resultData.value;
 	}
 
 	/**
@@ -181,5 +190,8 @@ export async function useROIOverview(
 		calculate,
 		calculateItem,
 		formatOptimal,
+		// progress
+		progressCurrent,
+		progressTotal,
 	};
 }

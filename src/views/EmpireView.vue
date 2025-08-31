@@ -24,6 +24,7 @@
 
 	// Components
 	import RenderingProgress from "@/layout/components/RenderingProgress.vue";
+	import ComputingProgress from "@/layout/components/ComputingProgress.vue";
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
 	import WrapperGameDataLoader from "@/features/wrapper/components/WrapperGameDataLoader.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
@@ -72,8 +73,11 @@
 	const refEmpireList: Ref<IPlanEmpireElement[]> = ref([]);
 
 	const calculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
-	const isCalculating: Ref<boolean> = ref(true);
 	const planData: Ref<IPlan[]> = ref([]);
+
+	const isCalculating: Ref<boolean> = ref(true);
+	const progressCurrent = ref(0);
+	const progressTotal = ref(0);
 
 	/**
 	 * Calculates all given plans
@@ -82,21 +86,16 @@
 	 * @async
 	 * @returns {Promise<void>}
 	 */
-	const alreadyCalculated = new Map<string, IPlanResult>();
 
 	async function calculateEmpire(): Promise<void> {
 		isCalculating.value = true;
+
 		calculatedPlans.value = {};
+		progressTotal.value = planData.value.length;
+		progressCurrent.value = 0;
 
-		// don't reset the whole map — only add/update plans as needed
-
-		const tasks = planData.value.map(async (plan) => {
-			if (alreadyCalculated.has(plan.uuid!)) {
-				calculatedPlans.value[plan.uuid!] = alreadyCalculated.get(
-					plan.uuid!
-				)!;
-				return;
-			}
+		for (const plan of planData.value) {
+			await Promise.resolve();
 
 			const { calculate } = await usePlanCalculation(
 				toRef(plan),
@@ -104,13 +103,15 @@
 				refEmpireList,
 				selectedCXUuid
 			);
+
 			const result = await calculate();
 			calculatedPlans.value[plan.uuid!] = result;
 
-			alreadyCalculated.set(plan.uuid!, result);
-		});
+			progressCurrent.value++;
 
-		await Promise.all(tasks);
+			// yield back to vue and update DOM
+			await new Promise((r) => setTimeout(r, 0));
+		}
 
 		isCalculating.value = false;
 	}
@@ -282,12 +283,18 @@
 				load-exchanges
 				:load-planet-multiple="empirePlanetList"
 				@complete="calculateEmpire">
-				<template v-if="refEmpireList.length === 0">
-					<AsyncWrapperGenericError
-						message-title="No Empires"
-						message-text="You don't have any empires. Head to Management to create your first." />
-				</template>
-				<template v-else>
+				<AsyncWrapperGenericError
+					v-if="refEmpireList.length === 0"
+					message-title="No Empires"
+					message-text="You don't have any empires. Head to Management to create your first." />
+
+				<ComputingProgress
+					v-else-if="isCalculating"
+					:step="progressCurrent"
+					:total="progressTotal"
+					message="One does not simply calculate empire plans." />
+
+				<div v-else>
 					<div class="min-h-screen flex flex-col">
 						<div
 							class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
@@ -365,7 +372,7 @@
 							</div>
 						</div>
 					</div>
-				</template>
+				</div>
 			</WrapperGameDataLoader>
 		</template>
 	</WrapperPlanningDataLoader>

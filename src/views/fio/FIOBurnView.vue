@@ -45,13 +45,15 @@
 	// UI
 	import { PSelect, PForm, PFormItem, PInputNumber } from "@/ui";
 
-	const refIsCalculating: Ref<boolean> = ref(false);
-	const refSelectedEmpireUuid: Ref<string | undefined> =
-		ref(defaultEmpireUuid);
-	const refSelectedCXUuid: Ref<string | undefined> = ref(undefined);
-	const refPlanData: Ref<IPlan[]> = ref([]);
-	const refEmpireList: Ref<IPlanEmpireElement[]> = ref([]);
-	const refCalculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
+	const isCalculating: Ref<boolean> = ref(false);
+	const selectedEmpireUuid: Ref<string | undefined> = ref(defaultEmpireUuid);
+	const selectedCXUuid: Ref<string | undefined> = ref(undefined);
+	const planData: Ref<IPlan[]> = ref([]);
+	const empireList: Ref<IPlanEmpireElement[]> = ref([]);
+	const calculatedPlans: Ref<Record<string, IPlanResult>> = ref({});
+
+	const progressCurrent = ref(0);
+	const progressTotal = ref(0);
 
 	/**
 	 * Calculates all given plans
@@ -60,72 +62,82 @@
 	 * @async
 	 * @returns {Promise<void>}
 	 */
-	const alreadyCalculated = new Map<string, IPlanResult>();
+
+	/**
+	 * Calculates all given plans
+	 * @author jplacht
+	 *
+	 * @async
+	 * @returns {Promise<void>}
+	 */
 
 	async function calculateEmpire(): Promise<void> {
-		refIsCalculating.value = true;
-		refCalculatedPlans.value = {};
+		isCalculating.value = true;
 
-		// don't reset the whole map — only add/update plans as needed
+		calculatedPlans.value = {};
+		progressTotal.value = planData.value.length;
+		progressCurrent.value = 0;
 
-		const tasks = refPlanData.value.map(async (plan) => {
-			if (alreadyCalculated.has(plan.uuid!)) {
-				refCalculatedPlans.value[plan.uuid!] = alreadyCalculated.get(
-					plan.uuid!
-				)!;
-				return;
-			}
+		for (const plan of planData.value) {
+			await Promise.resolve();
 
 			const { calculate } = await usePlanCalculation(
 				toRef(plan),
-				refSelectedEmpireUuid,
-				refEmpireList,
-				refSelectedCXUuid
+				selectedEmpireUuid,
+				empireList,
+				selectedCXUuid
 			);
+
 			const result = await calculate();
-			refCalculatedPlans.value[plan.uuid!] = result;
+			calculatedPlans.value[plan.uuid!] = result;
 
-			alreadyCalculated.set(plan.uuid!, result);
-		});
+			progressCurrent.value++;
 
-		await Promise.all(tasks);
+			// yield back to vue and update DOM
+			await new Promise((r) => setTimeout(r, 0));
+		}
 
-		refIsCalculating.value = false;
+		isCalculating.value = false;
 	}
 
 	const burnTable: ComputedRef<IFIOBurnTableElement[]> = computed(() => {
-		return useFIOBurn(refPlanData, refCalculatedPlans).burnTable.value;
+		return useFIOBurn(planData, calculatedPlans).burnTable.value;
 	});
 
 	const planTable: ComputedRef<IFIOBurnPlanetTableElement[]> = computed(
 		() => {
-			return useFIOBurn(refPlanData, refCalculatedPlans).planTable.value;
+			return useFIOBurn(planData, calculatedPlans).planTable.value;
 		}
 	);
 </script>
 
 <template>
 	<WrapperPlanningDataLoader
-		:key="`WrapperPlanningDataLoader#${refSelectedEmpireUuid}`"
+		:key="`WrapperPlanningDataLoader#${selectedEmpireUuid}`"
 		empire-list
-		:empire-uuid="refSelectedEmpireUuid"
+		:empire-uuid="selectedEmpireUuid"
 		@update:cx-uuid="
-			(value: string | undefined) => (refSelectedCXUuid = value)
+			(value: string | undefined) => (selectedCXUuid = value)
 		"
 		@data:empire:list="
-			(value: IPlanEmpireElement[]) => (refEmpireList = value)
+			(value: IPlanEmpireElement[]) => (empireList = value)
 		"
-		@data:empire:plans="(value: IPlan[]) => (refPlanData = value)">
+		@data:empire:plans="(value: IPlan[]) => (planData = value)">
 		<template #default="{ empirePlanetList }">
 			<AsyncWrapperGameDataLoader
-				:key="`GAMEDATAWRAPPER#${refSelectedEmpireUuid}`"
+				:key="`GAMEDATAWRAPPER#${selectedEmpireUuid}`"
 				load-materials
 				load-exchanges
 				load-recipes
 				load-buildings
 				:load-planet-multiple="empirePlanetList"
 				@complete="calculateEmpire">
-				<div class="min-h-screen flex flex-col">
+				<ComputingProgress
+					v-if="isCalculating"
+					:step="progressCurrent"
+					:total="progressTotal"
+					message="One does not simply calculate automate burn supply." />
+				<div v-else class="min-h-screen flex flex-col">
 					<div
 						class="px-6 py-3 border-b border-white/10 flex flex-row justify-between">
 						<h1 class="text-2xl font-bold my-auto">FIO Burn</h1>
@@ -145,9 +157,9 @@
 									</h2>
 
 									<PSelect
-										v-model:value="refSelectedEmpireUuid"
+										v-model:value="selectedEmpireUuid"
 										:options="
-											refEmpireList.map((e) => {
+											empireList.map((e) => {
 												return {
 													label: e.name,
 													value: e.uuid,
@@ -156,7 +168,7 @@
 										"
 										@update-value="
 									(value: string) => {
-										refSelectedEmpireUuid = value;
+										selectedEmpireUuid = value;
 										defaultEmpireUuid = value;
 									}
 								" />

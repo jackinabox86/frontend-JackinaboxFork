@@ -4,7 +4,6 @@
 		PropType,
 		Ref,
 		computed,
-		nextTick,
 		onMounted,
 		ref,
 		watch,
@@ -28,7 +27,7 @@
 	import { PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { NSpin } from "naive-ui";
+	import { PProgressBar } from "@/ui";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 
 	const props = defineProps({
@@ -55,7 +54,8 @@
 	const filterOutputMaterial: Ref<string | null> = ref(null);
 	const filterPostiveROI: Ref<boolean> = ref(false);
 
-	const { calculate, formatOptimal } = await useROIOverview(definition, cx);
+	const { calculate, formatOptimal, progressCurrent, progressTotal } =
+		await useROIOverview(definition, cx);
 
 	const filteredResult: ComputedRef<IROIResult[]> = computed(() => {
 		let filtered = result.value;
@@ -130,12 +130,9 @@
 		isCalculating.value = true;
 		result.value = [];
 
-		await nextTick(); // finish render
-		setTimeout(() => {
-			calculate()
-				.then((d) => (result.value = d))
-				.finally(() => (isCalculating.value = false));
-		}, 0); // defer to next event loop
+		calculate()
+			.then((d) => (result.value = d))
+			.finally(() => (isCalculating.value = false));
 	}
 
 	// watch for cx change, must retrigger calculation
@@ -153,10 +150,12 @@
 </script>
 
 <template>
-	<div v-if="isCalculating">
-		<div class="text-center py-3">
-			<n-spin />
-			<div>Calculating ROI</div>
+	<div v-if="isCalculating" class="w-full flex justify-center">
+		<div class="text-center w-[400px] py-3">
+			<PProgressBar :step="progressCurrent" :total="progressTotal" />
+			<div class="pt-3 text-xs text-white/60">
+				Calculating Building Recipe ROI
+			</div>
 		</div>
 	</div>
 	<div v-else>
