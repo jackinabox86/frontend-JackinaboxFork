@@ -1,3 +1,8 @@
+# 2025-09-01
+
+- Improve Resource ROI calculation performance with parallel executions
+
+
 # 2025-08-30
 
 - Rework Empire / FIO Burn loading behavior, full parallel execution, overlay on computation. Replicate visual for ROI and Resource ROI.
