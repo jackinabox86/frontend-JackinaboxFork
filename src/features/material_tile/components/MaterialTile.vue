@@ -3,7 +3,14 @@
 		Allowing the drawer to render is quite the performance-hit
 		due to many HTML elements being created.
 	*/
-	import { computed, ComputedRef, onMounted, ref, Ref } from "vue";
+	import {
+		computed,
+		ComputedRef,
+		getCurrentInstance,
+		onMounted,
+		ref,
+		Ref,
+	} from "vue";
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
@@ -125,7 +132,19 @@
 		}
 	}
 
+	const instance = getCurrentInstance();
+
 	onMounted(async () => {
+		// enforce a "key" on MaterialTile
+		if (!instance?.vnode.key) {
+			console.warn(
+				`[${
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					(instance?.type as any).__name
+				}] should always be used with a :key!`
+			);
+		}
+
 		try {
 			material.value = await getMaterial(props.ticker);
 			categoryCssClass.value = getMaterialClass(props.ticker);

@@ -92,7 +92,9 @@
 		<div class="flex flex-row flex-wrap gap-3 pr-3">
 			<div class="my-auto font-bold">Searched Material</div>
 			<div>
-				<MaterialTile :ticker="searchedMaterial" />
+				<MaterialTile
+					:key="searchedMaterial"
+					:ticker="searchedMaterial" />
 			</div>
 		</div>
 	</div>

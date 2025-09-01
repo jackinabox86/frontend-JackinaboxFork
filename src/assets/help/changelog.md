@@ -1,6 +1,7 @@
 # 2025-09-01
 
 - Improve Resource ROI calculation performance with parallel executions
+- Add key-attribute to MaterialTiles were missing
 
 
 # 2025-08-30

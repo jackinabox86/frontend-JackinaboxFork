@@ -44,7 +44,9 @@
 						title="Ticker"
 						sorter="default">
 						<template #render-cell="data">
-							<MaterialTile :ticker="data.rowData.ticker" />
+							<MaterialTile
+								:key="data.rowData.ticker"
+								:ticker="data.rowData.ticker" />
 						</template>
 					</XNDataTableColumn>
 					<XNDataTableColumn

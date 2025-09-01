@@ -124,7 +124,9 @@
 						v-for="ticker in rowData.ticker"
 						:key="`${rowData.planet}#${ticker.type}#${ticker.value}`"
 						class="flex flex-row gap-x-1">
-						<MaterialTile :ticker="ticker.ticker" />
+						<MaterialTile
+							:key="ticker.ticker"
+							:ticker="ticker.ticker" />
 						<PTag
 							:type="
 								ticker.type === 'BUY'

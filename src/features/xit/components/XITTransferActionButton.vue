@@ -165,7 +165,11 @@
 					<tr
 						v-for="element in localElements"
 						:key="`TRANSFER#${element.ticker}`">
-						<td><MaterialTile :ticker="element.ticker" /></td>
+						<td>
+							<MaterialTile
+								:key="element.ticker"
+								:ticker="element.ticker" />
+						</td>
 						<td>{{ formatAmount(element.value) }}</td>
 					</tr>
 				</tbody>
