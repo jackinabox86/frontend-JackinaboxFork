@@ -230,7 +230,9 @@
 									}
 								" />
 						</td>
-						<td><MaterialTile :ticker="e.ticker" /></td>
+						<td>
+							<MaterialTile :key="e.ticker" :ticker="e.ticker" />
+						</td>
 						<td>{{ formatAmount(e.stock) }}</td>
 						<td>{{ formatNumber(e.delta) }}</td>
 						<td>

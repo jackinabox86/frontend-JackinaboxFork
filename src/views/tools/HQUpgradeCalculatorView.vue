@@ -160,6 +160,7 @@
 							sorter="default">
 							<template #render-cell="{ rowData }">
 								<MaterialTile
+									:key="rowData.ticker"
 									:ticker="rowData.ticker"
 									:disable-drawer="false" />
 							</template>

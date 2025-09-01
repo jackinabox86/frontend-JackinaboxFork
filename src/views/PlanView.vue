@@ -522,6 +522,7 @@
 									<template #trigger>
 										<div class="hover:cursor-help">
 											<MaterialTile
+												:key="resource.MaterialTicker"
 												:ticker="
 													resource.MaterialTicker
 												"

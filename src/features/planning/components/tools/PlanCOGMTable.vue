@@ -74,6 +74,7 @@
 					:key="`INPUT#${input.ticker}`">
 					<td>
 						<MaterialTile
+							:key="input.ticker"
 							:ticker="input.ticker"
 							:amount="input.amount" />
 					</td>
@@ -131,6 +132,7 @@
 				:key="`OUTPUT#${output.ticker}`">
 				<td>
 					<MaterialTile
+						:key="output.ticker"
 						:ticker="output.ticker"
 						:amount="output.amount" />
 				</td>

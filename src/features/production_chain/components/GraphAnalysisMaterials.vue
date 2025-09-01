@@ -36,7 +36,9 @@
 				v-for="material in materialAnalysis"
 				:key="material.materialTicker">
 				<td>
-					<MaterialTile :ticker="material.materialTicker" />
+					<MaterialTile
+						:key="material.materialTicker"
+						:ticker="material.materialTicker" />
 				</td>
 				<td>
 					{{ formatNumber(material.amount) }}
