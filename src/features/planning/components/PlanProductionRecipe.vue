@@ -135,9 +135,9 @@
 					v-for="material in localRecipeData.recipe.Outputs"
 					:key="`${localRecipeData.recipe.BuildingTicker}#${material.Ticker}`"
 					:ticker="material.Ticker"
-					:amount="material.Amount" />
+					:amount="material.Amount * localRecipeData.amount" />
 			</div>
-			<div class="text-white/50 text-xs">
+			<div class="text-white/50 text-xs text-end">
 				<span class="font-bold">
 					{{ humanizeTimeMs(localRecipeData.time) }}
 				</span>
@@ -151,10 +151,10 @@
 			</div>
 		</div>
 		<div
-			class="relative z-10"
+			class="relative z-10 lg:w-[650px]"
 			:class="refShowRecipeOptions ? 'visible' : 'hidden'">
 			<n-table
-				class="absolute lg:!min-w-[500px] border border-pp-border !bg-black"
+				class="absolute w-full border border-pp-border !bg-black"
 				striped>
 				<thead>
 					<tr>
@@ -169,7 +169,7 @@
 					<tr
 						v-for="(recipe, index) in localRecipeOptions"
 						:key="`${recipe.BuildingTicker}#${recipe.RecipeId}`"
-						class="child:whitespace-nowrap hover:cursor-pointer"
+						class="child:whitespace-nowrap hover:cursor-pointer hover:child:first:!border-l-3 hover:child:first:!border-l-blue-500"
 						@click="
 							emit(
 								'update:building:recipe',
@@ -183,7 +183,7 @@
 									? '!border-l-3 !border-l-green-500'
 									: ''
 							">
-							<div class="flex gap-1">
+							<div class="flex flex-wrap gap-1">
 								<MaterialTile
 									v-for="material in recipe.Inputs"
 									:key="`${index}#INPUT#${material.Ticker}`"
@@ -195,7 +195,7 @@
 							{{ humanizeTimeMs(recipe.TimeMs) }}
 						</td>
 						<td>
-							<div class="flex gap-1">
+							<div class="flex flex-wrap gap-1">
 								<MaterialTile
 									v-for="material in recipe.Outputs"
 									:key="`${index}#OUTPUT#${material.Ticker}`"
