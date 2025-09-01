@@ -4,11 +4,11 @@ import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
 
 // stores
-import { useGameDataStore } from "@/stores/gameDataStore";
 import {
 	materialsStore,
 	recipesStore,
 	buildingsStore,
+	exchangesStore,
 } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -44,12 +44,12 @@ describe("useROIOverview", async () => {
 
 	beforeAll(async () => {
 		setActivePinia(createPinia());
-		const gameDataStore = useGameDataStore();
 
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
 		await recipesStore.setMany(recipes);
 		await materialsStore.setMany(materials);
+		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
 		const { preloadBuildings, preloadRecipes } = await useBuildingData();
@@ -58,8 +58,6 @@ describe("useROIOverview", async () => {
 		await preloadBuildings();
 		await preloadRecipes();
 		await flushPromises();
-
-		gameDataStore.setExchanges(exchanges);
 	});
 
 	it("calculateItem", async () => {
@@ -84,7 +82,7 @@ describe("useROIOverview", async () => {
 		await calculate();
 
 		expect(resultData.value.length).toBe(353);
-	}, 30_000);
+	});
 
 	it("formatOptimal", async () => {
 		const { formatOptimal } = await useROIOverview(

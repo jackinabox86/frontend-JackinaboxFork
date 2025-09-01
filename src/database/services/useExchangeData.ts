@@ -45,23 +45,25 @@ export async function useExchangeData() {
 			Universe30D: universe30d.PriceAverage,
 		};
 
-		exchangeTypesArray.forEach(async (type) => {
-			const ticker = await getExchangeTicker(`${materialTicker}.${type}`);
-			overview.Ask[type] = ticker.Ask ?? 0;
-			overview.Bid[type] = ticker.Bid ?? 0;
-			overview.Average[type] = ticker.PriceAverage;
-			overview.Supply[type] = ticker.Supply ?? 0;
-			overview.Demand[type] = ticker.Demand ?? 0;
+		await Promise.all(
+			exchangeTypesArray.map(async (type) => {
+				const ticker = await getExchangeTicker(
+					`${materialTicker}.${type}`
+				);
+				overview.Ask[type] = ticker.Ask ?? 0;
+				overview.Bid[type] = ticker.Bid ?? 0;
+				overview.Average[type] = ticker.PriceAverage;
+				overview.Supply[type] = ticker.Supply ?? 0;
+				overview.Demand[type] = ticker.Demand ?? 0;
 
-			const d7ticker = await getExchangeTicker(
-				`${materialTicker}.PP7D_${type}`
-			);
-			const d30ticker = await getExchangeTicker(
-				`${materialTicker}.PP30D_${type}`
-			);
-			overview.PP7D[type] = d7ticker.PriceAverage;
-			overview.PP30D[type] = d30ticker.PriceAverage;
-		});
+				const [d7ticker, d30ticker] = await Promise.all([
+					getExchangeTicker(`${materialTicker}.PP7D_${type}`),
+					getExchangeTicker(`${materialTicker}.PP30D_${type}`),
+				]);
+				overview.PP7D[type] = d7ticker.PriceAverage;
+				overview.PP30D[type] = d30ticker.PriceAverage;
+			})
+		);
 
 		return overview;
 	}

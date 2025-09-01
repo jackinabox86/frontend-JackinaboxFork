@@ -939,5 +939,6 @@ export async function usePlanCalculation(
 		// internal,
 		refreshKey,
 		calculate,
+		calculateOverview,
 	};
 }

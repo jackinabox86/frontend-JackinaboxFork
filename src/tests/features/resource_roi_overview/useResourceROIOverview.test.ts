@@ -17,6 +17,7 @@ import {
 	materialsStore,
 	recipesStore,
 	buildingsStore,
+	exchangesStore,
 } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -43,6 +44,7 @@ describe("useResourceROIOverview", async () => {
 		await buildingsStore.setMany(buildings);
 		await recipesStore.setMany(recipes);
 		await materialsStore.setMany(materials);
+		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
 		const { preloadBuildings, preloadRecipes } = await useBuildingData();

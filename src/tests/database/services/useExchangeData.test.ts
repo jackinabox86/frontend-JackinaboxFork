@@ -18,37 +18,36 @@ describe("useExchangeData", () => {
 			await expect(() => getExchangeTicker("foo")).rejects.toThrowError();
 		});
 
-		// it("getExchangeTicker: undefined", () => {
-		// 	const { getExchangeTicker } = useExchangeData();
-		// 	expect(() => getExchangeTicker("moo")).toThrowError();
-		// });
+		it("getExchangeTicker: valid", async () => {
+			const { getExchangeTicker } = await useExchangeData();
+
+			const result = await getExchangeTicker("RAT.AI1");
+			expect(result).toBeDefined();
+			expect(result.TickerId).toBe("RAT.AI1");
+		});
 	});
 
-	// describe("getMaterialExchangeOverview", () => {
+	describe("getMaterialExchangeOverview", () => {
+		it("valid overview result", async () => {
+			const { getMaterialExchangeOverview } = await useExchangeData();
 
-	// 	it("valid overview result", () => {
-	// 		const { getMaterialExchangeOverview } = useExchangeData();
-	// 		exchanges.forEach((e) => {
-	// 			gameDataStore.exchanges[e.TickerId] = e;
-	// 		});
+			const result = await getMaterialExchangeOverview("CL");
 
-	// 		const result = getMaterialExchangeOverview("CL");
-
-	// 		expect(result.Ask).toBeDefined();
-	// 		expect(result.Average).toBeDefined();
-	// 		expect(result.Bid).toBeDefined();
-	// 		expect(result.Demand).toBeDefined();
-	// 		expect(result.PP30D).toBeDefined();
-	// 		expect(result.PP7D).toBeDefined();
-	// 		expect(result.Supply).toBeDefined();
-	// 		expect(result.Ask).toStrictEqual({
-	// 			AI1: 3500,
-	// 			CI1: 3850,
-	// 			IC1: 4490,
-	// 			NC1: 3980,
-	// 		});
-	// 		expect(result.Universe30D).toEqual(3910.124333455047);
-	// 		expect(result.Universe7D).toEqual(3600.871248110732);
-	// 	});
-	// });
+			expect(result.Ask).toBeDefined();
+			expect(result.Average).toBeDefined();
+			expect(result.Bid).toBeDefined();
+			expect(result.Demand).toBeDefined();
+			expect(result.PP30D).toBeDefined();
+			expect(result.PP7D).toBeDefined();
+			expect(result.Supply).toBeDefined();
+			expect(result.Ask).toStrictEqual({
+				AI1: 3500,
+				CI1: 3850,
+				IC1: 4490,
+				NC1: 3980,
+			});
+			expect(result.Universe30D).toEqual(3910.124333455047);
+			expect(result.Universe7D).toEqual(3600.871248110732);
+		});
+	});
 });

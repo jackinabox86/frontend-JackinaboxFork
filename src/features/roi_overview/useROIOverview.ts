@@ -18,7 +18,6 @@ import {
 	IROIResult,
 	IStaticOptimalProduction,
 } from "@/features/roi_overview/useROIOverview.types";
-import { until } from "@vueuse/core";
 
 export async function useROIOverview(
 	definition: Ref<IPlan>,
@@ -105,8 +104,10 @@ export async function useROIOverview(
 			);
 			const result = await calculation.calculate();
 
-			const overviewData = await until(calculation.overviewData).toMatch(
-				(v) => v.roi !== Infinity
+			const overviewData = await calculation.calculateOverview(
+				result.materialio,
+				result.production,
+				result.infrastructure
 			);
 
 			itemResults.push({
