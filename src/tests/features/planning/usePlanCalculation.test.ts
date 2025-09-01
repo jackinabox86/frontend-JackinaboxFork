@@ -4,7 +4,6 @@ import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
 import { usePlanningStore } from "@/stores/planningStore";
 
 import {
@@ -40,7 +39,6 @@ vi.mock("@/database/services/usePlanetData", async () => {
 
 // Composables
 import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
-import { until } from "@vueuse/core";
 
 describe("usePlanCalculation", async () => {
 	let planningStore: ReturnType<typeof usePlanningStore>;
@@ -87,7 +85,7 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("validate result", async () => {
-		const calculation = await usePlanCalculation(
+		const { calculate } = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
@@ -95,7 +93,7 @@ describe("usePlanCalculation", async () => {
 			ref(undefined)
 		);
 
-		const result = await until(calculation.result).toMatch((v) => v.done);
+		const result = await calculate();
 
 		expect(result.corphq).toBeFalsy();
 		expect(result.cogc).toBe("RESOURCE_EXTRACTION");
@@ -132,21 +130,17 @@ describe("usePlanCalculation", async () => {
 	});
 
 	it("validate visitationData", async () => {
-		const calculation = await usePlanCalculation(
+		const { calculate, visitationData } = await usePlanCalculation(
 			// @ts-expect-error mock data
 			ref(plan_etherwind),
 			ref(undefined),
 			ref(undefined),
 			ref(undefined)
 		);
-		await until(calculation.result.value.materialio.length).toMatch(
-			(v) => v !== 0
-		);
-		const visitationData = await until(calculation.visitationData).toMatch(
-			(v) => v.storageFilled !== Infinity
-		);
 
-		expect(visitationData.storageFilled).toBe(22.342256698594255);
+		const result = await calculate();
+
+		expect(visitationData.value.storageFilled).toBe(22.342256698594255);
 	});
 
 	it("validate existing and saveable", async () => {

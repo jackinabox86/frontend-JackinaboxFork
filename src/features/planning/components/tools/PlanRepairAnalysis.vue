@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, Ref, ref, watch } from "vue";
+	import { computed, ComputedRef, PropType, ref, watch } from "vue";
 
 	// Composables
 	import { usePrice } from "@/features/cx/usePrice";
@@ -45,106 +45,86 @@
 	const DAY_MAX: number = 180;
 
 	// Local State
-	const localData: Ref<IPlanRepairAnalysisDataProp[]> = ref(props.data);
-	const localCxUuid: Ref<string | undefined> = ref(props.cxUuid);
-	const localPlanetNaturalId: Ref<string | undefined> = ref(
-		props.planetNaturalId
-	);
+	const localData = computed(() => props.data);
+	const localCxUuid = computed(() => props.cxUuid);
+	const localPlanetNaturalId = computed(() => props.planetNaturalId);
 
-	// Prop Watcher
-	watch(
-		() => props.data,
-		(newData: IPlanRepairAnalysisDataProp[]) => {
-			localData.value = newData;
-		}
-	);
-	watch(
-		() => props.cxUuid,
-		(newData: string | undefined) => {
-			localCxUuid.value = newData;
-		}
-	);
-	watch(
-		() => props.planetNaturalId,
-		(newData: string | undefined) => {
-			localPlanetNaturalId.value = newData;
-		}
-	);
-
-	const selectionOptions: Ref<PSelectOption[]> = ref(
+	const selectionOptions: ComputedRef<PSelectOption[]> = computed(() =>
 		localData.value.map((b, i) => {
 			return { label: b.name, value: i };
 		})
 	);
 
-	const selectedBuilding: Ref<undefined | number> = ref(
-		localData.value.length > 0 ? 0 : undefined
-	);
+	const selectedBuilding = ref(localData.value.length > 0 ? 0 : undefined);
 
 	const { getPrice } = await usePrice(localCxUuid, localPlanetNaturalId);
 
-	const rep: ComputedRef<IPlanRepairAnalysisElement[]> = computed(() => {
+	const rep = ref<IPlanRepairAnalysisElement[]>([]);
+
+	async function calculateRep() {
 		const r: IPlanRepairAnalysisElement[] = [];
 
-		if (selectedBuilding.value === undefined) return r;
-
-		let i: number;
-
-		let previous: number = 0;
+		if (selectedBuilding.value === undefined) {
+			rep.value = r;
+			return;
+		}
 
 		const materials: IMaterialIOMinimal[] =
 			localData.value[selectedBuilding.value].constructionMaterials;
 
-		for (i = DAY_MIN; i <= DAY_MAX; i++) {
-			const efficiency: number =
-				0.33 + 0.67 / (1 + Math.exp((1789 / 25000) * (i - 100.87)));
+		let previous = 0;
 
-			const dailyRevenue: number =
+		for (let i = DAY_MIN; i <= DAY_MAX; i++) {
+			const efficiency =
+				0.33 + 0.67 / (1 + Math.exp((1789 / 25000) * (i - 100.87)));
+			const dailyRevenue =
 				efficiency *
 				localData.value[selectedBuilding.value].dailyRevenue;
 			previous += dailyRevenue;
-			const dailyRevenue_norm: number = previous / (i + 1);
+			const dailyRevenue_norm = previous / (i + 1);
 
-			const mat: { ticker: string; amount: number }[] = materials.map(
-				(m) => {
-					return {
-						ticker: m.ticker,
-						amount:
-							m.input -
-							Math.floor(
-								(m.input * (180 - Math.min(180, i))) / 180
-							),
-					};
-				}
-			);
+			const mat = materials.map((m) => ({
+				ticker: m.ticker,
+				amount:
+					m.input -
+					Math.floor((m.input * (180 - Math.min(180, i))) / 180),
+			}));
 
-			const rep: number = mat.reduce(
-				(sum, element) =>
-					sum + element.amount * getPrice(element.ticker, "BUY"),
-				0
-			);
-			const repSum: number = rep / (i + 1);
-			const profit: number = dailyRevenue_norm - repSum;
+			// Calculate repair cost asynchronously
+			const rep = await mat.reduce(async (sumPromise, element) => {
+				const sum = await sumPromise;
+				const price = await getPrice(element.ticker, "BUY");
+				return sum + element.amount * price;
+			}, Promise.resolve(0));
+
+			const repSum = rep / (i + 1);
+			const profit = i === 0 ? 0 : dailyRevenue_norm - repSum;
 
 			r.push({
 				day: i,
-				efficiency: efficiency,
-				dailyRevenue: dailyRevenue,
+				efficiency,
+				dailyRevenue,
 				dailyRevenue_integral: previous,
-				dailyRevenue_norm: dailyRevenue_norm,
+				dailyRevenue_norm,
 				materials: mat,
 				repair: repSum,
 				dailyRepair: rep,
-				profit: i === 0 ? 0 : profit,
+				profit,
 			});
 		}
 
-		// manipulate the first entries profit, if there are at least two
+		// Adjust first day's profit if there are at least two entries
 		if (r.length >= 2) {
 			r[0].profit = r[1].profit;
 		}
 
-		return r;
+		rep.value = r;
+	}
+
+	// Recalculate whenever selectedBuilding or localData changes
+	watch([selectedBuilding, localData], calculateRep, {
+		deep: true,
+		immediate: true,
 	});
 
 	const maxValue: ComputedRef<number> = computed(() => {
@@ -155,25 +135,36 @@
 		return rep.value.findIndex((e) => e.profit === maxValue.value);
 	});
 
-	const singleMat: ComputedRef<
-		{ name: string; data: (number | undefined)[] }[]
-	> = computed(() => {
-		if (rep.value.length === 0) return [];
+	const singleMat = ref<{ name: string; data: (number | undefined)[] }[]>([]);
+
+	async function calculateSingleMat() {
+		if (!rep.value.length) {
+			singleMat.value = [];
+			return;
+		}
 
 		const mats = rep.value[0].materials.map((m) => m.ticker);
 
-		return mats.map((mat) => {
-			return {
+		const results = await Promise.all(
+			mats.map(async (mat) => ({
 				name: mat,
-				data: rep.value.map((r) => {
-					const b = r.materials.find((e) => e.ticker === mat);
-					if (b) {
-						return b.amount * getPrice(b.ticker, "BUY");
-					}
-				}),
-			};
-		});
-	});
+				data: await Promise.all(
+					rep.value.map(async (r) => {
+						const material = r.materials.find(
+							(e) => e.ticker === mat
+						);
+						if (!material) return undefined;
+						const price = await getPrice(material.ticker, "BUY");
+						return material.amount * price;
+					})
+				),
+			}))
+		);
+
+		singleMat.value = results;
+	}
+
+	watch(rep, calculateSingleMat, { deep: true, immediate: true });
 
 	const chartOptions: ComputedRef<Options> = computed(() => {
 		return {

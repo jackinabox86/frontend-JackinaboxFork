@@ -2,9 +2,7 @@ import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
 
 // Types & Interfaces
-import { IExchangesRecord } from "@/stores/gameDataStore.types";
 import {
-	IExchange,
 	IFIOStorage,
 	IFIOStorageShip,
 	IFIOStorageWarehouse,
@@ -20,10 +18,6 @@ export const useGameDataStore = defineStore(
 		// other stores
 
 		// state
-
-		/** Key: Exchange.TickerId */
-		const exchanges: Ref<IExchangesRecord> = ref({});
-
 		const fio_storage_planets: Ref<Record<string, IFIOStoragePlanet>> = ref(
 			{}
 		);
@@ -41,25 +35,11 @@ export const useGameDataStore = defineStore(
 		 * @author jplacht
 		 */
 		function $reset(): void {
-			exchanges.value = {};
 			fio_storage_planets.value = {};
 			fio_storage_ships.value = {};
 			fio_storage_warehouses.value = {};
 			fio_sites_planets.value = {};
 			fio_sites_ships.value = {};
-		}
-
-		/**
-		 * Sets exchange data by their Ticker
-		 * @author jplacht
-		 *
-		 * @param {IExchange[]} data Exchange Data
-		 */
-		function setExchanges(data: IExchange[]): void {
-			exchanges.value = {};
-			data.forEach((e) => {
-				exchanges.value[e.TickerId] = e;
-			});
 		}
 
 		/**
@@ -96,7 +76,6 @@ export const useGameDataStore = defineStore(
 
 		return {
 			// state
-			exchanges,
 			fio_storage_planets,
 			fio_storage_warehouses,
 			fio_storage_ships,
@@ -105,7 +84,6 @@ export const useGameDataStore = defineStore(
 			// reset
 			$reset,
 			// setters
-			setExchanges,
 			setFIOSitesData,
 			setFIOStorageData,
 			// functions
@@ -114,7 +92,6 @@ export const useGameDataStore = defineStore(
 	{
 		persist: {
 			pick: [
-				"exchanges",
 				"fio_storage_planets",
 				"fio_storage_warehouses",
 				"fio_storage_ships",

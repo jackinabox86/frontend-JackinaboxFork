@@ -1,19 +1,18 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
+import { ref } from "vue";
 
 // Composables
 import { useHQUpgradeCalculator } from "@/features/hq_upgrade_calculator/useHQUpgradeCalculator";
 
 // stores
-import { useGameDataStore } from "@/stores/gameDataStore";
-import { materialsStore } from "@/database/stores";
+import { materialsStore, exchangesStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
-import { ref } from "vue";
 
 describe("useHQUpgradeCalculator", async () => {
 	const refStart = ref(1);
@@ -21,12 +20,11 @@ describe("useHQUpgradeCalculator", async () => {
 	const refOverride = ref({});
 	const refCXUuid = ref(undefined);
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		setActivePinia(createPinia());
-		const gameDataStore = useGameDataStore();
-		gameDataStore.setExchanges(exchanges);
 
 		await materialsStore.setMany(materials);
+		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
 
@@ -47,12 +45,15 @@ describe("useHQUpgradeCalculator", async () => {
 	});
 
 	it("materialData", async () => {
-		const { materialData } = await useHQUpgradeCalculator(
-			refStart,
-			refTo,
-			refOverride,
-			refCXUuid
-		);
+		const { materialData, calculateMaterialData } =
+			await useHQUpgradeCalculator(
+				refStart,
+				refTo,
+				refOverride,
+				refCXUuid
+			);
+
+		await calculateMaterialData();
 
 		expect(materialData.value).toBeDefined();
 		expect(materialData.value.length).toBeGreaterThan(1);
@@ -70,12 +71,15 @@ describe("useHQUpgradeCalculator", async () => {
 	});
 
 	it("totalWeightVolume", async () => {
-		const { totalWeightVolume } = await useHQUpgradeCalculator(
-			refStart,
-			refTo,
-			refOverride,
-			refCXUuid
-		);
+		const { totalWeightVolume, calculateMaterialData } =
+			await useHQUpgradeCalculator(
+				refStart,
+				refTo,
+				refOverride,
+				refCXUuid
+			);
+
+		await calculateMaterialData();
 
 		expect(Object.keys(totalWeightVolume.value).length).toBe(2);
 		expect(totalWeightVolume.value.totalVolume).toBe(85.60000044107437);

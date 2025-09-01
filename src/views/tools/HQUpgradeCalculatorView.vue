@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, Ref, ref } from "vue";
+	import { computed, onMounted, Ref, ref } from "vue";
 	import { useHead } from "@unhead/vue";
 
 	useHead({
@@ -46,12 +46,15 @@
 		materialData,
 		totalCost,
 		totalWeightVolume,
+		calculateMaterialData,
 	} = await useHQUpgradeCalculator(
 		selectedStart,
 		selectedTo,
 		selectedOverride,
 		refSelectedCXUuid
 	);
+
+	onMounted(async () => calculateMaterialData());
 </script>
 
 <template>
@@ -78,14 +81,16 @@
 										v-model:value="selectedStart"
 										:options="levelOptions"
 										searchable
-										class="max-w-[150px]" />
+										class="w-[150px]"
+										@update:value="calculateMaterialData" />
 								</PFormItem>
 								<PFormItem label="To HQ Level">
 									<PSelect
 										v-model:value="selectedTo"
 										:options="levelOptionsTo"
 										searchable
-										class="max-w-[150px]" />
+										class="w-[150px]"
+										@update:value="calculateMaterialData" />
 								</PFormItem>
 							</PForm>
 						</div>
@@ -94,6 +99,7 @@
 								<PFormItem label="CX Preference">
 									<CXPreferenceSelector
 										:cx-uuid="refSelectedCXUuid"
+										class="w-full"
 										@update:cxuuid="
 											(value) =>
 												(refSelectedCXUuid = value)
@@ -194,7 +200,8 @@
 									clearable
 									show-buttons
 									placeholder=""
-									class="max-w-[150px]" />
+									class="max-w-[150px]"
+									@update:value="calculateMaterialData" />
 							</template>
 						</XNDataTableColumn>
 						<XNDataTableColumn
