@@ -29,8 +29,8 @@
 
 	watch(
 		() => props.empireMaterialIO,
-		() =>
-			loadPlanetNames(
+		async () =>
+			await loadPlanetNames(
 				Array.from(
 					new Set(
 						props.empireMaterialIO
@@ -43,7 +43,8 @@
 							.flat()
 					)
 				)
-			)
+			),
+		{ immediate: true }
 	);
 </script>
 

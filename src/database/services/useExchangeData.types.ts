@@ -1,4 +1,4 @@
-type EXCHANGES_TYPE = "AI1" | "CI1" | "IC1" | "NC1";
+export type EXCHANGES_TYPE = "AI1" | "CI1" | "IC1" | "NC1";
 
 export interface IMaterialExchangeOverview {
 	Ask: Required<Record<EXCHANGES_TYPE, number>>;

@@ -109,13 +109,14 @@ export async function usePlanCalculationPreComputes(
 					planetData.Resources
 				),
 				constructionMaterials: constructionMaterials,
-				constructionCost: getMaterialIOTotalPrice(
+				constructionCost: await getMaterialIOTotalPrice(
 					constructionMaterials,
 					"BUY"
 				),
 				workforceMaterials: workforceMaterials,
 			};
 		}
+
 		return map;
 	}
 

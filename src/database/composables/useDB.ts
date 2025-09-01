@@ -74,6 +74,7 @@ export function useDB<T extends object, K extends keyof T & string>(
 
 	return {
 		allData: state.allData,
+		cacheData: state.cache,
 		preload,
 		get,
 	};
