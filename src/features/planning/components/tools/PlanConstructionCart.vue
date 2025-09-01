@@ -139,23 +139,29 @@
 			}))
 	);
 
-	const totalInformation = computed(() => {
-		let weight: number = 0;
-		let volume: number = 0;
-		let price: number = 0;
+	const totalInformation = ref({ weight: 0, volume: 0, price: 0 });
 
-		xitTransferElements.value.forEach((m) => {
-			const materialInfo: IMaterial = materialsMap.value[m.ticker];
+	async function calculateTotal() {
+		let weight = 0;
+		let volume = 0;
+		let price = 0;
+
+		for (const m of xitTransferElements.value) {
+			const materialInfo = materialsMap.value[m.ticker];
 			weight += materialInfo.Weight * m.value;
 			volume += materialInfo.Volume * m.value;
 
-			price += getPrice(m.ticker, "BUY") * m.value;
-		});
+			const unitPrice = await getPrice(m.ticker, "BUY");
+			price += unitPrice * m.value;
+		}
 
-		return { weight, volume, price };
+		totalInformation.value = { weight, volume, price };
+	}
+
+	watchEffect(() => {
+		generateMatrix();
+		calculateTotal();
 	});
-
-	watchEffect(() => generateMatrix());
 </script>
 
 <template>

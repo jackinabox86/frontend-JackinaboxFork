@@ -12,7 +12,6 @@ import {
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
 import { usePrice } from "@/features/cx/usePrice";
 import { usePlanetData } from "@/database/services/usePlanetData";
-import { asyncComputed } from "@vueuse/core";
 
 // Calculation Utils
 import {
@@ -428,49 +427,36 @@ export async function usePlanCalculation(
 
 			const workforceMaterials: IMaterialIOMinimal[] =
 				computedBuildingInformation[b.name].workforceMaterials;
-			const workforceDailyCost: number = getMaterialIOTotalPrice(
+			const workforceDailyCost: number = await getMaterialIOTotalPrice(
 				workforceMaterials,
 				"BUY"
 			);
 
 			// get recipe options
-			const recipeOptions: IRecipeBuildingOption[] = buildingRecipes.map(
-				(br) => {
+			const recipeOptions: IRecipeBuildingOption[] = await Promise.all(
+				buildingRecipes.map(async (br) => {
 					// calculate daily revenue
-					// output revenue
-					const dailyIncome: number = getMaterialIOTotalPrice(
-						br.Outputs.map((o) => {
-							return {
-								ticker: o.Ticker,
-								output: o.Amount,
-								input: 0,
-							};
-						}),
+					const dailyIncome: number = await getMaterialIOTotalPrice(
+						br.Outputs.map((o) => ({
+							ticker: o.Ticker,
+							output: o.Amount,
+							input: 0,
+						})),
 						"SELL"
 					);
-					// input cost
+
 					const dailyCost: number =
 						-1 *
-						getMaterialIOTotalPrice(
-							br.Inputs.map((i) => {
-								return {
-									ticker: i.Ticker,
-									output: 0,
-									input: i.Amount,
-								};
-							}),
+						(await getMaterialIOTotalPrice(
+							br.Inputs.map((i) => ({
+								ticker: i.Ticker,
+								output: 0,
+								input: i.Amount,
+							})),
 							"BUY"
-						);
+						));
 
-					/**
-					 * Daily Revenue of a recipe option:
-					 *
-					 * 	= Daily Income (selling recipe outputs)
-					 * 	- Daily Cost (buying recipe inputs)
-					 * 	- Building Degradation (1/180 of construction cost)
-					 * 	- Building Daily Workforce Cost (lux1 + lux2)
-					 */
-
+					// Daily Revenue of a recipe option
 					const maxDailyRuns: number =
 						TOTALMSDAY / (br.TimeMs / totalEfficiency);
 
@@ -480,28 +466,21 @@ export async function usePlanCalculation(
 						constructionCost * -1 * (1 / 180) -
 						-1 * workforceDailyCost;
 
-					/**
-					 * Recipe option ROI
-					 *
-					 * Time it takes for the recipes daily revenue to offset
-					 * the total construction cost of this building
-					 */
+					// Recipe option ROI
 					const roi: number = (constructionCost * -1) / dailyRevenue;
 
 					return {
 						RecipeId: br.RecipeId,
 						BuildingTicker: br.BuildingTicker,
 						RecipeName: br.RecipeName,
-						// Time adjusted to Efficiency
 						TimeMs: br.TimeMs / totalEfficiency,
 						Inputs: br.Inputs,
 						Outputs: br.Outputs,
-						dailyRevenue: dailyRevenue,
-						roi: roi,
+						dailyRevenue,
+						roi,
 					};
-				}
+				})
 			);
-
 			/*
 			 * COGM
 			 *
@@ -519,7 +498,7 @@ export async function usePlanCalculation(
 			 * 	- or just its material output / all output
 			 */
 
-			activeRecipes.forEach((ar) => {
+			activeRecipes.forEach(async (ar) => {
 				const runtimeShare: number =
 					ar.recipe.TimeMs / totalEfficiency / TOTALMSDAY;
 				const degradation: number = (constructionCost * -1) / 180;
@@ -527,25 +506,34 @@ export async function usePlanCalculation(
 				const workforceCostTotal: number = workforceDailyCost * -1;
 				const workforceCost: number = workforceCostTotal * runtimeShare;
 
-				const inputCost: ICOGMMaterialCost[] = ar.recipe.Inputs.map(
-					(inputMat) => ({
-						ticker: inputMat.Ticker,
-						amount: inputMat.Amount,
-						costUnit: getPrice(inputMat.Ticker, "BUY"),
-						costTotal:
-							getPrice(inputMat.Ticker, "BUY") * inputMat.Amount,
+				const inputCost: ICOGMMaterialCost[] = await Promise.all(
+					ar.recipe.Inputs.map(async (inputMat) => {
+						const price = await getPrice(inputMat.Ticker, "BUY");
+						return {
+							ticker: inputMat.Ticker,
+							amount: inputMat.Amount,
+							costUnit: price,
+							costTotal: price * inputMat.Amount,
+						};
 					})
-				).sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
+				);
+
+				inputCost.sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
 
 				const inputTotal: number = inputCost.reduce(
 					(sum, current) => (sum += current.costTotal),
 					0
 				);
 
-				const outputRevenue: number = ar.recipe.Outputs.reduce(
-					(sum, current) =>
-						(sum +=
-							getPrice(current.Ticker, "SELL") * current.Amount),
+				const outputRevenueArray = await Promise.all(
+					ar.recipe.Outputs.map(async (current) => {
+						const price = await getPrice(current.Ticker, "SELL");
+						return price * current.Amount;
+					})
+				);
+
+				const outputRevenue = outputRevenueArray.reduce(
+					(a, b) => a + b,
 					0
 				);
 
@@ -603,7 +591,7 @@ export async function usePlanCalculation(
 
 			// Calculating individual buildings daily contribution
 			const productionMaterialIOEnhanced: IMaterialIO[] =
-				enhanceMaterialIOMaterial(
+				await enhanceMaterialIOMaterial(
 					enhanceMaterialIOMinimal(calculateMaterialIO([building]))
 				);
 
@@ -628,21 +616,18 @@ export async function usePlanCalculation(
 		};
 	}
 
-	async function calculateConstructionMaterials(): Promise<
-		IBuildingConstruction[]
-	> {
+	async function calculateConstructionMaterials(
+		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>,
+		production: IProductionBuilding[]
+	): Promise<IBuildingConstruction[]> {
 		const infrastructureBuildingInformation =
 			await computeInfrastructureBuildingInformation();
 
 		const inf: IBuildingConstruction[] =
 			infrastructureBuildingInformation.filter(
 				(i) =>
-					(result.value.infrastructure[
-						i.ticker as INFRASTRUCTURE_TYPE
-					] &&
-						result.value.infrastructure[
-							i.ticker as INFRASTRUCTURE_TYPE
-						] > 0) ||
+					(infrastructure[i.ticker as INFRASTRUCTURE_TYPE] &&
+						infrastructure[i.ticker as INFRASTRUCTURE_TYPE] > 0) ||
 					i.ticker === "CM"
 			);
 
@@ -652,13 +637,11 @@ export async function usePlanCalculation(
 				(i.amount =
 					i.ticker === "CM"
 						? 1
-						: result.value.infrastructure[
-								i.ticker as INFRASTRUCTURE_TYPE
-						  ])
+						: infrastructure[i.ticker as INFRASTRUCTURE_TYPE])
 		);
 
 		return [
-			...result.value.production.buildings.map((b) => ({
+			...production.map((b) => ({
 				ticker: b.name,
 				materials: b.constructionMaterials,
 				amount: b.amount,
@@ -708,8 +691,9 @@ export async function usePlanCalculation(
 			]);
 		const materialIOMaterial: IMaterialIOMaterial[] =
 			enhanceMaterialIOMinimal(combinedMaterialIOMinimal);
-		const materialIO: IMaterialIO[] =
-			enhanceMaterialIOMaterial(materialIOMaterial);
+		const materialIO: IMaterialIO[] = await enhanceMaterialIOMaterial(
+			materialIOMaterial
+		);
 
 		/**
 		 * Revenue, profit and cost calculation
@@ -741,6 +725,13 @@ export async function usePlanCalculation(
 
 		const cost: number = materialCost + dailyDegradationCost;
 
+		// calculate overview
+		overviewData.value = await calculateOverview(
+			materialIO,
+			productionResult,
+			infrastructureResult
+		);
+
 		// patch-in to full result
 		return {
 			done: true,
@@ -752,82 +743,93 @@ export async function usePlanCalculation(
 			experts: expertResult,
 			production: productionResult,
 			materialio: materialIO,
-			workforceMaterialIO: enhanceMaterialIOMaterial(
+			workforceMaterialIO: await enhanceMaterialIOMaterial(
 				enhanceMaterialIOMinimal(workforceMaterialIO)
 			),
-			productionMaterialIO: enhanceMaterialIOMaterial(
+			productionMaterialIO: await enhanceMaterialIOMaterial(
 				enhanceMaterialIOMinimal(productionMaterialIO)
 			),
 			profit: profit,
 			cost: cost,
 			revenue: materialRevenue,
 			infrastructureCosts: await calculateInfrastructureCosts(planetData),
-			constructionMaterials: await calculateConstructionMaterials(),
+			constructionMaterials: await calculateConstructionMaterials(
+				infrastructureResult,
+				productionResult.buildings
+			),
 		};
 	}
 
-	const overviewData: Ref<IOverviewData> = asyncComputed(
-		async () => {
-			const dailyCost: number = result.value.materialio.reduce(
+	async function calculateOverview(
+		materialIO: IMaterialIO[],
+		production: IProductionResult,
+		infrastructure: Required<Record<INFRASTRUCTURE_TYPE, number>>
+	) {
+		const dailyCost: number = materialIO.reduce(
+			(sum, current) => (sum += current.delta < 0 ? current.price : 0),
+			0
+		);
+		const dailyProfit: number = materialIO.reduce(
+			(sum, current) => (sum += current.delta > 0 ? current.price : 0),
+			0
+		);
+
+		// degradation
+		const totalProductionConstructionCost: number =
+			production.buildings.reduce(
 				(sum, current) =>
-					(sum += current.delta < 0 ? current.price : 0),
-				0
-			);
-			const dailyProfit: number = result.value.materialio.reduce(
-				(sum, current) =>
-					(sum += current.delta > 0 ? current.price : 0),
+					(sum += current.constructionCost * current.amount),
 				0
 			);
 
-			// degradation
-			const totalProductionConstructionCost: number =
-				result.value.production.buildings.reduce(
-					(sum, current) =>
-						(sum += current.constructionCost * current.amount),
-					0
+		const dailyDegradationCost: number =
+			totalProductionConstructionCost / 180;
+
+		const constructionMaterials = await calculateConstructionMaterials(
+			infrastructure,
+			production.buildings
+		);
+
+		const totalConstructionCostArray = await Promise.all(
+			constructionMaterials.map(async (current) => {
+				const innerSumArray = await Promise.all(
+					current.materials.map(async (infCurrent) => {
+						const price = await getPrice(infCurrent.ticker, "BUY");
+						return price * infCurrent.input;
+					})
 				);
 
-			const dailyDegradationCost: number =
-				totalProductionConstructionCost / 180;
+				const innerSum = innerSumArray.reduce((a, b) => a + b, 0);
+				return current.amount * innerSum;
+			})
+		);
 
-			const constructionMaterials =
-				await calculateConstructionMaterials();
+		const totalConstructionCost = totalConstructionCostArray.reduce(
+			(a, b) => a + b,
+			0
+		);
 
-			const totalConstructionCost: number = constructionMaterials.reduce(
-				(sum, current) =>
-					(sum +=
-						current.amount *
-						current.materials.reduce(
-							(infSum, infCurrent) =>
-								(infSum +=
-									getPrice(infCurrent.ticker, "BUY") *
-									infCurrent.input),
-							0
-						)),
-				0
-			);
+		const profit: number =
+			dailyProfit - -1 * dailyDegradationCost - -1 * dailyCost;
 
-			const profit: number =
-				dailyProfit - -1 * dailyDegradationCost - -1 * dailyCost;
+		return {
+			dailyCost: dailyCost * -1,
+			dailyProfit: dailyProfit * 1,
+			totalConstructionCost,
+			dailyDegradationCost: dailyDegradationCost * -1,
+			profit,
+			roi: totalConstructionCost / profit,
+		};
+	}
 
-			return {
-				dailyCost: dailyCost * -1,
-				dailyProfit: dailyProfit * 1,
-				totalConstructionCost,
-				dailyDegradationCost: dailyDegradationCost * -1,
-				profit,
-				roi: totalConstructionCost / profit,
-			};
-		},
-		{
-			dailyCost: 0,
-			dailyProfit: 0,
-			totalConstructionCost: 0,
-			dailyDegradationCost: 0,
-			profit: 0,
-			roi: 0,
-		}
-	);
+	const overviewData: Ref<IOverviewData> = ref({
+		dailyCost: 0,
+		dailyProfit: 0,
+		totalConstructionCost: 0,
+		dailyDegradationCost: 0,
+		profit: 0,
+		roi: 0,
+	});
 
 	/**
 	 * Calculates a plans visitation data
@@ -937,5 +939,6 @@ export async function usePlanCalculation(
 		// internal,
 		refreshKey,
 		calculate,
+		calculateOverview,
 	};
 }

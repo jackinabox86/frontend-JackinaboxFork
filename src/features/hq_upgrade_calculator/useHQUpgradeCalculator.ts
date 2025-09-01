@@ -64,7 +64,9 @@ export async function useHQUpgradeCalculator(
 		() => to.value < start.value
 	);
 
-	const materialData: ComputedRef<IHQMaterial[]> = computed(() => {
+	const materialData: Ref<IHQMaterial[]> = ref([]);
+
+	async function calculateMaterialData() {
 		const sumData: Record<string, IHQMaterialData> = {};
 
 		if (hasError.value) return [];
@@ -100,14 +102,14 @@ export async function useHQUpgradeCalculator(
 		}
 
 		// calculate required and cost values
-		Object.entries(sumData).map(([ticker, e]) => {
+		for (const [ticker, e] of Object.entries(sumData)) {
 			e.required = clamp(e.amount - e.storage, 0, Infinity);
-			e.unitCost = getPrice(ticker, "BUY");
+			e.unitCost = await getPrice(ticker, "BUY");
 			e.totalCost = e.required * e.unitCost;
-		});
+		}
 
 		// transform to array, sort by ticker, required for datatable
-		return [
+		materialData.value = [
 			...Object.entries(sumData).map(([ticker, value]) => ({
 				ticker: ticker,
 				amount: value.amount,
@@ -119,7 +121,7 @@ export async function useHQUpgradeCalculator(
 				storageLocations: value.storageLocations,
 			})),
 		].sort((a, b) => (a.ticker > b.ticker ? 1 : -1));
-	});
+	}
 
 	/**
 	 * Calculates the total cost of all upgrade materials
@@ -177,5 +179,6 @@ export async function useHQUpgradeCalculator(
 		materialData,
 		totalCost,
 		totalWeightVolume,
+		calculateMaterialData,
 	};
 }

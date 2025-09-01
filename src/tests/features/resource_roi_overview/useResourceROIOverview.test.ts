@@ -12,11 +12,11 @@ import { apiService } from "@/lib/apiService";
 import { useResourceROIOverview } from "@/features/resource_roi_overview/useResourceROIOverview";
 
 // stores
-import { useGameDataStore } from "@/stores/gameDataStore";
 import {
 	materialsStore,
 	recipesStore,
 	buildingsStore,
+	exchangesStore,
 } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -37,12 +37,11 @@ describe("useResourceROIOverview", async () => {
 		setActivePinia(createPinia());
 		axiosSetup();
 
-		const gameDataStore = useGameDataStore();
-
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
 		await recipesStore.setMany(recipes);
 		await materialsStore.setMany(materials);
+		await exchangesStore.setMany(exchanges);
 
 		const { preload } = useMaterialData();
 		const { preloadBuildings, preloadRecipes } = await useBuildingData();
@@ -51,8 +50,6 @@ describe("useResourceROIOverview", async () => {
 		await preloadBuildings();
 		await preloadRecipes();
 		await flushPromises();
-
-		gameDataStore.setExchanges(exchanges);
 	});
 
 	it("searchPlanets", async () => {

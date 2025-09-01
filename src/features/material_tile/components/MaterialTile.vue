@@ -14,7 +14,7 @@
 
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
-	import { useExchangeData } from "@/features/game_data/useExchangeData";
+	import { useExchangeData } from "@/database/services/useExchangeData";
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
 
@@ -28,7 +28,7 @@
 
 	// Interfaces & Types
 	import { IMaterial } from "@/features/api/gameData.types";
-	import { IMaterialExchangeOverview } from "@/features/game_data/useMaterialData.types";
+	import { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 	import { PSelectOption } from "@/ui/ui.types";
 
 	// UI
@@ -64,7 +64,7 @@
 	});
 
 	const { getMaterial, getMaterialClass } = useMaterialData();
-	const { getMaterialExchangeOverview } = useExchangeData();
+	const { getMaterialExchangeOverview } = await useExchangeData();
 
 	const refShowDrawer: Ref<boolean> = ref(false);
 	const refExchangeOverview: Ref<IMaterialExchangeOverview | undefined> =
@@ -153,7 +153,7 @@
 		}
 		try {
 			if (props.enablePopover)
-				refExchangeOverview.value = getMaterialExchangeOverview(
+				refExchangeOverview.value = await getMaterialExchangeOverview(
 					props.ticker
 				);
 		} catch {

@@ -4,11 +4,12 @@ import { createPinia, setActivePinia } from "pinia";
 import { flushPromises } from "@vue/test-utils";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+
 import {
 	materialsStore,
 	buildingsStore,
 	recipesStore,
+	exchangesStore,
 } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { useBuildingData } from "@/database/services/useBuildingData";
@@ -23,12 +24,10 @@ import materials from "@/tests/test_data/api_data_materials.json";
 import exchanges from "@/tests/test_data/api_data_exchanges.json";
 
 describe("usePlanCalculationPreComputes", async () => {
-	let gameDataStore: any;
-
 	beforeAll(async () => {
 		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
 
+		await exchangesStore.setMany(exchanges);
 		await materialsStore.setMany(materials);
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
@@ -43,10 +42,6 @@ describe("usePlanCalculationPreComputes", async () => {
 		await preload();
 		await preloadBuildings();
 		await flushPromises();
-
-		exchanges.map((e) => {
-			gameDataStore.exchanges[e.TickerId] = e;
-		});
 	});
 
 	it("computedBuildingTicker", async () => {

@@ -1,9 +1,6 @@
 import { ref } from "vue";
-import { setActivePinia, createPinia } from "pinia";
 import { beforeAll, describe, expect, it } from "vitest";
-
-// Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { createPinia, setActivePinia } from "pinia";
 
 // Composables
 import { useMaterialIOUtil } from "@/features/planning/util/materialIO.util";
@@ -11,27 +8,24 @@ import { usePrice } from "@/features/cx/usePrice";
 
 // Types & Interfaces
 import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+import { IEmpirePlanMaterialIO } from "@/features/empire/empire.types";
 
 // test data
 import materials from "@/tests/test_data/api_data_materials.json";
-import { IEmpirePlanMaterialIO } from "@/features/empire/empire.types";
+import exchanges from "@/tests/test_data/api_data_exchanges.json";
 
 import { materialsStore } from "@/database/stores";
+import { exchangesStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 import { flushPromises } from "@vue/test-utils";
 
 describe("Util: materialIO ", async () => {
-	let gameDataStore: any;
-
 	beforeAll(async () => {
 		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
 
 		await materialsStore.setMany(materials);
+		await exchangesStore.setMany(exchanges);
 		const { preload } = useMaterialData();
-		await preload();
-		await flushPromises();
-
 		await preload();
 		await flushPromises();
 	});
@@ -141,24 +135,22 @@ describe("Util: materialIO ", async () => {
 			ref(undefined)
 		);
 
-		gameDataStore.exchanges["OVE.PP30D_UNIVERSE"] = { PriceAverage: 10 };
-
 		// SELL
-		const resultSell = enhanceMaterialIOMaterial(
+		const resultSell = await enhanceMaterialIOMaterial(
 			// @ts-expect-error mock data
 			[{ ticker: "OVE", delta: 1 }]
 		);
 		// BUY
-		const resultBuy = enhanceMaterialIOMaterial(
+		const resultBuy = await enhanceMaterialIOMaterial(
 			// @ts-expect-error mock data
 			[{ ticker: "OVE", delta: -1 }]
 		);
 
 		expect(resultSell).toStrictEqual([
-			{ ticker: "OVE", delta: 1, price: 10 },
+			{ ticker: "OVE", delta: 1, price: 127.98048739093674 },
 		]);
 		expect(resultBuy).toStrictEqual([
-			{ ticker: "OVE", delta: -1, price: -10 },
+			{ ticker: "OVE", delta: -1, price: -127.98048739093674 },
 		]);
 	});
 

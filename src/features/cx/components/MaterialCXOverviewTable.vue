@@ -2,14 +2,14 @@
 	import { PropType } from "vue";
 
 	// Composables
-	import { useExchangeData } from "@/features/game_data/useExchangeData";
-	const { exchangeTypesArray } = useExchangeData();
+	import { useExchangeData } from "@/database/services/useExchangeData";
+	const { exchangeTypesArray } = await useExchangeData();
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
-	import { IMaterialExchangeOverview } from "@/features/game_data/useMaterialData.types";
+	import { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 
 	// UI
 	import { NTable } from "naive-ui";

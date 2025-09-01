@@ -3,8 +3,8 @@ import { createPinia, setActivePinia } from "pinia";
 import { usePlanningStore } from "@/stores/planningStore";
 import { usePrice } from "@/features/cx/usePrice";
 import { Ref, ref } from "vue";
-import { useGameDataStore } from "@/stores/gameDataStore";
 import { buildingsStore } from "@/database/stores";
+import { exchangesStore } from "@/database/stores";
 import { useBuildingData } from "@/database/services/useBuildingData";
 
 // test data
@@ -18,19 +18,14 @@ const fakeCXUuid: string = "2a83a2ca-db0c-49d2-9c43-0db08c1675bb";
 
 describe("usePrice", async () => {
 	let planningStore: any;
-	let gameDataStore: any;
 
 	beforeAll(async () => {
 		setActivePinia(createPinia());
 		planningStore = usePlanningStore();
-		gameDataStore = useGameDataStore();
-
-		exchanges.map((e) => {
-			gameDataStore.exchanges[e.TickerId] = e;
-		});
 
 		planningStore.cxs[fakeCXUuid] = cx_definition;
 
+		await exchangesStore.setMany(exchanges);
 		//@ts-expect-error mock data
 		await buildingsStore.setMany(buildings);
 		const { preloadBuildings } = await useBuildingData();
@@ -68,7 +63,7 @@ describe("usePrice", async () => {
 		it("unknown cx uuid", async () => {
 			const { getPrice } = await usePrice(ref("meow"), ref("foo"));
 
-			expect(getPrice("LSE", "BUY")).toBe(0);
+			expect(await getPrice("LSE", "BUY")).toBe(0);
 		});
 
 		it("with cx uuid and planet material and ticker preference", async () => {
@@ -77,8 +72,8 @@ describe("usePrice", async () => {
 				ref("OT-580c")
 			);
 
-			expect(getPrice("LSE", "BUY")).toBe(25);
-			expect(getPrice("FEO", "BUY")).toBe(500);
+			expect(await getPrice("LSE", "BUY")).toBe(25);
+			expect(await getPrice("FEO", "BUY")).toBe(500);
 		});
 
 		it("with cx uuid and planet exchange pref", async () => {
@@ -87,21 +82,21 @@ describe("usePrice", async () => {
 				ref("UV-796b")
 			);
 
-			expect(getPrice("LSE", "BUY")).toBe(9240);
-			expect(getPrice("FEO", "BUY")).toBe(500);
+			expect(await getPrice("LSE", "BUY")).toBe(9240);
+			expect(await getPrice("FEO", "BUY")).toBe(500);
 		});
 
 		it("with cx uuid and empire exchange pref", async () => {
 			const { getPrice } = await usePrice(ref(fakeCXUuid), ref("foo"));
 
-			expect(getPrice("LSE", "BUY")).toBe(9240);
+			expect(await getPrice("LSE", "BUY")).toBe(9240);
 		});
 
 		it("nothing set on empire", async () => {
 			planningStore.cxs[fakeCXUuid].cx_data.cx_empire = [];
 			const { getPrice } = await usePrice(ref(fakeCXUuid), ref("foo"));
 
-			expect(getPrice("LSE", "BUY")).toBe(9030.470166275736);
+			expect(await getPrice("LSE", "BUY")).toBe(9030.470166275736);
 		});
 	});
 
@@ -112,7 +107,7 @@ describe("usePrice", async () => {
 				ref(undefined)
 			);
 
-			const result = getMaterialIOTotalPrice(
+			const result = await getMaterialIOTotalPrice(
 				[
 					{ ticker: "C", input: 1, output: 0 },
 					{ ticker: "N", input: 1, output: 3 },
@@ -131,7 +126,7 @@ describe("usePrice", async () => {
 				ref(undefined)
 			);
 
-			const result = enhanceMaterialIOMaterial([
+			const result = await enhanceMaterialIOMaterial([
 				// @ts-expect-error mock data
 				{ ticker: "C", delta: -1 },
 				// @ts-expect-error mock data

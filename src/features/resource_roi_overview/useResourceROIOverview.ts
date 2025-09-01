@@ -26,7 +26,6 @@ import { boundaryDescriptor } from "@/util/numbers";
 // Types & Interfaces
 import { IPlanet } from "@/features/api/gameData.types";
 import { IResourceROIResult } from "@/features/resource_roi_overview/useResourceROIOverview.types";
-import { until } from "@vueuse/core";
 import { IStaticOptimalProduction } from "../roi_overview/useROIOverview.types";
 
 export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
@@ -163,12 +162,8 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		// artificially set cogc to resource extraction
 		definition.value.baseplanner_data.planet.cogc = "RESOURCE_EXTRACTION";
 
-		const {
-			handleCreateBuilding,
-
-			overviewData,
-			calculate,
-		} = await usePlanCalculation(definition, undefined, undefined, cxUuid);
+		const { handleCreateBuilding, calculateOverview, calculate } =
+			await usePlanCalculation(definition, undefined, undefined, cxUuid);
 
 		// create building
 		await handleCreateBuilding(optimal.ticker);
@@ -201,7 +196,11 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 						(f) => f.ticker === materialTicker
 					)?.output ?? 0;
 
-				await until(overviewData).toMatch((v) => v.dailyProfit != 0);
+				const overviewData = await calculateOverview(
+					newResult.materialio,
+					newResult.production,
+					newResult.infrastructure
+				);
 
 				// all matches, push the result
 				results.push({
@@ -215,9 +214,9 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 					outputProfit:
 						newResult.production.buildings[0].activeRecipes[0].cogm
 							?.totalProfit ?? 0,
-					dailyProfit: overviewData.value.profit,
-					planCost: overviewData.value.totalConstructionCost,
-					planROI: overviewData.value.roi,
+					dailyProfit: overviewData.profit,
+					planCost: overviewData.totalConstructionCost,
+					planROI: overviewData.roi,
 					distanceAI1:
 						planet.Distances.find(
 							(e) => e.name === "Antares Station"

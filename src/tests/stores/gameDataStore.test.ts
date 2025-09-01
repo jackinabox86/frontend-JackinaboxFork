@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 
 // test data
-import exchanges from "@/tests/test_data/api_data_exchanges.json";
 import fio_sites from "@/tests/test_data/api_data_fio_sites.json";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 
@@ -22,7 +21,6 @@ describe("GameData Store", async () => {
 
 	describe("Functions", () => {
 		it("$reset", async () => {
-			gameDataStore.exchanges = true;
 			gameDataStore.fio_storage_planets = true;
 			gameDataStore.fio_storage_ships = true;
 			gameDataStore.fio_storage_warehouses = true;
@@ -31,7 +29,6 @@ describe("GameData Store", async () => {
 
 			gameDataStore.$reset();
 
-			expect(Object.keys(gameDataStore.exchanges).length).toBe(0);
 			expect(Object.keys(gameDataStore.fio_storage_planets).length).toBe(
 				0
 			);
@@ -44,11 +41,6 @@ describe("GameData Store", async () => {
 		});
 
 		describe("setters", async () => {
-			it("setExchanges", async () => {
-				gameDataStore.setExchanges(exchanges);
-				expect(Object.keys(gameDataStore.exchanges).length).toBe(6980);
-			});
-
 			it("setFIOSitesData", async () => {
 				gameDataStore.setFIOSitesData(fio_sites);
 				expect(

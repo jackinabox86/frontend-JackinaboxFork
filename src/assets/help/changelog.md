@@ -3,6 +3,7 @@
 - Improve Resource ROI calculation performance with parallel executions
 - Add key-attribute to MaterialTiles were missing
 - Fix cursor and z-index on Material Tiles [#221](https://github.com/PRUNplanner/frontend/issues/221), limit recipe dropdown width [#223](https://github.com/PRUNplanner/frontend/issues/223)
+- Uses Exchange Data from IndexedDB instead of Pinia [PR-224](https://github.com/PRUNplanner/frontend/pull/224)
 
 
 # 2025-08-30

@@ -4,7 +4,7 @@ import { Ref, watch } from "vue";
 import { usePlanningStore } from "@/stores/planningStore";
 
 // Composables
-import { useExchangeData } from "@/features/game_data/useExchangeData";
+import { useExchangeData } from "@/database/services/useExchangeData";
 import { useBuildingData } from "@/database/services/useBuildingData";
 
 // Types & Interfaces
@@ -50,7 +50,7 @@ export async function usePrice(
 ) {
 	const planningStore = usePlanningStore();
 
-	const { getExchangeTicker } = useExchangeData();
+	const { getExchangeTicker } = await useExchangeData();
 	const { getBuilding, getBuildingConstructionMaterials } =
 		await useBuildingData();
 
@@ -80,7 +80,10 @@ export async function usePrice(
 	 * @param {(Ref<IPriceCXInformation> | undefined)} cx CX and Planet Information
 	 * @returns {number} Price
 	 */
-	function getPrice(materialTicker: string, type: "BUY" | "SELL"): number {
+	async function getPrice(
+		materialTicker: string,
+		type: "BUY" | "SELL"
+	): Promise<number> {
 		const cacheKey: string = `${materialTicker}#${type}#${cxUuid.value}#${planetNaturalId.value}`;
 
 		if (cache.has(cacheKey)) return cache.get(cacheKey)!;
@@ -88,12 +91,12 @@ export async function usePrice(
 		try {
 			// if any cx information is undefined, we return the PP30D_Universe PriceAverage
 			if (!cxUuid.value || cxUuid.value === undefined) {
-				const price = getExchangeTicker(
+				const price = await getExchangeTicker(
 					`${materialTicker}.PP30D_UNIVERSE`
-				).PriceAverage;
+				);
 
-				cache.set(cacheKey, price);
-				return price;
+				cache.set(cacheKey, price.PriceAverage);
+				return price.PriceAverage;
 			}
 
 			// we got cx information with cxUuid and/or planetNaturalId
@@ -150,9 +153,11 @@ export async function usePrice(
 						planetExchangePreference.exchange
 					);
 
-					const price: number = getExchangeTicker(
+					const tickerData = await getExchangeTicker(
 						`${materialTicker}.${exchangeCode}`
-					)[key] as number;
+					);
+
+					const price: number = tickerData[key] as number;
 
 					cache.set(cacheKey, price);
 					return price;
@@ -169,18 +174,22 @@ export async function usePrice(
 					empireExchangePreference.exchange
 				);
 
-				const price: number = getExchangeTicker(
+				const tickerData = await getExchangeTicker(
 					`${materialTicker}.${exchangeCode}`
-				)[key] as number;
+				);
+
+				const price: number = tickerData[key] as number;
 
 				cache.set(cacheKey, price);
 				return price;
 			}
 
 			// None of the path specifics yielded a result, return PP30D_Average fallback
-			const price: number = getExchangeTicker(
+			const tickerData = await getExchangeTicker(
 				`${materialTicker}.PP30D_UNIVERSE`
-			).PriceAverage;
+			);
+
+			const price: number = tickerData.PriceAverage;
 
 			cache.set(cacheKey, price);
 			return price;
@@ -203,14 +212,16 @@ export async function usePrice(
 	 * @param {(Ref<IPriceCXInformation> | undefined)} cx CX Information
 	 * @returns {number} Total Price of MaterialIO[]
 	 */
-	function getMaterialIOTotalPrice(
+	async function getMaterialIOTotalPrice(
 		data: IMaterialIOMinimal[],
 		type: "BUY" | "SELL"
-	): number {
-		return data.reduce(
-			(sum, e) => sum + getPrice(e.ticker, type) * (e.output - e.input),
-			0
-		);
+	): Promise<number> {
+		let sum = 0;
+		for (const e of data) {
+			const price = await getPrice(e.ticker, type);
+			sum += price * (e.output - e.input);
+		}
+		return sum;
 	}
 
 	/**
@@ -278,22 +289,22 @@ export async function usePrice(
 	 * @param {IMaterialIOMaterial[]} data Minimal Material I/O
 	 * @returns {IMaterialIO[]} Material I/O
 	 */
-	function enhanceMaterialIOMaterial(
+	async function enhanceMaterialIOMaterial(
 		data: IMaterialIOMaterial[]
-	): IMaterialIO[] {
+	): Promise<IMaterialIO[]> {
 		const enhancedArray: IMaterialIO[] = [];
 
-		data.forEach((material) => {
-			const price: number =
+		for (const material of data) {
+			const price =
 				material.delta >= 0
-					? getPrice(material.ticker, "SELL")
-					: getPrice(material.ticker, "BUY");
+					? await getPrice(material.ticker, "SELL")
+					: await getPrice(material.ticker, "BUY");
 
 			enhancedArray.push({
 				...material,
 				price: price * material.delta,
 			});
-		});
+		}
 
 		return enhancedArray;
 	}
@@ -324,11 +335,12 @@ export async function usePrice(
 		await Promise.all(
 			infrastructureBuildingNames.map(async (buildingTicker) => {
 				const building = await getBuilding(buildingTicker);
-				results[buildingTicker] =
-					getMaterialIOTotalPrice(
-						getBuildingConstructionMaterials(building, planet),
-						"BUY"
-					) * -1;
+				const totalPrice = await getMaterialIOTotalPrice(
+					getBuildingConstructionMaterials(building, planet),
+					"BUY"
+				);
+
+				results[buildingTicker] = totalPrice * -1;
 			})
 		);
 

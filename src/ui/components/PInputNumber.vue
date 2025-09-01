@@ -31,12 +31,14 @@
 		// sanitize input
 		if (decimals) target.value = target.value.replace(/[^0-9.]/g, "");
 		else target.value = target.value.replace(/\D/g, "");
-		value.value = Number(target.value);
+
+		if (target.value !== "") value.value = Number(target.value);
+		else value.value = null;
 	}
 
 	function canChange(e: number): boolean {
 		if (disabled) return false;
-		if (value.value === null) value.value = 0;
+		if (value.value === null) return true;
 
 		if (value.value + e >= min && value.value + e <= max) return true;
 		return false;

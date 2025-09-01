@@ -155,8 +155,6 @@ export function useQueryRepository() {
 			key: () => ["gamedata", "exchanges"],
 			fetchFn: async () => {
 				const data: IExchange[] = await callDataExchanges();
-				gameDataStore.setExchanges(data);
-
 				await exchangesStore.setMany(data, true);
 				await useDB(exchangesStore).preload(true);
 

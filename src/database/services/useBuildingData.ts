@@ -43,24 +43,20 @@ export async function useBuildingData() {
 	const { calculateWorkforceConsumption } = await useWorkforceCalculation();
 
 	const buildingsMap = computed((): Record<string, IBuilding> => {
-		return allDataBuildings.value
-			? allDataBuildings.value.reduce((acc, building) => {
-					acc[building.Ticker] = building;
-					return acc;
-			  }, {} as Record<string, IBuilding>)
-			: {};
+		return (allDataBuildings.value ?? []).reduce((acc, building) => {
+			acc[building.Ticker] = building;
+			return acc;
+		}, {} as Record<string, IBuilding>);
 	});
 
 	const recipeBuildingMap = computed((): Record<string, IRecipe[]> => {
-		return allDataRecipes.value
-			? allDataRecipes.value.reduce((acc, recipe) => {
-					if (acc[recipe.BuildingTicker])
-						acc[recipe.BuildingTicker].push(recipe);
-					else acc[recipe.BuildingTicker] = [recipe];
+		return (allDataRecipes.value ?? []).reduce((acc, recipe) => {
+			if (acc[recipe.BuildingTicker])
+				acc[recipe.BuildingTicker].push(recipe);
+			else acc[recipe.BuildingTicker] = [recipe];
 
-					return acc;
-			  }, {} as Record<string, IRecipe[]>)
-			: {};
+			return acc;
+		}, {} as Record<string, IRecipe[]>);
 	});
 
 	async function getBuilding(buildingTicker: string): Promise<IBuilding> {
