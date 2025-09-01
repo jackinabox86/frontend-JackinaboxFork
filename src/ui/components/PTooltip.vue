@@ -16,7 +16,8 @@
 	async function show() {
 		isVisible.value = true;
 
-		await nextTick(); // ensure tooltip is rendered before Popper is created
+		// ensure tooltip is rendered before Popper is created
+		await nextTick();
 
 		if (triggerRef.value && tooltipRef.value) {
 			popperInstance = createPopper(triggerRef.value, tooltipRef.value, {
@@ -62,7 +63,11 @@
 	</div>
 
 	<Teleport to="body">
-		<div v-if="isVisible" ref="tooltipRef" :class="tooltipConfig.tooltip">
+		<div
+			v-if="isVisible"
+			ref="tooltipRef"
+			class="z-9999"
+			:class="tooltipConfig.tooltip">
 			<slot />
 		</div>
 	</Teleport>

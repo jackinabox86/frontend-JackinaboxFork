@@ -168,7 +168,11 @@
 			class="flex flex-row items-center justify-center w-full material-tile"
 			:class="[
 				categoryCssClass,
-				{ 'hover:cursor-pointer': !disableDrawer || enablePopover },
+				disableDrawer && enablePopover
+					? 'hover:cursor-help'
+					: !disableDrawer
+					? 'hover:cursor-pointer'
+					: '',
 			]"
 			@click="toggleDrawer">
 			<PTooltip v-if="refExchangeOverview !== undefined && enablePopover">
