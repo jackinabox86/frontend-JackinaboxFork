@@ -78,4 +78,62 @@ describe("useResourceROIOverview", async () => {
 		expect(result[0].dailyProfit).toBe(69531.18805678377);
 		expect(result[0].planetSurface.length).toBe(1);
 	});
+
+	describe("getPlanetEnvironment", async () => {
+		it("surface", async () => {
+			const { getPlanetEnvironment } = useResourceROIOverview(
+				ref(undefined)
+			);
+			expect(
+				// @ts-expect-error mock data
+				getPlanetEnvironment({ Surface: true }).surface
+			).toStrictEqual(["MCG"]);
+			expect(
+				// @ts-expect-error mock data
+				getPlanetEnvironment({ Surface: false }).surface
+			).toStrictEqual(["AEF"]);
+		});
+
+		it("gravity", async () => {
+			const { getPlanetEnvironment } = useResourceROIOverview(
+				ref(undefined)
+			);
+			expect(
+				// @ts-expect-error mock data
+				getPlanetEnvironment({ Gravity: 0.24 }).gravity
+			).toStrictEqual(["MGC"]);
+			expect(
+				// @ts-expect-error mock data
+				getPlanetEnvironment({ Gravity: 2.51 }).gravity
+			).toStrictEqual(["BL"]);
+		});
+
+		it("pressure", async () => {
+			const { getPlanetEnvironment } = useResourceROIOverview(
+				ref(undefined)
+			);
+			expect(
+				// @ts-expect-error mock data
+				getPlanetEnvironment({ Pressure: 0.24 }).pressure
+			).toStrictEqual(["SEA"]);
+			expect(
+				// @ts-expect-error mock data
+				getPlanetEnvironment({ Pressure: 2.01 }).pressure
+			).toStrictEqual(["HSE"]);
+		});
+
+		it("pressure", async () => {
+			const { getPlanetEnvironment } = useResourceROIOverview(
+				ref(undefined)
+			);
+			expect(
+				// @ts-expect-error mock data
+				getPlanetEnvironment({ Temperature: -25.1 }).temperature
+			).toStrictEqual(["INS"]);
+			expect(
+				// @ts-expect-error mock data
+				getPlanetEnvironment({ Temperature: 75.1 }).temperature
+			).toStrictEqual(["TSH"]);
+		});
+	});
 });
