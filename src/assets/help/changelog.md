@@ -1,3 +1,7 @@
+# 2025-09-02
+
+- Provide option and style to collapse navigation
+
 # 2025-09-01
 
 - Improve Resource ROI calculation performance with parallel executions
