@@ -77,7 +77,7 @@ export const buttonGroupConfig: PButtonGroupConfig = {
 };
 
 export const tooltipConfig: PTooltipConfig = {
-	trigger: "ptooltip flex-1",
+	trigger: "ptooltip",
 	tooltip:
 		"z-50 py-1 px-2 text-sm text-white bg-black/90 border border-white/20 rounded shadow-lg",
 };
@@ -131,9 +131,9 @@ export const inputConfig: PInputConfig = {
 export const tagConfig: PTagConfig = {
 	colors: {
 		primary: "bg-blue-900 border border-white/20 text-white",
-		success: "bg-lime-500/30 border border-white/20 text-white/90",
+		success: "bg-[#1af09a] border border-white/20 text-black/90",
 		secondary: "bg-black/50 border border-white/20 text-white",
-		error: "bg-red-600/30 border border-white/20 text-white/90",
+		error: "bg-[#e86f6f] border border-white/20 text-black/90",
 		warning: "bg-gray-100 border border-white/20 text-gray-900",
 	},
 	sizes: {

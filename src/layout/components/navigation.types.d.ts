@@ -12,6 +12,7 @@ interface IMenuItem {
 
 interface IMenuSection {
 	label: string;
+	labelShort?: string;
 	display: boolean;
 	children: IMenuItem[];
 }

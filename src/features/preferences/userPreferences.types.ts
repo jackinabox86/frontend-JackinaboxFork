@@ -11,6 +11,7 @@ export interface IPreference {
 	burnDaysYellow: number;
 	burnResupplyDays: number;
 	burnOrigin: string;
+	layoutNavigationStyle: "full" | "collapsed";
 
 	// seeding per plan defaults
 	planOverrides: Record<string, Partial<IPreferencePerPlan>>;

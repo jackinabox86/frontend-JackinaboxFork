@@ -6,10 +6,10 @@
 		() => import("@/features/homepage/components/HomepageHeader.vue")
 	);
 	const NavigationBar = defineAsyncComponent(
-		() => import("@/features/navigation/components/NavigationBar.vue")
+		() => import("@/layout/components/NavigationBar.vue")
 	);
 	const MobileToggle = defineAsyncComponent(
-		() => import("@/features/navigation/components/MobileToggle.vue")
+		() => import("@/layout/components/MobileToggle.vue")
 	);
 
 	const VersionUpdateNotification = defineAsyncComponent(

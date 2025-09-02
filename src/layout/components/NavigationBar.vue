@@ -1,9 +1,13 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, watch } from "vue";
+	import { computed, ComputedRef, ref, Ref, watch } from "vue";
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
 	import { useQueryStore } from "@/lib/query_cache/queryStore";
+
+	// Composables
+	import { usePreferences } from "@/features/preferences/usePreferences";
+	const { layoutNavigationStyle } = usePreferences();
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
@@ -15,7 +19,7 @@
 	import { relativeFromDate } from "@/util/date";
 
 	// Types & Interfaces
-	import { IMenuSection } from "@/features/navigation/navigation.types";
+	import { IMenuSection } from "@/layout/components/navigation.types";
 
 	// UI
 	import { PTag, PTooltip } from "@/ui";
@@ -30,10 +34,16 @@
 		CandlestickChartSharp,
 		CompareSharp,
 		ProductionQuantityLimitsSharp,
-		StarsSharp,
 		PersonSharp,
 		HelpOutlineSharp,
 		ExtensionSharp,
+		LocalFireDepartmentSharp,
+		AutoFixNormalSharp,
+		MoneySharp,
+		ExploreSharp,
+		TravelExploreSharp,
+		KeyboardDoubleArrowLeftSharp,
+		KeyboardDoubleArrowRightSharp,
 	} from "@vicons/material";
 
 	const userStore = useUserStore();
@@ -73,6 +83,7 @@
 	const menuItems: ComputedRef<IMenuSection[]> = computed(() => [
 		{
 			label: "Planning",
+			labelShort: "Plan",
 			display: true,
 			children: [
 				{
@@ -118,6 +129,7 @@
 		// },
 		{
 			label: "Tools",
+			labelShort: "Tool",
 			display: true,
 			children: [
 				{
@@ -130,16 +142,19 @@
 							label: "Exploration",
 							display: true,
 							routerLink: "/market-exploration",
+							icon: ExploreSharp,
 						},
 						{
 							label: "Recipe ROI",
 							display: true,
 							routerLink: "/roi-overview",
+							icon: MoneySharp,
 						},
 						{
 							label: "Resource ROI",
 							display: true,
 							routerLink: "/resource-roi-overview",
+							icon: TravelExploreSharp,
 						},
 					],
 				},
@@ -161,12 +176,12 @@
 				// 	routerLink: "/not-implemented",
 				// 	icon: UpgradeSharp,
 				// },
-				{
-					label: "Government",
-					display: true,
-					routerLink: "/not-implemented",
-					icon: StarsSharp,
-				},
+				// {
+				// 	label: "Government",
+				// 	display: true,
+				// 	routerLink: "/not-implemented",
+				// 	icon: StarsSharp,
+				// },
 				{
 					label: "FIO",
 					display: userStore.hasFIO,
@@ -177,16 +192,18 @@
 							label: "Burn",
 							display: userStore.hasFIO,
 							routerLink: "/fio/burn",
+							icon: LocalFireDepartmentSharp,
 						},
-						{
-							label: "Storage",
-							display: userStore.hasFIO,
-							routerLink: "/not-implemented",
-						},
+						// {
+						// 	label: "Storage",
+						// 	display: userStore.hasFIO,
+						// 	routerLink: "/not-implemented",
+						// },
 						{
 							label: "Repair",
 							display: userStore.hasFIO,
 							routerLink: "/fio/repair",
+							icon: AutoFixNormalSharp,
 						},
 						// {
 						// 	label: "Plan Import",
@@ -199,6 +216,7 @@
 		},
 		{
 			label: "Account",
+			labelShort: "Acc",
 			display: true,
 			children: [
 				{
@@ -233,6 +251,24 @@
 	]);
 
 	const appVersion = __APP_VERSION__;
+
+	function toggleNavigationSize(): void {
+		layoutNavigationStyle.value === "full"
+			? (layoutNavigationStyle.value = "collapsed")
+			: (layoutNavigationStyle.value = "full");
+	}
+
+	const isFull = computed(() => !!(layoutNavigationStyle.value === "full"));
+
+	const containerClass = computed(() =>
+		layoutNavigationStyle.value === "full" ? "px-4 " : "px-2"
+	);
+
+	const itemClass = computed(() =>
+		layoutNavigationStyle.value === "full"
+			? "px-2 py-2"
+			: "p-2 pb-0 justify-center"
+	);
 </script>
 
 <template>
@@ -240,25 +276,34 @@
 	<input id="menu-toggle" type="checkbox" class="hidden peer" />
 	<!-- Sidebar -->
 	<div
-		class="hidden peer-checked:flex md:flex border-r border-white/5 flex-col w-[200px] bg-gray-dark transition-all duration-300 ease-in-out">
-		<div class="items-center justify-between h-16 px-4 sm:hidden md:flex">
-			<div class="flex flex-row w-full items-baseline">
-				<div class="flex-grow text-prunplanner text-xl font-light">
-					<span class="font-bold">PRUN</span>planner
+		class="hidden peer-checked:flex md:flex border-r border-white/5 flex-col bg-gray-dark transition-all duration-300 ease-in-out"
+		:class="containerClass">
+		<div class="items-center justify-between sm:hidden md:flex">
+			<div class="w-full flex flex-row items-baseline pt-4">
+				<div
+					class="flex-grow text-prunplanner text-xl font-light text-center">
+					<router-link to="/">
+						<template v-if="isFull">
+							<span class="font-bold">PRUN</span>planner
+						</template>
+						<span v-else class="font-bold">PP</span>
+					</router-link>
 				</div>
-				<div class="text-end text-[10px] text-white/40">
+				<div v-if="isFull" class="text-end text-[10px] text-white/40">
 					{{ appVersion }}
 				</div>
 			</div>
 		</div>
 		<div class="flex flex-col flex-1 overflow-y-auto">
-			<nav class="flex-1 px-2 pt-0 pb-4 text-white/80">
+			<nav class="flex-1 pt-0 pb-4 text-white/80">
 				<template
 					v-for="section in menuItems"
 					:key="'SECTION#' + section.label">
 					<div v-if="section.display" class="pb-4">
-						<div class="px-4 py-2 text-sm text-gray-400">
-							{{ section.label }}
+						<div
+							class="text-sm text-gray-400"
+							:class="[itemClass, !isFull ? 'text-center' : '']">
+							{{ isFull ? section.label : section.labelShort }}
 						</div>
 						<template
 							v-for="item in section.children"
@@ -272,25 +317,53 @@
 									'ROUTER#' + section.label + '#' + item.label
 								"
 								:to="item.routerLink"
-								class="flex items-center px-4 py-2 hover:bg-white/20 hover:rounded-sm group"
+								class="flex items-center hover:bg-white/20 hover:rounded-sm group"
+								:class="itemClass"
 								active-class="bg-white/10 rounded-sm">
-								<n-icon v-if="item.icon" class="mr-2" size="20">
-									<component :is="item.icon" />
-								</n-icon>
-								{{ item.label }}
-							</RouterLink>
-							<template
-								v-else-if="!item.children && item.functionCall">
-								<div
-									class="flex items-center px-4 py-2 hover:bg-white/20 hover:rounded-sm group hover:cursor-pointer"
-									@click="item.functionCall()">
+								<PTooltip v-if="!isFull" placement="top">
+									<template #trigger>
+										<n-icon v-if="item.icon" size="20">
+											<component :is="item.icon" />
+										</n-icon>
+									</template>
+									{{ item.label }}
+								</PTooltip>
+								<template v-else>
 									<n-icon
 										v-if="item.icon"
 										class="mr-2"
 										size="20">
 										<component :is="item.icon" />
 									</n-icon>
-									<span>{{ item.label }}</span>
+									{{ item.label }}
+								</template>
+							</RouterLink>
+							<template
+								v-else-if="!item.children && item.functionCall">
+								<div
+									class="flex items-center hover:bg-white/20 hover:rounded-sm group hover:cursor-pointer"
+									:class="itemClass"
+									@click="item.functionCall()">
+									<PTooltip v-if="!isFull">
+										<template #trigger>
+											<n-icon
+												v-if="item.icon"
+												:class="isFull ? 'mr-2' : ''"
+												size="20">
+												<component :is="item.icon" />
+											</n-icon>
+										</template>
+										{{ item.label }}
+									</PTooltip>
+									<template v-else>
+										<n-icon
+											v-if="item.icon"
+											:class="isFull ? 'mr-2' : ''"
+											size="20">
+											<component :is="item.icon" />
+										</n-icon>
+										{{ item.label }}
+									</template>
 								</div>
 							</template>
 							<template v-else>
@@ -298,13 +371,18 @@
 									<input
 										:id="item.label + '-toggle'"
 										type="checkbox"
+										:checked="isFull ? false : true"
 										class="hidden peer" />
 									<label
 										:for="item.label + '-toggle'"
-										class="flex items-center px-4 py-2 hover:bg-white/20 hover:rounded-sm cursor-pointer w-full">
+										class="flex items-center hover:bg-white/20 hover:rounded-sm cursor-pointer w-full"
+										:class="[
+											itemClass,
+											isFull ? 'visible' : 'hidden',
+										]">
 										<n-icon
 											v-if="item.icon"
-											class="mr-2"
+											:class="isFull ? 'mr-2' : ''"
 											size="20">
 											<component :is="item.icon" />
 										</n-icon>
@@ -340,21 +418,45 @@
 														? children.routerLink
 														: ''
 												"
-												class="flex items-center px-4 py-2 hover:bg-white/20 hover:rounded-sm group"
-												:class="
-													children.icon
+												class="flex items-center hover:bg-white/20 hover:rounded-sm group"
+												:class="[
+													children.icon && isFull
 														? 'pl-6'
-														: 'pl-8'
-												"
+														: 'pl-2',
+													itemClass,
+												]"
 												active-class="bg-white/10 rounded-sm">
-												<n-icon
-													v-if="children.icon"
-													class="mr-2"
-													size="20">
-													<component
-														:is="children.icon" />
-												</n-icon>
-												{{ children.label }}
+												<PTooltip
+													v-if="!isFull"
+													placement="top">
+													<template #trigger>
+														<n-icon
+															v-if="children.icon"
+															size="20">
+															<component
+																:is="
+																	children.icon
+																" />
+														</n-icon>
+													</template>
+													{{ children.label }}
+												</PTooltip>
+												<template v-else>
+													<n-icon
+														v-if="children.icon"
+														:class="
+															isFull ? 'mr-2' : ''
+														"
+														size="20">
+														<component
+															:is="
+																children.icon
+															" />
+													</n-icon>
+													<template v-if="isFull">
+														{{ children.label }}
+													</template>
+												</template>
 											</RouterLink>
 										</template>
 									</div>
@@ -365,32 +467,50 @@
 				</template>
 			</nav>
 		</div>
-		<div class="p-4 text-center child:my-auto">
-			<PTooltip
-				v-if="
-					userStore.hasFIO &&
-					storageTimestamp !== 0 &&
-					sitesTimestamp !== 0
-				">
-				<template #trigger>
-					<PTag size="sm" type="success" :bordered="false">
-						FIO Active
+		<div
+			class="text-center child:my-auto"
+			:class="isFull ? 'py-2' : 'py-1'">
+			<div
+				class="flex gap-1 justify-between items-center"
+				:class="isFull ? 'flex-row' : 'flex-col'">
+				<div>
+					<PTooltip
+						v-if="
+							userStore.hasFIO &&
+							storageTimestamp !== 0 &&
+							sitesTimestamp !== 0
+						">
+						<template #trigger>
+							<PTag size="sm" type="success" :bordered="false">
+								{{ isFull ? "FIO Active" : "FIO" }}
+							</PTag>
+						</template>
+						<div class="grid grid-cols-2">
+							<div>Storage</div>
+							<div>
+								{{ relativeFromDate(storageTimestamp) }}
+							</div>
+							<div>Sites</div>
+							<div>
+								{{ relativeFromDate(sitesTimestamp) }}
+							</div>
+						</div>
+					</PTooltip>
+					<PTag v-else size="sm" type="warning" :bordered="false">
+						{{ isFull ? "FIO Inactive" : "FIO" }}
 					</PTag>
-				</template>
-				<div class="grid grid-cols-2">
-					<div>Storage</div>
-					<div>
-						{{ relativeFromDate(storageTimestamp) }}
-					</div>
-					<div>Sites</div>
-					<div>
-						{{ relativeFromDate(sitesTimestamp) }}
+				</div>
+				<div @click="toggleNavigationSize">
+					<div class="hover:bg-white/20 hover:rounded-sm p-2">
+						<KeyboardDoubleArrowLeftSharp
+							v-if="isFull"
+							class="w-[20px] h-[20px]" />
+						<KeyboardDoubleArrowRightSharp
+							v-else
+							class="w-[20px] h-[20px]" />
 					</div>
 				</div>
-			</PTooltip>
-			<PTag v-else size="sm" type="warning" :bordered="false">
-				FIO Inactive
-			</PTag>
+			</div>
 		</div>
 	</div>
 </template>

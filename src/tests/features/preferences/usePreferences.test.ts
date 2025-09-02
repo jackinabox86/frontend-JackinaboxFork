@@ -104,6 +104,21 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	describe("layoutNavigationStyle", async () => {
+		it("get", async () => {
+			const { layoutNavigationStyle } = usePreferences();
+			expect(layoutNavigationStyle.value).toBe(
+				preferenceDefaults.layoutNavigationStyle
+			);
+		});
+
+		it("set", async () => {
+			const { layoutNavigationStyle } = usePreferences();
+			layoutNavigationStyle.value = "collapsed";
+			expect(layoutNavigationStyle.value).toBe("collapsed");
+		});
+	});
+
 	it("planSettings", async () => {
 		const { planSettings } = usePreferences();
 
