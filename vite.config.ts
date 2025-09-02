@@ -115,6 +115,8 @@ export default defineConfig({
 				moduleSideEffects: true,
 			},
 			output: {
+				// sourcemapExcludeSources: false,
+
 				entryFileNames: "assets/[name].[hash].js",
 				chunkFileNames: "assets/chunks/[name].[hash].js",
 				assetFileNames: "assets/[ext]/[name].[hash].[ext]",
@@ -138,9 +140,14 @@ export default defineConfig({
 						if (pkg === "showdown") return "showdown";
 						if (pkg === "posthog-js") return "posthog";
 
-						return `vendor_${pkg
-							.replace("@", "")
-							.replace("/", "_")}`;
+						// sanitize vendor name
+						return (
+							"vendor_" +
+							pkg
+								.replace(/^@/, "") // remove leading @
+								.replace(/[^a-zA-Z0-9]/g, "_") // replace all weird chars
+								.replace(/_+$/, "") // trim trailing underscores
+						);
 					}
 
 					// group app code by feature
