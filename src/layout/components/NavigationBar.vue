@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, ref, Ref, watch } from "vue";
+	import { computed, ComputedRef, watch } from "vue";
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
