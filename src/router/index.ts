@@ -94,8 +94,7 @@ const router = createRouter({
 			name: "market-exploration",
 			path: "/market-exploration",
 			meta: { requiresAuth: true },
-			component: () =>
-				import("@/views/tools/market-data/MarketExplorationView.vue"),
+			component: () => import("@/views/tools/MarketExplorationView.vue"),
 		},
 		{
 			name: "hq-upgrade-calculator",
