@@ -22,16 +22,6 @@ export function usePreferences() {
 
 	const { getPlanNamePlanet } = usePlan();
 
-	/**
-	 * Writable computed for the users default Empire UUID
-	 *
-	 * @author jplacht
-	 *
-	 * @type {WritableComputedRef<
-	 * 		string | undefined,
-	 * 		string | undefined
-	 * 	>}
-	 */
 	const defaultEmpireUuid: WritableComputedRef<
 		string | undefined,
 		string | undefined
@@ -40,13 +30,6 @@ export function usePreferences() {
 		set: (v) => userStore.setPreference("defaultEmpireUuid", v),
 	});
 
-	/**
-	 * Writable computed for the users default CX UUID
-	 *
-	 * @author jplacht
-	 *
-	 * @type {WritableComputedRef<string | undefined, string | undefined>}
-	 */
 	const defaultCXUuid: WritableComputedRef<
 		string | undefined,
 		string | undefined
@@ -55,83 +38,45 @@ export function usePreferences() {
 		set: (v) => userStore.setPreference("defaultCXUuid", v),
 	});
 
-	/**
-	 * Writable computed for the users default "Buy Items From CX" setting
-	 *
-	 * @author lilbit
-	 *
-	 * @type {WritableComputedRef<boolean, boolean>}
-	 */
-	const defaultBuyItemsFromCX: WritableComputedRef<
-		boolean,
-		boolean
-	> = computed<boolean>({
-		get: () => userStore.preferences.defaultBuyItemsFromCX ?? true,
-		set: (v) => userStore.setPreference("defaultBuyItemsFromCX", v),
-	});
+	const defaultBuyItemsFromCX: WritableComputedRef<boolean, boolean> =
+		computed<boolean>({
+			get: () => userStore.preferences.defaultBuyItemsFromCX ?? true,
+			set: (v) => userStore.setPreference("defaultBuyItemsFromCX", v),
+		});
 
-	/**
-	 * Writable computed for the users RED alert on burn views
-	 *
-	 * @author jplacht
-	 *
-	 * @type {WritableComputedRef<number, number>}
-	 */
 	const burnDaysRed: WritableComputedRef<number, number> = computed<number>({
 		get: () => userStore.preferences.burnDaysRed,
 		set: (v) => userStore.setPreference("burnDaysRed", v),
 	});
 
-	/**
-	 * Writable computed for the users YELLOW alert on burn views
-	 *
-	 * @author jplacht
-	 *
-	 * @type {WritableComputedRef<number, number>}
-	 */
 	const burnDaysYellow: WritableComputedRef<number, number> =
 		computed<number>({
 			get: () => userStore.preferences.burnDaysYellow,
 			set: (v) => userStore.setPreference("burnDaysYellow", v),
 		});
 
-	/**
-	 * Writable computed for users resupply setting on xit actions
-	 * @author jplacht
-	 *
-	 * @type {WritableComputedRef<number, number>}
-	 */
 	const burnResupplyDays: WritableComputedRef<number, number> =
 		computed<number>({
 			get: () => userStore.preferences.burnResupplyDays,
 			set: (v) => userStore.setPreference("burnResupplyDays", v),
 		});
 
-	/**
-	 * Writable computed for users burn origin setting on xit actions
-	 * @author jplacht
-	 *
-	 * @type {WritableComputedRef<number, number>}
-	 */
 	const burnOrigin: WritableComputedRef<string, string> = computed<string>({
 		get: () => userStore.preferences.burnOrigin,
 		set: (v) => userStore.setPreference("burnOrigin", v),
 	});
 
-	/**
-	 * Computed getter for users overrides on invididual plan preferences
-	 *
-	 * @author jplacht
-	 *
-	 * @type {ComputedRef<
-	 * 		Record<string, Partial<IPreferencePerPlan>>
-	 * 	>}
-	 */
 	const planSettings: ComputedRef<
 		Record<string, Partial<IPreferencePerPlan>>
 	> = computed(() => {
 		return userStore.preferences.planOverrides;
 	});
+
+	const layoutNavigationStyle: WritableComputedRef<"full" | "collapsed"> =
+		computed({
+			get: () => userStore.preferences.layoutNavigationStyle,
+			set: (v) => userStore.setPreference("layoutNavigationStyle", v),
+		});
 
 	/**
 	 * Computed overview array of users plan specific settings, checks settings
@@ -247,6 +192,7 @@ export function usePreferences() {
 		burnOrigin,
 		planSettings,
 		planSettingsOverview,
+		layoutNavigationStyle,
 		// functions
 		cleanPlanPreferences,
 		getBurnDisplayClass,
