@@ -26,7 +26,6 @@
 		IProductionBuilding,
 	} from "@/features/planning/usePlanCalculation.types";
 	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
-	import { IMaterial } from "@/features/api/gameData.types";
 
 	// UI
 	import { PButton, PInputNumber } from "@/ui";
