@@ -175,7 +175,9 @@
 					: '',
 			]"
 			@click="toggleDrawer">
-			<PTooltip v-if="refExchangeOverview !== undefined && enablePopover">
+			<PTooltip
+				v-if="refExchangeOverview !== undefined"
+				:disabled="!enablePopover">
 				<template #trigger>
 					<div
 						class="flex justify-center items-center"
@@ -189,7 +191,6 @@
 					</div>
 				</template>
 				<MaterialCXOverviewTable
-					v-if="refExchangeOverview"
 					:key="`material-tile#CXOverview#${ticker}`"
 					:ticker="ticker"
 					:overview-data="refExchangeOverview" />

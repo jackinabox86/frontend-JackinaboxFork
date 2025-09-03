@@ -1,6 +1,7 @@
 # 2025-09-03
 
 - Implements API CSV endpoints view
+- Fix out of bounds tooltips [#229](https://github.com/PRUNplanner/frontend/issues/229)
 
 # 2025-09-02
 

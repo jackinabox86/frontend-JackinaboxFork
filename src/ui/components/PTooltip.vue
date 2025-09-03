@@ -3,17 +3,25 @@
 	import { tooltipConfig } from "@/ui/styles";
 	import { createPopper, Instance } from "@popperjs/core";
 
-	const props = defineProps<{
+	const {
+		placement = "top",
+		offset = 8,
+		disabled = false,
+	} = defineProps<{
 		placement?: "top" | "bottom" | "left" | "right";
 		offset?: number;
+		disabled?: boolean;
 	}>();
 
 	const triggerRef = ref<HTMLElement | null>(null);
 	const tooltipRef = ref<HTMLElement | null>(null);
 	let popperInstance: Instance | null = null;
+	let ro: ResizeObserver | null = null;
 	const isVisible = ref(false);
 
 	async function show() {
+		if (disabled) return;
+
 		isVisible.value = true;
 
 		// ensure tooltip is rendered before Popper is created
@@ -21,36 +29,61 @@
 
 		if (triggerRef.value && tooltipRef.value) {
 			popperInstance = createPopper(triggerRef.value, tooltipRef.value, {
-				placement: props.placement ?? "top",
+				placement: placement,
+				strategy: "fixed",
 				modifiers: [
 					{
 						name: "offset",
-						options: { offset: [0, props.offset ?? 8] },
+						options: { offset: [0, offset] },
 					},
 					{
 						name: "flip",
-						options: { fallbackPlacements: ["bottom", "left"] },
+						options: {
+							fallbackPlacements: [
+								"top",
+								"bottom",
+								"left",
+								"right",
+							],
+							boundary: "viewport",
+						},
 					},
-					{ name: "preventOverflow", options: { padding: 8 } },
+					{
+						name: "preventOverflow",
+						options: {
+							boundary: "viewport",
+							padding: 8,
+							altAxis: true,
+							tether: false,
+						},
+					},
+					{
+						name: "shift",
+						options: {
+							boundary: "viewport",
+							padding: 8,
+						},
+					},
 				],
 			});
+
+			requestAnimationFrame(() => popperInstance?.update());
+
+			// observe size + update if overflowing
+			ro = new ResizeObserver(() => popperInstance?.update());
+			ro.observe(tooltipRef.value);
 		}
 	}
 
 	function hide() {
 		isVisible.value = false;
-		if (popperInstance) {
-			popperInstance.destroy();
-			popperInstance = null;
-		}
+		ro?.disconnect();
+		ro = null;
+		popperInstance?.destroy();
+		popperInstance = null;
 	}
 
-	onBeforeUnmount(() => {
-		if (popperInstance) {
-			popperInstance.destroy();
-			popperInstance = null;
-		}
-	});
+	onBeforeUnmount(hide);
 </script>
 
 <template>

@@ -324,7 +324,7 @@
 								class="flex items-center hover:bg-white/20 hover:rounded-sm group"
 								:class="itemClass"
 								active-class="bg-white/10 rounded-sm">
-								<PTooltip v-if="!isFull" placement="top">
+								<PTooltip v-if="!isFull" placement="right">
 									<template #trigger>
 										<n-icon v-if="item.icon" size="20">
 											<component :is="item.icon" />
@@ -348,7 +348,7 @@
 									class="flex items-center hover:bg-white/20 hover:rounded-sm group hover:cursor-pointer"
 									:class="itemClass"
 									@click="item.functionCall()">
-									<PTooltip v-if="!isFull">
+									<PTooltip v-if="!isFull" placement="right">
 										<template #trigger>
 											<n-icon
 												v-if="item.icon"
@@ -432,7 +432,7 @@
 												active-class="bg-white/10 rounded-sm">
 												<PTooltip
 													v-if="!isFull"
-													placement="top">
+													placement="right">
 													<template #trigger>
 														<n-icon
 															v-if="children.icon"
