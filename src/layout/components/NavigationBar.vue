@@ -224,7 +224,7 @@
 				{
 					label: "API",
 					display: true,
-					routerLink: "/not-implemented",
+					routerLink: "/api",
 					icon: ExtensionSharp,
 				},
 				{

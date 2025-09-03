@@ -52,6 +52,8 @@ import {
 	IOptimizeHabitationResponse,
 } from "@/features/api/schemas/optimize.schemas";
 import {
+	IUserAPIKey,
+	IUserAPIKeyCreatePayload,
 	IUserChangePasswordPayload,
 	IUserProfile,
 	IUserProfilePatch,
@@ -166,4 +168,7 @@ export interface IQueryRepository {
 		boolean
 	>;
 	PostUserVerifyEmail: IQueryDefinition<IUserVerifyEmailPayload, boolean>;
+	GetUserAPIKeyList: IQueryDefinition<undefined, IUserAPIKey[]>;
+	PostUserCreateAPIKey: IQueryDefinition<IUserAPIKeyCreatePayload, boolean>;
+	DeleteUserAPIKey: IQueryDefinition<{ key: string }, boolean>;
 }
