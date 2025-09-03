@@ -1,10 +1,9 @@
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import { describe, it, expect, beforeAll } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
 import { materialsStore } from "@/database/stores";
 import { useMaterialData } from "@/database/services/useMaterialData";
 
@@ -18,11 +17,8 @@ import { IXITActionElement } from "@/features/xit/xitAction.types";
 import materials from "@/tests/test_data/api_data_materials.json";
 
 describe("useBurnXITAction", async () => {
-	let gameDataStore: any;
-
 	beforeAll(async () => {
 		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
 
 		await materialsStore.setMany(materials);
 
@@ -35,7 +31,7 @@ describe("useBurnXITAction", async () => {
 	const elements: IXITActionElement[] = [
 		{
 			ticker: "ALO",
-			stock: 10,
+			stock: 20,
 			delta: -2,
 		},
 		{
@@ -61,9 +57,9 @@ describe("useBurnXITAction", async () => {
 	];
 	const resupplyDays: number = 5;
 	const hideInfinite: boolean = true;
-	const materialOverrides: Record<string, number> = {
+	const materialOverrides: Ref<Record<string, number>> = ref({
 		ALO: 10,
-	};
+	});
 	const materialInactives: Set<string> = new Set(["FEO"]);
 
 	it("materialTable", async () => {
@@ -76,7 +72,7 @@ describe("useBurnXITAction", async () => {
 		);
 
 		expect(materialTable.value.length).toBe(3);
-		expect(materialTable.value[0].total).toBe(0);
+		expect(materialTable.value[0].total).toBe(10);
 		expect(materialTable.value[1].total).toBe(1);
 		expect(materialTable.value[2].total).toBe(0);
 	});
@@ -90,7 +86,7 @@ describe("useBurnXITAction", async () => {
 			ref(materialInactives)
 		);
 
-		expect(totalWeightVolume.value.totalWeight).toBe(2.7300000190734863);
-		expect(totalWeightVolume.value.totalVolume).toBe(1);
+		expect(totalWeightVolume.value.totalWeight).toBe(16.230000257492065);
+		expect(totalWeightVolume.value.totalVolume).toBe(11);
 	});
 });

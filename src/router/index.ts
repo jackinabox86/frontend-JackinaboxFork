@@ -144,6 +144,12 @@ const router = createRouter({
 			meta: { requiresAuth: true },
 			component: () => import("@/lib/query_cache/QueryCacheView.vue"),
 		},
+		{
+			name: "api",
+			path: "/api",
+			meta: { requiresAuth: true },
+			component: () => import("@/views/APIView.vue"),
+		},
 	],
 });
 

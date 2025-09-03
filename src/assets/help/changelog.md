@@ -1,3 +1,7 @@
+# 2025-09-03
+
+- Implements API CSV endpoints view
+
 # 2025-09-02
 
 - Provide option and style to collapse navigation

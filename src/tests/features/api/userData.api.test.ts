@@ -2,7 +2,10 @@ import { describe, it, expect, vi } from "vitest";
 
 import { apiService } from "@/lib/apiService";
 import {
+	callAPIKeyList,
 	callChangePassword,
+	callCreateAPIKey,
+	callDeleteAPIKey,
 	callGetProfile,
 	callPatchProfile,
 	callRefreshToken,
@@ -14,6 +17,7 @@ import {
 	LoginPayloadSchema,
 	RefreshPayloadSchema,
 	TokenResponseSchema,
+	UserAPIKeyPayloadSchema,
 	UserChangePasswordPayloadSchema,
 	UserChangePasswordResponseSchema,
 	UserProfilePatchSchema,
@@ -21,13 +25,13 @@ import {
 	UserVerifyEmailPayloadSchema,
 	UserVerifyEmailResponseSchema,
 } from "@/features/api/schemas/user.schemas";
-import z from "zod";
 
 vi.mock("@/lib/apiService", () => ({
 	apiService: {
 		post: vi.fn(),
 		get: vi.fn(),
 		patch: vi.fn(),
+		delete: vi.fn(),
 	},
 }));
 
@@ -170,6 +174,51 @@ describe("Feature: Account", () => {
 			UserVerifyEmailPayloadSchema,
 			UserVerifyEmailResponseSchema
 		);
+
+		expect(result).toEqual(mockResponse);
+	});
+
+	it("callAPIKeyList: Calls API Service and gets correct response", async () => {
+		const mockResponse = [
+			{
+				name: "foo",
+				key: "moo",
+				created_date: new Date(),
+				last_activity: null,
+			},
+		];
+
+		// @ts-expect-error - mock post typing
+		apiService.get.mockResolvedValue(mockResponse);
+
+		const result = await callAPIKeyList();
+
+		expect(apiService.get).toHaveBeenCalledWith(
+			"/user/api-key",
+			UserAPIKeyPayloadSchema
+		);
+
+		expect(result).toEqual(mockResponse);
+	});
+
+	it("callCreateAPIKey: Calls API Service and gets correct response", async () => {
+		const mockResponse = true;
+
+		// @ts-expect-error - mock post typing
+		apiService.post.mockResolvedValue(mockResponse);
+
+		const result = await callCreateAPIKey("foo");
+
+		expect(result).toEqual(mockResponse);
+	});
+
+	it("callDeleteAPIKey: Calls API Service and gets correct response", async () => {
+		const mockResponse = true;
+
+		// @ts-expect-error - mock post typing
+		apiService.delete.mockResolvedValue(mockResponse);
+
+		const result = await callDeleteAPIKey("foo");
 
 		expect(result).toEqual(mockResponse);
 	});

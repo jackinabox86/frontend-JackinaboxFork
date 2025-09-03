@@ -21,10 +21,15 @@ import {
 	UserVerifyEmailResponseType,
 	UserVerifyEmailPayloadSchema,
 	UserVerifyEmailResponseSchema,
+	UserAPIKeyPayloadType,
+	UserAPIKeyPayloadSchema,
+	UserAPIKeyCreatePayloadType,
+	UserAPIKeyCreatePayloadSchema,
 } from "@/features/api/schemas/user.schemas";
 
 // Types & Interfaces
 import {
+	IUserAPIKey,
 	IUserChangePasswordPayload,
 	IUserChangePasswordResponse,
 	IUserProfile,
@@ -190,4 +195,24 @@ export async function callVerifyEmail(
 		UserVerifyEmailPayloadSchema,
 		UserVerifyEmailResponseSchema
 	);
+}
+
+export async function callAPIKeyList(): Promise<IUserAPIKey[]> {
+	return apiService.get<UserAPIKeyPayloadType>(
+		"/user/api-key",
+		UserAPIKeyPayloadSchema
+	);
+}
+
+export async function callCreateAPIKey(keyname: string): Promise<boolean> {
+	return apiService.post<UserAPIKeyCreatePayloadType, boolean>(
+		"/user/api-key",
+		{ keyname },
+		UserAPIKeyCreatePayloadSchema,
+		z.boolean()
+	);
+}
+
+export async function callDeleteAPIKey(key: string): Promise<boolean> {
+	return apiService.delete(`/user/api-key/${key}`);
 }
