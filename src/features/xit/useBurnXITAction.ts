@@ -22,7 +22,7 @@ export async function useBurnXITAction(
 
 	// buildupo material overrides
 	materialOverrides.value = elements.value.reduce((sum, current) => {
-		sum[current.ticker] = null;
+		sum[current.ticker] = materialOverrides.value[current.ticker] ?? null;
 		return sum;
 	}, {} as Record<string, number | null>);
 
