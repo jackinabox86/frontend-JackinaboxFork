@@ -11,7 +11,7 @@ import {
 } from "@/ui/ui.types";
 
 export const buttonConfig: PButtonConfig = {
-	base: "inline-flex items-center justify-center leading-none rounded-sm cursor-pointer text-nowrap",
+	base: "flex flex-row items-center justify-center leading-none rounded-sm child:cursor-pointer cursor-pointer text-nowrap",
 	defaultSize: "md",
 	defaultColor: "primary",
 	sizes: {

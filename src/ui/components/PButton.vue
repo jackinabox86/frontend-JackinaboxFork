@@ -61,13 +61,12 @@
 		<span
 			v-if="$slots.icon && !loading"
 			key="icon"
-			class="hover:cursor-pointer"
+			class=""
 			:class="buttonConfig.sizes[size].icon">
 			<slot name="icon" />
 		</span>
-		<span class="hover:cursor-pointer">
-			<slot />
-		</span>
+
+		<slot />
 	</button>
 </template>
 
