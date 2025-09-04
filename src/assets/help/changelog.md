@@ -1,3 +1,10 @@
+# 2025-09-04
+
+- Fix icon-only button alignments [#232](https://github.com/PRUNplanner/frontend/issues/232)
+- Add tooltip to "Corp. HQ" checkbox in plans [#227](https://github.com/PRUNplanner/frontend/issues/227)
+- Add building ticker to plans planet materials [#233](https://github.com/PRUNplanner/frontend/issues/233)
+
+
 # 2025-09-03
 
 - Implements API CSV endpoints view
