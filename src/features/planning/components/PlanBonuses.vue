@@ -5,7 +5,7 @@
 	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
 
 	// UI
-	import { PForm, PFormItem, PCheckbox, PSelect } from "@/ui";
+	import { PForm, PFormItem, PCheckbox, PSelect, PTooltip } from "@/ui";
 	import { PSelectOption } from "@/ui/ui.types";
 
 	const props = defineProps({
@@ -61,7 +61,15 @@
 <template>
 	<PForm>
 		<PFormItem label="Corp. HQ">
-			<PCheckbox v-model:checked="localCorpHQ" :disabled="disabled" />
+			<PTooltip>
+				<template #trigger>
+					<PCheckbox
+						v-model:checked="localCorpHQ"
+						:disabled="disabled" />
+				</template>
+				The corporation you belong to has its headquarters on <br />
+				this planet (not your individual company).
+			</PTooltip>
 		</PFormItem>
 
 		<PFormItem label="COGC">
