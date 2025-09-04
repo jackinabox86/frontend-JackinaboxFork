@@ -537,7 +537,14 @@
 												:enable-popover="false" />
 										</div>
 									</template>
-									{{ resource.ResourceType }}
+									{{ resource.ResourceType }} ({{
+										resource.ResourceType === "MINERAL"
+											? "EXT"
+											: resource.ResourceType ===
+											  "GASEOUS"
+											? "COL"
+											: "RIG"
+									}})
 								</PTooltip>
 							</div>
 						</div>
