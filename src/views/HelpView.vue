@@ -6,6 +6,7 @@
 		title: "Help | PRUNplanner",
 	});
 
+	import HelpTutorial from "@/features/help/components/HelpTutorial.vue";
 	import { VueShowdown } from "vue-showdown";
 
 	// markdown loader from changelog
@@ -35,14 +36,27 @@
 		</div>
 
 		<div
-			class="flex-grow grid grid-cols-1 lg:grid-cols-[60%_auto] gap-3 divide-x divide-white/10 child:px-6 child:py-3">
+			class="flex-grow grid grid-cols-1 lg:grid-cols-[60%_auto] gap-3 divide-x divide-white/10 child:px-6 child:py-3 child:last:pl-3">
 			<div>
-				<h2 class="text-xl font-bold pb-3">Help</h2>
-				...
+				<HelpTutorial />
 			</div>
 			<div>
+				<section class="bg-white/10 p-3 rounded mb-3">
+					PRUNplanners frontend is
+					<a
+						href="https://github.com/PRUNplanner/frontend"
+						target="_blank"
+						class="text-link-primary"
+						>open source</a
+					>
+					and welcomes contributions on Github!
+				</section>
+
 				<h2 class="text-xl font-bold pb-3">Changelog</h2>
-				<div v-if="markdownContent != ''" id="markdown">
+				<div
+					v-if="markdownContent != ''"
+					id="markdown"
+					class="h-screen overflow-auto">
 					<VueShowdown :markdown="markdownContent" />
 				</div>
 			</div>
