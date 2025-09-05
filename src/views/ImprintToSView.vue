@@ -76,10 +76,10 @@
 				<p class="pb-3">
 					PRUNplanner stores information in your browsers LocalStorage
 					(gamedata, backend responses) as well as SessionStorage
-					(authentication information). PRUNplanner itself does not
-					use any cookies. 3rd-Party integrations may make use of
-					cookies, you can opt-out on the respective tools or via your
-					browsers Do-Not-Track configuration.
+					(authentication information) and IndexedDB. PRUNplanner
+					itself does not use any cookies. 3rd-Party integrations may
+					make use of cookies, you can opt-out on the respective tools
+					or via your browsers Do-Not-Track configuration.
 				</p>
 				<h3 class="text-lg py-3">3rd-Party Interactions</h3>
 				<p>
@@ -97,7 +97,7 @@
 					reference.
 				</p>
 				<p class="py-3">
-					PRUNplanner uses PostHog, a sEU-hosted analytics tool, to
+					PRUNplanner uses PostHog, a EU-hosted analytics tool, to
 					better understand how users interact with our Service. We
 					track Pages visited, clicks, navigation flows, errors, and
 					performance metrics to improving usability, debugging
@@ -120,8 +120,8 @@
 					PRUNplanner only stores your login / account information
 					containing your encrypted password. If you want to be
 					deleted from PRUNplanner please reach out on Discord. This
-					Privacy Policy may change. Please check it periodically to
-					stay up-to-date about changes.
+					document may change. Please check it periodically to stay
+					up-to-date about changes.
 				</p>
 			</div>
 		</div>
