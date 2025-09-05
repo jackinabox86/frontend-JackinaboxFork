@@ -1,117 +1,82 @@
 <script setup lang="ts">
-	import { ref, Ref } from "vue";
+	import { ref, Ref, computed } from "vue";
+
 	import { useUserStore } from "@/stores/userStore";
+
 	const userStore = useUserStore();
-	// UI
-	import {
-		NForm,
-		NFormItem,
-		NInput,
-		NButton,
-		FormInst,
-		FormRules,
-		FormValidationError,
-	} from "naive-ui";
 	import router from "@/router";
 
-	interface ILoginForm {
-		username: string | null;
-		password: string | null;
-	}
+	// UI
+	import { PForm, PFormItem, PFormSeperator, PInput, PButton } from "@/ui";
 
-	const formRef = ref<FormInst | null>(null);
-	const loginModel: Ref<ILoginForm> = ref({
-		username: null,
-		password: null,
+	const inputUsername: Ref<string | null> = ref(null);
+	const inputPassword: Ref<string | null> = ref(null);
+	const isLoggingIn: Ref<boolean> = ref(false);
+	const hasError: Ref<boolean> = ref(false);
+
+	const canLogin = computed(() => {
+		if (inputUsername.value === null || inputUsername.value.length < 3)
+			return false;
+		if (inputPassword.value === null || inputPassword.value.length < 8)
+			return false;
+
+		return true;
 	});
 
-	const formRules: FormRules = {
-		username: [
-			{
-				required: true,
-				trigger: ["input"],
-				message: "Username is required.",
-			},
-		],
-		password: [
-			{
-				required: true,
-				trigger: ["input"],
-				message: "Password is required.",
-			},
-		],
-	};
+	async function handleLogin(): Promise<void> {
+		if (!canLogin.value) return;
 
-	const isLoggingIn: Ref<boolean> = ref(false);
-
-	function handleLoginButtonClick(): void {
 		isLoggingIn.value = true;
+		hasError.value = false;
 
-		formRef.value
-			?.validate((errors: Array<FormValidationError> | undefined) => {
-				if (!errors) {
-					if (
-						loginModel.value.username &&
-						loginModel.value.password
-					) {
-						userStore
-							.performLogin(
-								loginModel.value.username,
-								loginModel.value.password
-							)
-							.then(() => {
-								isLoggingIn.value = false;
-								router.push({ path: "/empire" });
-							});
-					}
-				} else {
-					console.error("nah");
-					isLoggingIn.value = false;
-				}
-			})
-			// https://github.com/tusen-ai/naive-ui/issues/6502
-			.catch((err) => err);
+		const result = await userStore.performLogin(
+			inputUsername.value!,
+			inputPassword.value!
+		);
+
+		isLoggingIn.value = false;
+
+		if (!result) hasError.value = true;
+		else {
+			router.push({ path: "/empire/" });
+		}
 	}
 </script>
 
 <template>
 	<div class="mx-auto max-w-[400px]">
 		<div class="text-xl text-white font-bold font-mono pb-3">Login</div>
-		<n-form
-			ref="formRef"
-			size="small"
-			:model="loginModel"
-			:rules="formRules">
-			<n-form-item path="username" label="Username">
-				<n-input
-					v-model:value="loginModel.username"
-					placeholder=""
-					@keydown.enter.prevent />
-			</n-form-item>
-			<n-form-item path="password" label="Password">
-				<n-input
-					v-model:value="loginModel.password"
-					placeholder=""
-					type="password"
-					show-password-on="click"
-					@keydown.enter.prevent />
-			</n-form-item>
-			<n-form-item>
-				<n-button
-					:loading="isLoggingIn"
-					@click="handleLoginButtonClick">
-					Login
-				</n-button>
-			</n-form-item>
-		</n-form>
-
-		<div class="text-[10px] text-white/50 pt-1">
-			By using PRUNplanner you agree to the
-			<router-link
-				to="/imprint-tos"
-				class="hover:cursor-pointer underline">
-				Terms of Service.
-			</router-link>
+		<div v-if="hasError" class="pb-3 text-red-600">
+			Error logging in. Please check your username and password.
 		</div>
+		<PForm>
+			<PFormItem label="Username">
+				<PInput v-model:value="inputUsername" class="w-full" />
+			</PFormItem>
+			<PFormItem label="Password">
+				<PInput
+					v-model:value="inputPassword"
+					type="password"
+					class="w-full" />
+			</PFormItem>
+			<PFormSeperator>
+				<div class="font-mono text-xs text-white/60 py-3">
+					By using PRUNplanner you agree to the
+					<router-link
+						to="/imprint-tos"
+						class="hover:cursor-pointer underline">
+						Terms of Service.
+					</router-link>
+				</div>
+			</PFormSeperator>
+			<PFormItem label="">
+				<PButton
+					:loading="isLoggingIn"
+					:disabled="!canLogin"
+					@click="handleLogin">
+					Login
+				</PButton>
+			</PFormItem>
+		</PForm>
 	</div>
 </template>
