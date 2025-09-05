@@ -9,6 +9,7 @@ import {
 	callGetProfile,
 	callPatchProfile,
 	callRefreshToken,
+	callRegisterUser,
 	callResendEmailVerification,
 	callUserLogin,
 	callVerifyEmail,
@@ -219,6 +220,31 @@ describe("Feature: Account", () => {
 		apiService.delete.mockResolvedValue(mockResponse);
 
 		const result = await callDeleteAPIKey("foo");
+
+		expect(result).toEqual(mockResponse);
+	});
+
+	it("callRegisterUser: Calls API Service and gets correct response", async () => {
+		const mockResponse = {
+			user_id: 1,
+			username: "foo",
+			email: "",
+			email_verified: true,
+			fio_apikey: "foo@moo.de",
+			prun_username: "foo",
+			last_login: new Date(),
+			last_action: new Date(),
+		};
+
+		// @ts-expect-error - mock post typing
+		apiService.post.mockResolvedValue(mockResponse);
+
+		const result = await callRegisterUser({
+			username: "foo",
+			password: "moo",
+			planet: "1",
+			randomplanet: "2",
+		});
 
 		expect(result).toEqual(mockResponse);
 	});

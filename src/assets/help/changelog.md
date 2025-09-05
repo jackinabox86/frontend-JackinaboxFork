@@ -1,3 +1,9 @@
+# 2025-09-05
+
+- Rework Login component
+- Add Registration component [#6](https://github.com/PRUNplanner/frontend/issues/6)
+- Expand Homepage, add screenshots and slight text changes
+
 # 2025-09-04
 
 - Fix icon-only button alignments [#232](https://github.com/PRUNplanner/frontend/issues/232)

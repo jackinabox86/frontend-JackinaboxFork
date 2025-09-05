@@ -28,31 +28,31 @@ export const buttonConfig: PButtonConfig = {
 	},
 	colors: {
 		primary: {
-			base: "bg-blue-800 text-white",
+			base: "bg-blue-800 text-white active:bg-blue-600",
 			hover: "hover:bg-blue-700",
 			disabled:
 				"disabled:bg-blue-800/50 disabled:text-white/80 !cursor-auto",
 		},
 		success: {
-			base: "bg-lime-500 text-black",
-			hover: "hover:bg-lime-700",
+			base: "bg-lime-500 text-black active:bg-lime-300",
+			hover: "hover:bg-lime-400",
 			disabled:
 				"disabled:bg-lime-500/50 disabled:text-white/80 !cursor-auto",
 		},
 		secondary: {
-			base: "bg-gray-800 text-white",
+			base: "bg-gray-800 text-white active:bg-gray-600",
 			hover: "hover:bg-gray-700",
 			disabled:
 				"disabled:bg-gray-800/50 disabled:text-white/80 !cursor-auto",
 		},
 		error: {
-			base: "bg-red-600 text-white",
+			base: "bg-red-600 text-white active:bg-red-500",
 			hover: "hover:bg-red-700",
 			disabled:
 				"disabled:bg-red-600/50 disabled:text-white/80 !cursor-auto",
 		},
 		warning: {
-			base: "bg-gray-100 text-gray-900",
+			base: "bg-gray-100 text-gray-900 active:bg-gray-300",
 			hover: "hover:bg-gray-200",
 			disabled:
 				"disabled:bg-gray-100/50 disabled:text-gray-900 !cursor-auto",

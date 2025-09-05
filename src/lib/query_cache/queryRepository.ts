@@ -124,6 +124,7 @@ import {
 	callCreateAPIKey,
 	callDeleteAPIKey,
 	callPatchProfile,
+	callRegisterUser,
 	callResendEmailVerification,
 	callVerifyEmail,
 } from "@/features/api/userData.api";
@@ -133,6 +134,7 @@ import {
 	IUserChangePasswordPayload,
 	IUserProfile,
 	IUserProfilePatch,
+	IUserRegistrationPayload,
 	IUserVerifyEmailPayload,
 } from "@/features/api/userData.types";
 
@@ -839,7 +841,7 @@ export function useQueryRepository() {
 			key: () => ["user", "api", "create"],
 			fetchFn: async (params: IUserAPIKeyCreatePayload) => {
 				try {
-					return callCreateAPIKey(params.keyname);
+					return await callCreateAPIKey(params.keyname);
 				} catch {
 					return false;
 				} finally {
@@ -853,10 +855,9 @@ export function useQueryRepository() {
 		} as IQueryDefinition<IUserAPIKeyCreatePayload, boolean>,
 		DeleteUserAPIKey: {
 			key: () => ["user", "api", "delete"],
-			autoRefetch: false,
 			fetchFn: async (params: { key: string }) => {
 				try {
-					return callDeleteAPIKey(params.key);
+					return await callDeleteAPIKey(params.key);
 				} catch {
 					return false;
 				} finally {
@@ -865,8 +866,17 @@ export function useQueryRepository() {
 					});
 				}
 			},
+			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<{ key: string }, boolean>,
+		PostUserRegistration: {
+			key: () => ["user", "account", "registration"],
+			fetchFn: async (params: IUserRegistrationPayload) => {
+				return await callRegisterUser(params);
+			},
+			autoRefetch: false,
+			persist: false,
+		} as IQueryDefinition<IUserRegistrationPayload, IUserProfile>,
 	};
 
 	return {

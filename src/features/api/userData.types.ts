@@ -57,3 +57,11 @@ export interface IUserAPIKey {
 export interface IUserAPIKeyCreatePayload {
 	keyname: string;
 }
+
+export interface IUserRegistrationPayload {
+	username: string;
+	password: string;
+	planet: string;
+	randomplanet: string;
+	email?: string;
+}
