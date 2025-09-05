@@ -7,6 +7,7 @@ import {
 	IUserTokenResponse,
 	IUserAPIKey,
 	IUserAPIKeyCreatePayload,
+	IUserRegistrationPayload,
 } from "@/features/api/userData.types";
 
 export const LoginPayloadSchema: z.ZodType<IUserLoginPayload> = z.object({
@@ -91,6 +92,15 @@ export const UserAPIKeyCreatePayloadSchema: z.ZodType<IUserAPIKeyCreatePayload> 
 		keyname: z.string().min(1).max(100),
 	});
 
+export const UserRegistrationPayloadSchema: z.ZodType<IUserRegistrationPayload> =
+	z.object({
+		username: z.string().min(3),
+		password: z.string().min(8),
+		planet: z.string(),
+		randomplanet: z.string(),
+		email: z.string().optional(),
+	});
+
 export type LoginPayloadType = z.infer<typeof LoginPayloadSchema>;
 export type TokenResponseType = z.infer<typeof TokenResponseSchema>;
 export type RefreshPayloadType = z.infer<typeof RefreshPayloadSchema>;
@@ -113,4 +123,7 @@ export type UserVerifyEmailResponseType = z.infer<
 export type UserAPIKeyPayloadType = z.infer<typeof UserAPIKeyPayloadSchema>;
 export type UserAPIKeyCreatePayloadType = z.infer<
 	typeof UserAPIKeyCreatePayloadSchema
+>;
+export type UserRegistrationPayloadType = z.infer<
+	typeof UserRegistrationPayloadSchema
 >;

@@ -57,6 +57,7 @@ import {
 	IUserChangePasswordPayload,
 	IUserProfile,
 	IUserProfilePatch,
+	IUserRegistrationPayload,
 	IUserVerifyEmailPayload,
 } from "@/features/api/userData.types";
 
@@ -171,4 +172,8 @@ export interface IQueryRepository {
 	GetUserAPIKeyList: IQueryDefinition<undefined, IUserAPIKey[]>;
 	PostUserCreateAPIKey: IQueryDefinition<IUserAPIKeyCreatePayload, boolean>;
 	DeleteUserAPIKey: IQueryDefinition<{ key: string }, boolean>;
+	PostUserRegistration: IQueryDefinition<
+		IUserRegistrationPayload,
+		IUserProfile
+	>;
 }

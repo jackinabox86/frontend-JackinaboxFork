@@ -25,6 +25,8 @@ import {
 	UserAPIKeyPayloadSchema,
 	UserAPIKeyCreatePayloadType,
 	UserAPIKeyCreatePayloadSchema,
+	UserRegistrationPayloadType,
+	UserRegistrationPayloadSchema,
 } from "@/features/api/schemas/user.schemas";
 
 // Types & Interfaces
@@ -34,6 +36,7 @@ import {
 	IUserChangePasswordResponse,
 	IUserProfile,
 	IUserProfilePatch,
+	IUserRegistrationPayload,
 	IUserTokenResponse,
 	IUserVerifyEmailPayload,
 	IUserVerifyEmailResponse,
@@ -215,4 +218,16 @@ export async function callCreateAPIKey(keyname: string): Promise<boolean> {
 
 export async function callDeleteAPIKey(key: string): Promise<boolean> {
 	return apiService.delete(`/user/api-key/${key}`);
+}
+
+export async function callRegisterUser(
+	data: IUserRegistrationPayload
+): Promise<IUserProfile> {
+	return apiService.post<UserRegistrationPayloadType, UserProfilePayloadType>(
+		"/user/signup",
+		data,
+		UserRegistrationPayloadSchema,
+		UserProfilePayloadSchema,
+		true
+	);
 }
