@@ -1,5 +1,3 @@
-<!-- eslint-disable vue/multiline-html-element-content-newline -->
-
 <script setup lang="ts">
 	import { onMounted, ref, Ref, computed, ComputedRef } from "vue";
 
@@ -120,8 +118,8 @@
 				<router-link
 					to="/imprint-tos"
 					class="underline hover:text-link-primary">
-					Terms of Service</router-link
-				>.
+					Terms of Service.
+				</router-link>
 			</div>
 			<div v-if="hasError" class="pb-3 text-red-600">
 				Error during registration.
