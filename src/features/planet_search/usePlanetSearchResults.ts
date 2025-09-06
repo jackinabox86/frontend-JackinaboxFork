@@ -100,7 +100,7 @@ export function usePlanetSearchResults(
 			const infrastructures: string[] = [];
 
 			if (e.HasLocalMarket) infrastructures.push("LM");
-			if (e.HasChamberOfCommerce) infrastructures.push("COGM");
+			if (e.HasChamberOfCommerce) infrastructures.push("COGC");
 			if (e.HasWarehouse) infrastructures.push("WAR");
 			if (e.HasAdministrationCenter) infrastructures.push("ADM");
 			if (e.HasShipyard) infrastructures.push("SHY");
