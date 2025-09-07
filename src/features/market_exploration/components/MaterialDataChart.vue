@@ -13,7 +13,7 @@
 	import { Chart } from "highcharts-vue";
 
 	// UI
-	import { NSpin } from "naive-ui";
+	import { PSpin } from "@/ui";
 
 	// Util
 	import { timestampFromString } from "@/util/date";
@@ -85,7 +85,7 @@
 		v-if="!chartData"
 		class="w-full h-[300px] flex items-center justify-center">
 		<div class="text-white text-center">
-			<n-spin :size="20" />
+			<PSpin size="lg" />
 			<div class="text-white/60">Loading Data...</div>
 		</div>
 	</div>

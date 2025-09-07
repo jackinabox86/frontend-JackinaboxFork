@@ -24,8 +24,7 @@
 	import { PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { PSelect, PButton } from "@/ui";
-	import { NSpin } from "naive-ui";
+	import { PSelect, PButton, PSpin } from "@/ui";
 	import { Chart } from "highcharts-vue";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import { formatDate } from "@/util/date";
@@ -95,11 +94,11 @@
 			</div>
 			<div class="px-6 py-3">
 				<div v-if="loading" class="text-center">
-					<n-spin :size="30" /> <br />
-					Loading Data
+					<PSpin size="xl" /> <br />
+					Loading Data from backend.
 				</div>
 				<div v-else-if="error" class="text-center">
-					Error Loading Data
+					Error Loading Data.
 				</div>
 				<div v-else-if="!loading && !error && dataChart.length > 0">
 					<Chart

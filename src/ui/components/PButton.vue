@@ -1,7 +1,10 @@
 <script setup lang="ts">
+	import { computed } from "vue";
+
+	import { PSpin } from "@/ui";
+
 	import { ColorKey, SizeKey } from "@/ui/ui.types";
 	import { buttonConfig } from "@/ui/styles";
-	import { computed } from "vue";
 
 	const {
 		loading = false,
@@ -37,26 +40,7 @@
 		:disabled="disabled"
 		:aria-busy="loading ? 'true' : 'false'"
 		@click="$emit('click')">
-		<span
-			v-if="loading"
-			key="spinner"
-			:class="buttonConfig.sizes[size].icon"
-			aria-hidden="true">
-			<svg
-				class="spinner"
-				:class="buttonConfig.sizes[size].spinner"
-				viewBox="0 0 50 50"
-				focusable="false"
-				aria-hidden="true">
-				<circle
-					class="path"
-					cx="25"
-					cy="25"
-					r="20"
-					fill="none"
-					stroke-width="4" />
-			</svg>
-		</span>
+		<PSpin v-if="loading" color="white" />
 
 		<span
 			v-if="$slots.icon && !loading"

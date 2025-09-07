@@ -23,8 +23,16 @@
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
 	const userStore = useUserStore();
+	import { userActivity } from "@/features/user_activity/userActivityStore";
 
-	onMounted(() => startWatch());
+	onMounted(() => {
+		startWatch();
+
+		if (userStore.isLoggedIn) {
+			// start user activity monitor if logged in
+			const _activity = userActivity;
+		}
+	});
 </script>
 
 <template>

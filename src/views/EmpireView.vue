@@ -55,8 +55,7 @@
 	} from "@/features/empire/empire.types";
 
 	// UI
-	import { PForm, PFormItem, PSelect, PButton } from "@/ui";
-	import { NSpin } from "naive-ui";
+	import { PForm, PFormItem, PSelect, PButton, PSpin } from "@/ui";
 
 	const props = defineProps({
 		empireUuid: {
@@ -315,7 +314,7 @@
 								<h1 class="text-2xl font-bold my-auto">
 									{{ empireName }}
 								</h1>
-								<n-spin v-if="isCalculating" :size="16" />
+								<PSpin v-if="isCalculating" />
 							</div>
 							<div class="gap-3 flex flex-row flex-wrap">
 								<PButton @click="switchMainContent">

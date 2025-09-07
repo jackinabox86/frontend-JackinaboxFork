@@ -14,7 +14,7 @@ export interface IExchange {
 	ExchangeCode: string;
 	Ask: number | null;
 	Bid: number | null;
-	PriceAverage: number;
+	PriceAverage: number | null;
 	Supply: number | null;
 	Demand: number | null;
 	Traded: number | null;

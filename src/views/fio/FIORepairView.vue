@@ -2,7 +2,7 @@
 	import { ref } from "vue";
 
 	// Stores
-	import { useGameDataStore } from "@/stores/gameDataStore";
+	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Composables
 	import { useFIORepair } from "@/features/fio/useFIORepair";
@@ -12,11 +12,14 @@
 	import FIORepairPlanet from "@/features/fio/components/FIORepairPlanet.vue";
 	import FIORepairShip from "@/features/fio/components/FIORepairShip.vue";
 
-	const gameDataStore = useGameDataStore();
+	// Util
+	import { relativeFromDate } from "@/util/date";
+
+	const planningStore = usePlanningStore();
 
 	const { planetRepairTable, shipRepairTable } = useFIORepair(
-		ref(gameDataStore.fio_sites_planets),
-		ref(gameDataStore.fio_sites_ships)
+		ref(planningStore.fio_sites_planets),
+		ref(planningStore.fio_sites_ships)
 	);
 </script>
 
@@ -26,6 +29,12 @@
 			<div
 				class="px-6 py-3 border-b border-white/10 flex flex-row justify-between">
 				<h1 class="text-2xl font-bold my-auto">FIO Repair</h1>
+				<div class="my-auto">
+					FIO Data Update:
+					{{
+						relativeFromDate(planningStore.fio_sites_timestamp ?? 0)
+					}}
+				</div>
 			</div>
 
 			<div

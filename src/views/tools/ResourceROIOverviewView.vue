@@ -23,8 +23,7 @@
 	import { PLANETSEARCHOPTIONMATERIALS } from "@/features/planet_search/searchConstants";
 
 	// UI
-	import { PSelect, PButton } from "@/ui";
-	import { NSpin } from "naive-ui";
+	import { PSelect, PButton, PSpin } from "@/ui";
 
 	const refInitialized: Ref<boolean> = ref(false);
 	const refSelectedCXUuid: Ref<string | undefined> = ref(undefined);
@@ -104,10 +103,11 @@
 						class="flex justify-center child:w-[400px] py-3">
 						<div class="text-center">
 							<div v-if="progressSearchingPlanets">
-								<n-spin />
+								<PSpin size="xl" />
 								<div class="pt-3 text-xs text-white/60">
 									Searching for planets with
-									{{ refSearchMaterial }}.
+									{{ refSearchMaterial }}. Awaiting backend
+									response.
 								</div>
 							</div>
 							<div v-else>

@@ -19,8 +19,7 @@
 	import { IUserAPIKey } from "@/features/api/userData.types";
 
 	// UI
-	import { NSpin } from "naive-ui";
-	import { PForm, PFormItem, PSelect } from "@/ui";
+	import { PForm, PFormItem, PSelect, PSpin } from "@/ui";
 	import { IPlanEmpireElement } from "@/stores/planningStore.types";
 
 	const { isLoading, loadAPIKeys } = useEndpoints();
@@ -71,7 +70,7 @@
 			<div
 				class="px-6 py-3 border-b border-white/10 flex flex-row justify-between">
 				<h1 class="text-2xl font-bold">API</h1>
-				<n-spin v-if="isLoading" :size="16" />
+				<PSpin v-if="isLoading" />
 			</div>
 			<div
 				class="flex-grow grid grid-cols-1 xl:grid-cols-2 gap-3 divide-x divide-white/10 child:px-6 child:py-3 xl:child:last:pl-3">

@@ -5,7 +5,6 @@ import config from "@/lib/config";
 
 // stores
 import { useQueryStore } from "@/lib/query_cache/queryStore";
-import { useGameDataStore } from "@/stores/gameDataStore";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useUserStore } from "@/stores/userStore";
 
@@ -140,7 +139,6 @@ import {
 
 export function useQueryRepository() {
 	const queryStore = useQueryStore();
-	const gameDataStore = useGameDataStore();
 	const planningStore = usePlanningStore();
 	const userStore = useUserStore();
 
@@ -731,7 +729,7 @@ export function useQueryRepository() {
 			key: () => ["gamedata", "fio", "storage"],
 			fetchFn: async () => {
 				return await callDataFIOStorage().then((data: IFIOStorage) => {
-					gameDataStore.setFIOStorageData(data);
+					planningStore.setFIOStorageData(data);
 					return data;
 				});
 			},
@@ -743,7 +741,7 @@ export function useQueryRepository() {
 			key: () => ["gamedata", "fio", "sites"],
 			fetchFn: async () => {
 				return await callDataFIOSites().then((data: IFIOSites) => {
-					gameDataStore.setFIOSitesData(data);
+					planningStore.setFIOSitesData(data);
 					return data;
 				});
 			},

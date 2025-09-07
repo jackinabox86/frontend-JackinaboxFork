@@ -9,6 +9,8 @@ import plan_etherwind from "@/tests/test_data/api_data_plan_etherwind.json";
 import empire_list from "@/tests/test_data/api_data_empire_list.json";
 import cx_list from "@/tests/test_data/api_data_cx_list.json";
 import shared_list from "@/tests/test_data/api_data_shared_list.json";
+import fio_sites from "@/tests/test_data/api_data_fio_sites.json";
+import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 
 const etherwindUuid: string = "41094cb6-c4bc-429f-b8c8-b81d02b3811c";
 
@@ -148,5 +150,64 @@ describe("Planning Store", async () => {
 		expect(planningStore.empires).toStrictEqual({});
 		expect(planningStore.cxs).toStrictEqual({});
 		expect(planningStore.shared).toStrictEqual({});
+	});
+});
+
+describe("FIO Data", async () => {
+	let planningStore: ReturnType<typeof usePlanningStore>;
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		planningStore = usePlanningStore();
+
+		vi.resetAllMocks();
+	});
+
+	describe("Functions", () => {
+		it("$reset", async () => {
+			planningStore.fio_storage_planets = {};
+			planningStore.fio_storage_ships = {};
+			planningStore.fio_storage_warehouses = {};
+			planningStore.fio_sites_planets = {};
+			planningStore.fio_sites_ships = {};
+
+			planningStore.$reset();
+
+			expect(Object.keys(planningStore.fio_storage_planets).length).toBe(
+				0
+			);
+			expect(Object.keys(planningStore.fio_storage_ships).length).toBe(0);
+			expect(
+				Object.keys(planningStore.fio_storage_warehouses).length
+			).toBe(0);
+			expect(Object.keys(planningStore.fio_sites_planets).length).toBe(0);
+			expect(Object.keys(planningStore.fio_sites_ships).length).toBe(0);
+		});
+
+		describe("setters", async () => {
+			it("setFIOSitesData", async () => {
+				// @ts-expect-error mock data
+				planningStore.setFIOSitesData(fio_sites);
+				expect(
+					Object.keys(planningStore.fio_sites_planets).length
+				).toBe(18);
+				expect(Object.keys(planningStore.fio_sites_ships).length).toBe(
+					24
+				);
+			});
+			it("setFIOStorageData", async () => {
+				// @ts-expect-error mock data
+				planningStore.setFIOStorageData(fio_storage);
+				expect(
+					Object.keys(planningStore.fio_storage_planets).length
+				).toBe(18);
+				expect(
+					Object.keys(planningStore.fio_storage_ships).length
+				).toBe(24);
+				expect(
+					Object.keys(planningStore.fio_storage_warehouses).length
+				).toBe(5);
+			});
+		});
 	});
 });

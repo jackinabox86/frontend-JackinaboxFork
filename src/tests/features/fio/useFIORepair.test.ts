@@ -2,21 +2,21 @@ import { ref } from "vue";
 import { beforeAll, describe, expect, it } from "vitest";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { usePlanningStore } from "@/stores/planningStore";
 import { createPinia, setActivePinia } from "pinia";
 
 import fio_sites from "@/tests/test_data/api_data_fio_sites.json";
 import { useFIORepair } from "@/features/fio/useFIORepair";
 
 describe("useFIORepair", async () => {
-	let gameDataStore: any;
+	let planningStore: ReturnType<typeof usePlanningStore>;
 
 	const test_planets = ref(fio_sites.planets);
 	const test_ships = ref(fio_sites.ships);
 
 	beforeAll(() => {
 		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
+		planningStore = usePlanningStore();
 	});
 
 	it("isInfrastructureBuilding", async () => {

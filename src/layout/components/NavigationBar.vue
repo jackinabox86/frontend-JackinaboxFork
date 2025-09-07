@@ -4,6 +4,7 @@
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
 	import { useQueryStore } from "@/lib/query_cache/queryStore";
+	import { usePlanningStore } from "@/stores/planningStore";
 
 	// Composables
 	import { usePreferences } from "@/features/preferences/usePreferences";
@@ -25,7 +26,7 @@
 
 	// UI
 	import { PTag, PTooltip } from "@/ui";
-	import { NIcon } from "naive-ui";
+	import { NIcon, NTable } from "naive-ui";
 	import {
 		HomeSharp,
 		SearchRound,
@@ -50,6 +51,7 @@
 
 	const userStore = useUserStore();
 	const queryStore = useQueryStore();
+	const planningStore = usePlanningStore();
 	/*
 	 * FIO Data Refresh, if the user either already has FIO or if this is changed,
 	 * a background refresh of FIO data is triggered in the gamedata store
@@ -81,6 +83,9 @@
 			queryStore.peekQueryState(["gamedata", "fio", "sites"])
 				?.timestamp ?? 0
 	);
+
+	const storageAge = computed(() => planningStore.fio_storage_timestamp ?? 0);
+	const sitesAge = computed(() => planningStore.fio_sites_timestamp ?? 0);
 
 	const menuItems: ComputedRef<IMenuSection[]> = computed(() => [
 		{
@@ -489,16 +494,35 @@
 								{{ isFull ? "FIO Active" : "FIO" }}
 							</PTag>
 						</template>
-						<div class="grid grid-cols-2">
-							<div>Storage</div>
-							<div>
-								{{ relativeFromDate(storageTimestamp) }}
-							</div>
-							<div>Sites</div>
-							<div>
-								{{ relativeFromDate(sitesTimestamp) }}
-							</div>
-						</div>
+						<NTable striped>
+							<thead>
+								<tr>
+									<th>Type</th>
+									<th>Backend</th>
+									<th>FIO</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Sites</td>
+									<td>
+										{{ relativeFromDate(sitesTimestamp) }}
+									</td>
+									<td>
+										{{ relativeFromDate(sitesAge) }}
+									</td>
+								</tr>
+								<tr>
+									<td>Storage</td>
+									<td>
+										{{ relativeFromDate(storageTimestamp) }}
+									</td>
+									<td>
+										{{ relativeFromDate(storageAge) }}
+									</td>
+								</tr>
+							</tbody>
+						</NTable>
 					</PTooltip>
 					<PTag v-else size="sm" type="warning" :bordered="false">
 						{{ isFull ? "FIO Inactive" : "FIO" }}

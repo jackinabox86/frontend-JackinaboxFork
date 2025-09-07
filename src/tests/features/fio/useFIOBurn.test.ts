@@ -2,7 +2,7 @@ import { ref } from "vue";
 import { beforeAll, describe, expect, it } from "vitest";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { usePlanningStore } from "@/stores/planningStore";
 import { createPinia, setActivePinia } from "pinia";
 
 import { useFIOBurn } from "@/features/fio/useFIOBurn";
@@ -45,18 +45,20 @@ const fakeData = {
 };
 
 describe("useFIOBurn", async () => {
-	let gameDataStore: any;
+	let planningStore: ReturnType<typeof usePlanningStore>;
 
 	beforeAll(() => {
 		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
+		planningStore = usePlanningStore();
 
-		gameDataStore.fio_storage_planets["A"] = {
+		planningStore.fio_storage_planets["A"] = {
 			StorageItems: [
+				// @ts-expect-error mock data
 				{
 					MaterialTicker: "Foo",
 					MaterialAmount: 2,
 				},
+				// @ts-expect-error mock data
 				{
 					MaterialTicker: "Moo",
 					MaterialAmount: 100,

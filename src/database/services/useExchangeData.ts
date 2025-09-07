@@ -41,8 +41,8 @@ export async function useExchangeData() {
 			PP30D: {} as Record<EXCHANGES_TYPE, number>,
 			Supply: {} as Record<EXCHANGES_TYPE, number>,
 			Demand: {} as Record<EXCHANGES_TYPE, number>,
-			Universe7D: universe7d.PriceAverage,
-			Universe30D: universe30d.PriceAverage,
+			Universe7D: universe7d.PriceAverage ?? 0,
+			Universe30D: universe30d.PriceAverage ?? 0,
 		};
 
 		await Promise.all(
@@ -52,7 +52,7 @@ export async function useExchangeData() {
 				);
 				overview.Ask[type] = ticker.Ask ?? 0;
 				overview.Bid[type] = ticker.Bid ?? 0;
-				overview.Average[type] = ticker.PriceAverage;
+				overview.Average[type] = ticker.PriceAverage ?? 0;
 				overview.Supply[type] = ticker.Supply ?? 0;
 				overview.Demand[type] = ticker.Demand ?? 0;
 
@@ -60,8 +60,8 @@ export async function useExchangeData() {
 					getExchangeTicker(`${materialTicker}.PP7D_${type}`),
 					getExchangeTicker(`${materialTicker}.PP30D_${type}`),
 				]);
-				overview.PP7D[type] = d7ticker.PriceAverage;
-				overview.PP30D[type] = d30ticker.PriceAverage;
+				overview.PP7D[type] = d7ticker.PriceAverage ?? 0;
+				overview.PP30D[type] = d30ticker.PriceAverage ?? 0;
 			})
 		);
 

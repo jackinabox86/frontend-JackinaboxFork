@@ -1,20 +1,9 @@
-import { beforeAll, describe, expect, it } from "vitest";
-import { createPinia, setActivePinia } from "pinia";
-
-// Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { describe, expect, it } from "vitest";
 
 // Composables
 import { useWorkforceCalculation } from "@/features/planning/calculations/workforceCalculations";
 
 describe("Planning: Workforce Calculations", async () => {
-	let gameDataStore: any;
-
-	beforeAll(() => {
-		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
-	});
-
 	describe("calculateSatisfaction", async () => {
 		const satisfactionCases = [
 			{
