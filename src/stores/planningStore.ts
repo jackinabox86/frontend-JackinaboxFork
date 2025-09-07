@@ -49,6 +49,9 @@ export const usePlanningStore = defineStore(
 		const fio_sites_planets: Ref<Record<string, IFIOSitePlanet>> = ref({});
 		const fio_sites_ships: Ref<Record<string, IFIOSiteShip>> = ref({});
 
+		const fio_sites_timestamp: Ref<Date | null> = ref(null);
+		const fio_storage_timestamp: Ref<Date | null> = ref(null);
+
 		/**
 		 * Resets all store variables to their initial values
 		 * @author jplacht
@@ -63,6 +66,8 @@ export const usePlanningStore = defineStore(
 			fio_storage_warehouses.value = {};
 			fio_sites_planets.value = {};
 			fio_sites_ships.value = {};
+			fio_sites_timestamp.value = null;
+			fio_storage_timestamp.value = null;
 		}
 
 		// setters
@@ -140,10 +145,19 @@ export const usePlanningStore = defineStore(
 		 * @param {IFIOSites} data FIO Sites Data
 		 */
 		function setFIOSitesData(data: IFIOSites): void {
+			let oldestSiteTimestamp: Date | null = null;
+
 			fio_sites_planets.value = {};
 
 			Object.values(data.planets).forEach((sp) => {
 				fio_sites_planets.value[sp.PlanetIdentifier] = sp;
+
+				if (
+					!oldestSiteTimestamp ||
+					sp.Timestamp < oldestSiteTimestamp
+				) {
+					oldestSiteTimestamp = sp.Timestamp;
+				}
 			});
 
 			fio_sites_ships.value = {};
@@ -151,6 +165,8 @@ export const usePlanningStore = defineStore(
 			Object.values(data.ships).forEach((ss) => {
 				fio_sites_ships.value[ss.Registration] = ss;
 			});
+
+			fio_sites_timestamp.value = oldestSiteTimestamp;
 		}
 
 		/**
@@ -163,6 +179,18 @@ export const usePlanningStore = defineStore(
 			fio_storage_planets.value = data.planets;
 			fio_storage_warehouses.value = data.warehouses;
 			fio_storage_ships.value = data.ships;
+
+			// find oldest datapoint
+			let oldest: Date | null = null;
+
+			for (const list of [data.planets, data.warehouses, data.ships]) {
+				for (const item of Object.values(list)) {
+					if (!oldest || item.Timestamp < oldest)
+						oldest = item.Timestamp;
+				}
+			}
+
+			fio_storage_timestamp.value = oldest;
 		}
 
 		/**
@@ -258,6 +286,8 @@ export const usePlanningStore = defineStore(
 			fio_storage_ships,
 			fio_sites_planets,
 			fio_sites_ships,
+			fio_sites_timestamp,
+			fio_storage_timestamp,
 			// reset
 			$reset,
 			// setters

@@ -14,6 +14,10 @@
 		title: "Burn | PRUNplanner",
 	});
 
+	// Stores
+	import { usePlanningStore } from "@/stores/planningStore";
+	const planningStore = usePlanningStore();
+
 	// Composables
 	import { useFIOBurn } from "@/features/fio/useFIOBurn";
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
@@ -34,6 +38,9 @@
 	const AsyncFIOBurnTable = defineAsyncComponent(
 		() => import("@/features/fio/components/FIOBurnTable.vue")
 	);
+
+	// Util
+	import { relativeFromDate } from "@/util/date";
 
 	// Types & Interfaces
 	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
@@ -158,6 +165,14 @@
 						class="px-6 py-3 border-b border-white/10 flex flex-row justify-between">
 						<h1 class="text-2xl font-bold my-auto">FIO Burn</h1>
 						<div class="flex flex-row gap-x-3">
+							<div class="my-auto">
+								FIO Data Update:
+								{{
+									relativeFromDate(
+										planningStore.fio_sites_timestamp ?? 0
+									)
+								}}
+							</div>
 							<HelpDrawer file-name="fio_burn" />
 						</div>
 					</div>
