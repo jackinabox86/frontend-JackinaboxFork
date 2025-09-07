@@ -1,3 +1,10 @@
+# 2025-09-07
+
+- Introduces measure to know if user is active, is user has gone inactive delay auto refetching for up to 3 hours [#237](https://github.com/PRUNplanner/frontend/issues/237)
+- Remove NSpin in favor of own spinner component PSpin
+- Fixes issue with PriceAverages being null on markets where no trading happened
+- Displays Age of FIO Data in views and mouseover of "FIO Active" tag [#240](https://github.com/PRUNplanner/frontend/issues/240)
+
 # 2025-09-05
 
 - Rework Login component
