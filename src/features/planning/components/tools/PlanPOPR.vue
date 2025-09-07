@@ -12,8 +12,7 @@
 	import { IPopulationReport } from "@/features/api/gameData.types";
 
 	// UI
-	import { PButton } from "@/ui";
-	import { NSpin } from "naive-ui";
+	import { PButton, PSpin } from "@/ui";
 	import { CloseSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -66,7 +65,7 @@
 		population.
 	</div>
 	<div v-else-if="isLoading" class="text-center">
-		<n-spin />
+		<PSpin size="lg" />
 		<br />
 		Loading Population Report
 	</div>

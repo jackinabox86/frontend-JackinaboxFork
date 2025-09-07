@@ -52,8 +52,8 @@
 	);
 
 	// UI
-	import { PButton, PButtonGroup, PTooltip } from "@/ui";
-	import { NIcon, NSpin } from "naive-ui";
+	import { PButton, PButtonGroup, PTooltip, PSpin } from "@/ui";
+	import { NIcon } from "naive-ui";
 	import {
 		AutoAwesomeMosaicOutlined,
 		AutoAwesomeMosaicFilled,
@@ -627,7 +627,7 @@
 					</template>
 					<template #fallback>
 						<div class="w-full text-center py-5">
-							<n-spin size="small" />
+							<PSpin />
 						</div>
 					</template>
 				</Suspense>

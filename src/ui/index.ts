@@ -12,3 +12,4 @@ export { default as PSelectElement } from "@/ui/components/PSelectElement.vue";
 export { default as PSelectMultiple } from "@/ui/components/PSelectMultiple.vue";
 export { default as PTag } from "@/ui/components/PTag.vue";
 export { default as PProgressBar } from "@/ui/components/PProgressBar.vue";
+export { default as PSpin } from "@/ui/components/PSpin.vue";

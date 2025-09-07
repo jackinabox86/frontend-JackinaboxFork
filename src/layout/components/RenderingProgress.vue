@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	// UI
-	import { NSpin } from "naive-ui";
+	import { PSpin } from "@/ui";
 
 	defineProps({
 		height: {
@@ -17,7 +17,7 @@
 		:class="height ? `h-[${height}px]` : 'h-full'">
 		<div class="absolute inset-0 flex items-center justify-center">
 			<div class="bg-black p-8 rounded shadow-lg text-center">
-				<n-spin />
+				<PSpin size="lg" />
 				<div class="pt-3">Rendering View</div>
 			</div>
 		</div>
