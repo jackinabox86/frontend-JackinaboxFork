@@ -1,7 +1,8 @@
 import { setActivePinia, createPinia } from "pinia";
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 import { toCacheKey } from "@/lib/query_cache/cacheKeys";
+import { useUserActivity } from "@/features/user_activity/useUserActivity";
 
 // mock repository
 vi.mock("@/lib/query_cache/queryRepository", () => {
@@ -155,5 +156,57 @@ describe("useQueryStore", () => {
 
 		store.$reset();
 		expect(Object.keys(store.cacheState)).toHaveLength(0);
+	});
+});
+
+import * as userActivityModule from "@/features/user_activity/useUserActivity";
+import { ref } from "vue";
+
+describe("checkEntryStatusAndRefresh (Pinia store)", () => {
+	let store: ReturnType<typeof useQueryStore>;
+
+	beforeEach(() => {
+		setActivePinia(createPinia());
+		store = useQueryStore();
+
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date(0));
+		vi.clearAllMocks();
+
+		vi.spyOn(userActivityModule, "useUserActivity").mockImplementation(
+			() => ({
+				lastActivity: ref(0),
+				lastForcedActivity: ref(0),
+				shouldDelay: vi.fn().mockReturnValue(false), // <-- this is the key
+			})
+		);
+		store.cacheState = {}; // reset
+	});
+
+	it("skips refresh when user is inactive", () => {
+		// Get the mocked userActivity object
+		const userActivity = useUserActivity(); // returns { lastActivity, lastForcedActivity, shouldDelay }
+
+		// Override shouldDelay for this test
+		(userActivity.shouldDelay as Mock).mockReturnValue(true);
+
+		// Prepare cacheState
+		store.cacheState = {
+			// @ts-expect-error mock data
+			'{"id":1}': {
+				definitionName: "testDef",
+				params: { id: 1 },
+				expireTime: 1000,
+				timestamp: 0,
+				loading: false,
+				error: null,
+			},
+		};
+
+		// Call the function under test
+		store.checkEntryStatusAndRefresh();
+
+		// Expect nothing changed
+		expect(store.cacheState).toHaveProperty('{"id":1}');
 	});
 });

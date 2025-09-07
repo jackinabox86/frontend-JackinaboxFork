@@ -29,6 +29,7 @@
 		startWatch();
 
 		if (userStore.isLoggedIn) {
+			// start user activity monitor if logged in
 			const _activity = userActivity;
 		}
 	});

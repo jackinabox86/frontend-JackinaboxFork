@@ -9,16 +9,17 @@ import {
 
 import { useUserStore } from "@/stores/userStore";
 import { preferenceDefaults } from "@/features/preferences/userDefaults";
+import { IUserProfile } from "@/features/api/userData.types";
+
+vi.mock("@/features/api/userData.api", () => ({
+	callUserLogin: vi.fn(),
+	callRefreshToken: vi.fn(),
+	callGetProfile: vi.fn(),
+}));
 
 describe("User Store", () => {
 	beforeEach(() => {
 		setActivePinia(createPinia());
-
-		vi.mock("@/features/api/userData.api", () => ({
-			callUserLogin: vi.fn(),
-			callRefreshToken: vi.fn(),
-			callGetProfile: vi.fn(),
-		}));
 	});
 
 	it("Initial store tokens and status", () => {
@@ -227,6 +228,51 @@ describe("User Store", () => {
 				expect(userStore.hasFIO).toBe(expected);
 			}
 		);
+	});
+
+	describe("performGetProfile", async () => {
+		it("fio enabled", async () => {
+			const mockProfile: IUserProfile = {
+				user_id: 1,
+				username: "johndoe",
+				email: "a@b.com",
+				email_verified: true,
+				fio_apikey: "foo",
+				prun_username: "moo",
+			};
+
+			const userStore = useUserStore();
+			userStore.setToken("foo", "moo");
+
+			(
+				callGetProfile as unknown as ReturnType<typeof vi.fn>
+			).mockResolvedValue(mockProfile);
+
+			await userStore.performGetProfile();
+
+			expect(userStore.profile).toBeDefined();
+		});
+
+		it("fio not enabled", async () => {
+			const mockProfile: IUserProfile = {
+				user_id: 1,
+				username: "johndoe",
+				email: "a@b.com",
+				email_verified: true,
+				fio_apikey: null,
+				prun_username: "moo",
+			};
+
+			const userStore = useUserStore();
+			userStore.setToken("foo", "moo");
+
+			(
+				callGetProfile as unknown as ReturnType<typeof vi.fn>
+			).mockResolvedValue(mockProfile);
+
+			await userStore.performGetProfile();
+			expect(userStore.profile).toBeDefined();
+		});
 	});
 
 	describe("Preferences", async () => {

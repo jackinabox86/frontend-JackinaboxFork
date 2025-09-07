@@ -8,7 +8,7 @@ import { ref, computed } from "vue";
 
 export function useUserActivity(
 	inactivityThreshold: number = 300_000, // 5 min
-	maxDelay: number = 3_600_000 // 1hour
+	maxDelay: number = 10_800_000 // 3 hours
 ) {
 	const lastActivity = ref(Date.now());
 	const lastForcedActivity = ref(Date.now());
@@ -48,7 +48,7 @@ export function useUserActivity(
 		}
 
 		// max inactivity reached, reset + allow
-		if (lastForcedActivity.value > maxDelay) {
+		if (Date.now() - lastForcedActivity.value > maxDelay) {
 			updateForcedActivity();
 			return false;
 		}
