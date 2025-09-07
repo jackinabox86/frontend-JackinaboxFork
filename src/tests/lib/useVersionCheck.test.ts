@@ -38,8 +38,6 @@ describe("useVersionCheck", () => {
 		const { currentVersion, updateAvailable, checkVersion } =
 			useVersionCheck(10_000);
 
-		console.log(currentVersion);
-
 		await checkVersion();
 
 		expect(currentVersion.value).toBe("1.0.0");

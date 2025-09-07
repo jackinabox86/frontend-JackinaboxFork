@@ -1,13 +1,20 @@
-import { defineStore } from "pinia";
 import { reactive, computed, ComputedRef, Reactive } from "vue";
-import { isSubset, toCacheKey } from "./cacheKeys";
-import { IQueryDefinition, IQueryState, JSONValue } from "./queryCache.types";
-import { useQueryRepository } from "./queryRepository";
+import { defineStore } from "pinia";
+
+import { userActivity } from "@/features/user_activity/userActivityStore";
+import { useQueryRepository } from "@/lib/query_cache/queryRepository";
+import { isSubset, toCacheKey } from "@/lib/query_cache/cacheKeys";
+
+import {
+	IQueryDefinition,
+	IQueryState,
+	JSONValue,
+} from "@/lib/query_cache/queryCache.types";
 import {
 	DataOfDefinition,
 	IQueryRepository,
 	ParamsOfDefinition,
-} from "./queryRepository.types";
+} from "@/lib/query_cache/queryRepository.types";
 
 export const useQueryStore = defineStore(
 	"prunplanner_query_store",
@@ -354,6 +361,9 @@ export const useQueryStore = defineStore(
 		function checkEntryStatusAndRefresh<
 			K extends keyof IQueryRepository
 		>() {
+			// inactivity check, skip if true
+			if (userActivity.shouldDelay()) return;
+
 			const now = Date.now();
 
 			for (const [key, entry] of Object.entries(cacheState)) {
@@ -392,7 +402,10 @@ export const useQueryStore = defineStore(
 			// prevent multiple invervals running
 			if (intervalId !== null) return;
 
-			intervalId = setInterval(() => checkEntryStatusAndRefresh(), 1000);
+			intervalId = setInterval(
+				() => checkEntryStatusAndRefresh(),
+				10_000
+			);
 		}
 
 		// start the status watcher
