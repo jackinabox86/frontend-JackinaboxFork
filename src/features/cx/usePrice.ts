@@ -95,8 +95,8 @@ export async function usePrice(
 					`${materialTicker}.PP30D_UNIVERSE`
 				);
 
-				cache.set(cacheKey, price.PriceAverage);
-				return price.PriceAverage;
+				cache.set(cacheKey, price.PriceAverage ?? 0);
+				return price.PriceAverage ?? 0;
 			}
 
 			// we got cx information with cxUuid and/or planetNaturalId
@@ -157,7 +157,7 @@ export async function usePrice(
 						`${materialTicker}.${exchangeCode}`
 					);
 
-					const price: number = tickerData[key] as number;
+					const price: number = (tickerData[key] ?? 0) as number;
 
 					cache.set(cacheKey, price);
 					return price;
@@ -178,7 +178,7 @@ export async function usePrice(
 					`${materialTicker}.${exchangeCode}`
 				);
 
-				const price: number = tickerData[key] as number;
+				const price: number = (tickerData[key] ?? 0) as number;
 
 				cache.set(cacheKey, price);
 				return price;
@@ -189,7 +189,7 @@ export async function usePrice(
 				`${materialTicker}.PP30D_UNIVERSE`
 			);
 
-			const price: number = tickerData.PriceAverage;
+			const price: number = tickerData.PriceAverage ?? 0;
 
 			cache.set(cacheKey, price);
 			return price;
