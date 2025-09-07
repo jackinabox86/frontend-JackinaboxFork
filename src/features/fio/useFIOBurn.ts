@@ -1,7 +1,7 @@
 import { computed, ComputedRef, Ref } from "vue";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
 import { IPlanResult } from "@/features/planning/usePlanCalculation.types";
@@ -17,7 +17,7 @@ export function useFIOBurn(
 	plans: Ref<IPlan[]>,
 	data: Ref<Record<string, IPlanResult>>
 ) {
-	const gameDataStore = useGameDataStore();
+	const planningStore = usePlanningStore();
 
 	/**
 	 * Burn data reference from Game Data Store
@@ -26,7 +26,7 @@ export function useFIOBurn(
 	 * @type {Record<string, IFIOStoragePlanet>}
 	 */
 	const burnData: Record<string, IFIOStoragePlanet> =
-		gameDataStore.fio_storage_planets;
+		planningStore.fio_storage_planets;
 
 	/**
 	 * Creates record of plan list
@@ -80,7 +80,7 @@ export function useFIOBurn(
 
 		for (const [planUuid, plan] of Object.entries(data.value) as [
 			string,
-			IPlanResult,
+			IPlanResult
 		][]) {
 			const planData: IPlan = planRecord.value[planUuid];
 			const hasStorage: boolean = burnData[planData.planet_id]

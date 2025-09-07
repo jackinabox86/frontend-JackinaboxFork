@@ -1,7 +1,7 @@
 import { computed, ComputedRef } from "vue";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { usePlanningStore } from "@/stores/planningStore";
 
 // Types & Interfaces
 import { PSelectOption } from "@/ui/ui.types";
@@ -14,7 +14,7 @@ import {
 import { IFIOFindMaterialResult } from "@/features/fio/useFIOStorage.types";
 
 export function useFIOStorage() {
-	const gameDataStore = useGameDataStore();
+	const planningStore = usePlanningStore();
 
 	/**
 	 * Users storage options, with a "None" option and all
@@ -33,7 +33,7 @@ export function useFIOStorage() {
 		];
 
 		const planets: string[] = Object.keys(
-			gameDataStore.fio_storage_planets
+			planningStore.fio_storage_planets
 		);
 
 		if (planets.length > 0) {
@@ -48,7 +48,7 @@ export function useFIOStorage() {
 		}
 
 		const warehouses: string[] = Object.keys(
-			gameDataStore.fio_storage_warehouses
+			planningStore.fio_storage_warehouses
 		);
 		if (warehouses.length > 0) {
 			options.push({
@@ -56,22 +56,22 @@ export function useFIOStorage() {
 				value: "warehouses",
 				children: warehouses.map((elem) => ({
 					label:
-						gameDataStore.fio_storage_warehouses[elem]
+						planningStore.fio_storage_warehouses[elem]
 							.LocationName ?? elem,
 					value: `WAR#${elem}`,
 				})),
 			});
 		}
 
-		const ships: string[] = Object.keys(gameDataStore.fio_storage_ships);
+		const ships: string[] = Object.keys(planningStore.fio_storage_ships);
 		if (ships.length > 0) {
 			options.push({
 				label: "Ships",
 				value: "ships",
 				children: ships.map((elem) => ({
 					label:
-						gameDataStore.fio_storage_ships[elem].Name ??
-						gameDataStore.fio_storage_ships[elem].AddressableId,
+						planningStore.fio_storage_ships[elem].Name ??
+						planningStore.fio_storage_ships[elem].AddressableId,
 					value: `SHIP#${elem}`,
 				})),
 			});
@@ -115,19 +115,19 @@ export function useFIOStorage() {
 		const idParts: string[] = identifier.split("#");
 		if (idParts[0] === "PLANET") {
 			value =
-				gameDataStore.fio_storage_planets[
+				planningStore.fio_storage_planets[
 					idParts[1]
 				]?.StorageItems.find((e) => e.MaterialTicker === ticker)
 					?.MaterialAmount ?? 0;
 		} else if (idParts[0] === "WAR") {
 			value =
-				gameDataStore.fio_storage_warehouses[
+				planningStore.fio_storage_warehouses[
 					idParts[1]
 				]?.StorageItems.find((e) => e.MaterialTicker === ticker)
 					?.MaterialAmount ?? 0;
 		} else if (idParts[0] === "SHIP") {
 			value =
-				gameDataStore.fio_storage_ships[idParts[1]]?.StorageItems.find(
+				planningStore.fio_storage_ships[idParts[1]]?.StorageItems.find(
 					(e) => e.MaterialTicker === ticker
 				)?.MaterialAmount ?? 0;
 		}
@@ -152,17 +152,17 @@ export function useFIOStorage() {
 
 		const sources = [
 			{
-				data: gameDataStore.fio_storage_planets,
+				data: planningStore.fio_storage_planets,
 				type: "PLANET",
 				getName: (item: IFIOStoragePlanet) => item.PlanetIdentifier,
 			},
 			{
-				data: gameDataStore.fio_storage_warehouses,
+				data: planningStore.fio_storage_warehouses,
 				type: "WAR",
 				getName: (item: IFIOStorageWarehouse) => item.LocationNaturalId,
 			},
 			{
-				data: gameDataStore.fio_storage_ships,
+				data: planningStore.fio_storage_ships,
 				type: "SHIP",
 				getName: (item: IFIOStorageShip) => item.Registration,
 			},

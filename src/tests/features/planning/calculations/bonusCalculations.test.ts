@@ -1,8 +1,4 @@
-import { beforeAll, describe, expect, test, it } from "vitest";
-import { setActivePinia, createPinia } from "pinia";
-
-// Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { describe, expect, test, it } from "vitest";
 
 // Types & Interfaces
 import { useBonusCalculation } from "@/features/planning/calculations/bonusCalculations";
@@ -180,13 +176,6 @@ const factionBonusCases = [
 ];
 
 describe("Planning: Bonus Calculations ", async () => {
-	let gameDataStore: any;
-
-	beforeAll(() => {
-		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
-	});
-
 	describe("calculateExpertBonus", async () => {
 		test.each(bonusCases)(
 			"Bonus: $amount => $expected",

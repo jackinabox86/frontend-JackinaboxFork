@@ -1,20 +1,9 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { createPinia, setActivePinia } from "pinia";
-
-// Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { describe, expect, it } from "vitest";
 
 // Composables
 import { useBuildingCalculation } from "@/features/planning/calculations/buildingCalculations";
 
 describe("Planning: Workforce Calculations", async () => {
-	let gameDataStore: any;
-
-	beforeEach(() => {
-		setActivePinia(createPinia());
-		gameDataStore = useGameDataStore();
-	});
-
 	describe("calculateMaterialIO", async () => {
 		it("Calculate whole production material io", async () => {
 			const { calculateMaterialIO } = await useBuildingCalculation();

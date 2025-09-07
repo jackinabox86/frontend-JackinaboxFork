@@ -17,6 +17,15 @@ import {
 	ISharedRecord,
 } from "@/stores/planningStore.types";
 import { IShared } from "@/features/api/sharingData.types";
+import {
+	IFIOSitePlanet,
+	IFIOSites,
+	IFIOSiteShip,
+	IFIOStorage,
+	IFIOStoragePlanet,
+	IFIOStorageShip,
+	IFIOStorageWarehouse,
+} from "@/features/api/gameData.types";
 
 export const usePlanningStore = defineStore(
 	"prunplanner_planning",
@@ -30,6 +39,15 @@ export const usePlanningStore = defineStore(
 		const cxs: Ref<ICXRecord> = ref({});
 		/** Key: Plan.uuid */
 		const shared: Ref<ISharedRecord> = ref({});
+		const fio_storage_planets: Ref<Record<string, IFIOStoragePlanet>> = ref(
+			{}
+		);
+		const fio_storage_warehouses: Ref<
+			Record<string, IFIOStorageWarehouse>
+		> = ref({});
+		const fio_storage_ships: Ref<Record<string, IFIOStorageShip>> = ref({});
+		const fio_sites_planets: Ref<Record<string, IFIOSitePlanet>> = ref({});
+		const fio_sites_ships: Ref<Record<string, IFIOSiteShip>> = ref({});
 
 		/**
 		 * Resets all store variables to their initial values
@@ -40,6 +58,11 @@ export const usePlanningStore = defineStore(
 			empires.value = {};
 			cxs.value = {};
 			shared.value = {};
+			fio_storage_planets.value = {};
+			fio_storage_ships.value = {};
+			fio_storage_warehouses.value = {};
+			fio_sites_planets.value = {};
+			fio_sites_ships.value = {};
 		}
 
 		// setters
@@ -108,6 +131,38 @@ export const usePlanningStore = defineStore(
 
 		function setCX(cxUuid: string, data: ICXData): void {
 			if (cxs.value[cxUuid]) cxs.value[cxUuid].cx_data = data;
+		}
+
+		/**
+		 * Sets FIO Sites data separated by Planet and Ship sites
+		 * @author jplacht
+		 *
+		 * @param {IFIOSites} data FIO Sites Data
+		 */
+		function setFIOSitesData(data: IFIOSites): void {
+			fio_sites_planets.value = {};
+
+			Object.values(data.planets).forEach((sp) => {
+				fio_sites_planets.value[sp.PlanetIdentifier] = sp;
+			});
+
+			fio_sites_ships.value = {};
+
+			Object.values(data.ships).forEach((ss) => {
+				fio_sites_ships.value[ss.Registration] = ss;
+			});
+		}
+
+		/**
+		 * Sets FIO Storage data separated by Planets, Warehouses and Ships
+		 * @author jplacht
+		 *
+		 * @param {IFIOStorage} data FIO Storage Data
+		 */
+		function setFIOStorageData(data: IFIOStorage): void {
+			fio_storage_planets.value = data.planets;
+			fio_storage_warehouses.value = data.warehouses;
+			fio_storage_ships.value = data.ships;
 		}
 
 		/**
@@ -198,6 +253,11 @@ export const usePlanningStore = defineStore(
 			empires,
 			cxs,
 			shared,
+			fio_storage_planets,
+			fio_storage_warehouses,
+			fio_storage_ships,
+			fio_sites_planets,
+			fio_sites_ships,
 			// reset
 			$reset,
 			// setters
@@ -209,6 +269,8 @@ export const usePlanningStore = defineStore(
 			setSharedList,
 			deleteShared,
 			deletePlan,
+			setFIOSitesData,
+			setFIOStorageData,
 			// getters
 			getCX,
 			getPlan,

@@ -10,7 +10,6 @@ import {
 } from "@/features/api/userData.api";
 
 // Stores
-import { useGameDataStore } from "@/stores/gameDataStore";
 import { usePlanningStore } from "@/stores/planningStore";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
@@ -125,10 +124,6 @@ export const useUserStore = defineStore(
 
 			// reset posthog users
 			posthog.reset();
-
-			// reset related stores
-			const gameDataStore = useGameDataStore();
-			gameDataStore.$reset();
 
 			const planningStore = usePlanningStore();
 			planningStore.$reset();

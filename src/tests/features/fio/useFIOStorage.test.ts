@@ -8,14 +8,16 @@ import { useFIOStorage } from "@/features/fio/useFIOStorage";
 import fio_storage from "@/tests/test_data/api_data_fio_storage.json";
 
 // stores
-import { useGameDataStore } from "@/stores/gameDataStore";
+import { usePlanningStore } from "@/stores/planningStore";
 
 describe("useFIOStorage", async () => {
+	let planningStore: ReturnType<typeof usePlanningStore>;
+
 	beforeEach(() => {
 		setActivePinia(createPinia());
 
-		const gameDataStore = useGameDataStore();
-		gameDataStore.$reset();
+		planningStore = usePlanningStore();
+		planningStore.$reset();
 	});
 
 	describe("hasStorage", async () => {
@@ -26,9 +28,8 @@ describe("useFIOStorage", async () => {
 		});
 
 		it("hasStorage - yes", async () => {
-			const gameDataStore = useGameDataStore();
 			// @ts-expect-error test data
-			gameDataStore.setFIOStorageData(fio_storage);
+			planningStore.setFIOStorageData(fio_storage);
 
 			const { hasStorage } = useFIOStorage();
 			expect(hasStorage.value).toBeTruthy();
@@ -46,9 +47,8 @@ describe("useFIOStorage", async () => {
 		});
 
 		it("available and valid data", async () => {
-			const gameDataStore = useGameDataStore();
 			// @ts-expect-error test data
-			gameDataStore.setFIOStorageData(fio_storage);
+			planningStore.setFIOStorageData(fio_storage);
 
 			const { findStorageValueFromOptions } = useFIOStorage();
 
@@ -63,9 +63,8 @@ describe("useFIOStorage", async () => {
 	});
 
 	it("storageOptions", async () => {
-		const gameDataStore = useGameDataStore();
 		// @ts-expect-error test data
-		gameDataStore.setFIOStorageData(fio_storage);
+		planningStore.setFIOStorageData(fio_storage);
 
 		const { storageOptions } = useFIOStorage();
 
@@ -77,9 +76,8 @@ describe("useFIOStorage", async () => {
 	});
 
 	it("findMaterial", async () => {
-		const gameDataStore = useGameDataStore();
 		// @ts-expect-error test data
-		gameDataStore.setFIOStorageData(fio_storage);
+		planningStore.setFIOStorageData(fio_storage);
 
 		const { findMaterial } = useFIOStorage();
 
