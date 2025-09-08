@@ -1,3 +1,8 @@
+# 2025-09-08
+
+- Implements password reset functions
+- Streamline navigation: Market and FIO don't have sub-links but are displayed directly
+
 # 2025-09-07
 
 - Introduces measure to know if user is active, is user has gone inactive delay auto refetching for up to 3 hours [#237](https://github.com/PRUNplanner/frontend/issues/237)
