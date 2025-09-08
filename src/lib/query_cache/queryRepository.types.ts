@@ -55,10 +55,14 @@ import {
 	IUserAPIKey,
 	IUserAPIKeyCreatePayload,
 	IUserChangePasswordPayload,
+	IUserRequestPasswordResetResponse,
 	IUserProfile,
 	IUserProfilePatch,
 	IUserRegistrationPayload,
 	IUserVerifyEmailPayload,
+	IUserRequestPasswordResetPayload,
+	IUserPasswordResetPayload,
+	IUserPasswordResetResponse,
 } from "@/features/api/userData.types";
 
 /*
@@ -175,5 +179,13 @@ export interface IQueryRepository {
 	PostUserRegistration: IQueryDefinition<
 		IUserRegistrationPayload,
 		IUserProfile
+	>;
+	PostUserRequestPasswordReset: IQueryDefinition<
+		IUserRequestPasswordResetPayload,
+		IUserRequestPasswordResetResponse
+	>;
+	PostUserPasswordReset: IQueryDefinition<
+		IUserPasswordResetPayload,
+		IUserPasswordResetResponse
 	>;
 }

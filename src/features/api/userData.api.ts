@@ -27,6 +27,14 @@ import {
 	UserAPIKeyCreatePayloadSchema,
 	UserRegistrationPayloadType,
 	UserRegistrationPayloadSchema,
+	UserRequestPasswordResetResponseType,
+	UserRequestPasswordResetResponseSchema,
+	UserRequestPasswordResetPayloadType,
+	UserRequestPasswordResetPayloadSchema,
+	UserPasswordResetPayloadType,
+	UserPasswordResetResponseType,
+	UserPasswordResetPayloadSchema,
+	UserPasswordResetResponseSchema,
 } from "@/features/api/schemas/user.schemas";
 
 // Types & Interfaces
@@ -34,12 +42,14 @@ import {
 	IUserAPIKey,
 	IUserChangePasswordPayload,
 	IUserChangePasswordResponse,
+	IUserRequestPasswordResetResponse,
 	IUserProfile,
 	IUserProfilePatch,
 	IUserRegistrationPayload,
 	IUserTokenResponse,
 	IUserVerifyEmailPayload,
 	IUserVerifyEmailResponse,
+	IUserPasswordResetResponse,
 } from "@/features/api/userData.types";
 
 /**
@@ -229,5 +239,34 @@ export async function callRegisterUser(
 		UserRegistrationPayloadSchema,
 		UserProfilePayloadSchema,
 		true
+	);
+}
+
+export async function callRequestPasswordReset(
+	email: string
+): Promise<IUserRequestPasswordResetResponse> {
+	return apiService.post<
+		UserRequestPasswordResetPayloadType,
+		UserRequestPasswordResetResponseType
+	>(
+		"/user/request_password_reset",
+		{ email },
+		UserRequestPasswordResetPayloadSchema,
+		UserRequestPasswordResetResponseSchema
+	);
+}
+
+export async function callPasswordReset(
+	code: string,
+	password: string
+): Promise<IUserPasswordResetResponse> {
+	return apiService.post<
+		UserPasswordResetPayloadType,
+		UserPasswordResetResponseType
+	>(
+		"/user/password_rest",
+		{ code, password },
+		UserPasswordResetPayloadSchema,
+		UserPasswordResetResponseSchema
 	);
 }

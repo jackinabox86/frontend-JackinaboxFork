@@ -65,3 +65,22 @@ export interface IUserRegistrationPayload {
 	randomplanet: string;
 	email?: string;
 }
+
+export interface IUserRequestPasswordResetPayload {
+	email: string;
+}
+
+export interface IUserRequestPasswordResetResponse {
+	status_code: number;
+	message: string;
+}
+
+export interface IUserPasswordResetPayload {
+	code: string;
+	password: string;
+}
+
+export interface IUserPasswordResetResponse {
+	status_code: number;
+	message: string;
+}

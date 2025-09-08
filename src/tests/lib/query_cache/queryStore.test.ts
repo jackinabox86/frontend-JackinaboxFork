@@ -177,15 +177,15 @@ describe("checkEntryStatusAndRefresh (Pinia store)", () => {
 			() => ({
 				lastActivity: ref(0),
 				lastForcedActivity: ref(0),
-				shouldDelay: vi.fn().mockReturnValue(false), // <-- this is the key
+				shouldDelay: vi.fn().mockReturnValue(false),
 			})
 		);
-		store.cacheState = {}; // reset
+		store.cacheState = {};
 	});
 
 	it("skips refresh when user is inactive", () => {
 		// Get the mocked userActivity object
-		const userActivity = useUserActivity(); // returns { lastActivity, lastForcedActivity, shouldDelay }
+		const userActivity = useUserActivity(); //
 
 		// Override shouldDelay for this test
 		(userActivity.shouldDelay as Mock).mockReturnValue(true);

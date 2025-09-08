@@ -8,6 +8,9 @@ import {
 	IUserAPIKey,
 	IUserAPIKeyCreatePayload,
 	IUserRegistrationPayload,
+	IUserRequestPasswordResetResponse,
+	IUserRequestPasswordResetPayload,
+	IUserPasswordResetPayload,
 } from "@/features/api/userData.types";
 
 export const LoginPayloadSchema: z.ZodType<IUserLoginPayload> = z.object({
@@ -101,6 +104,28 @@ export const UserRegistrationPayloadSchema: z.ZodType<IUserRegistrationPayload> 
 		email: z.string().optional(),
 	});
 
+export const UserRequestPasswordResetPayloadSchema: z.ZodType<IUserRequestPasswordResetPayload> =
+	z.object({
+		email: z.email(),
+	});
+
+export const UserRequestPasswordResetResponseSchema: z.ZodType<IUserRequestPasswordResetResponse> =
+	z.object({
+		status_code: z.number().int(),
+		message: z.string(),
+	});
+
+export const UserPasswordResetPayloadSchema: z.ZodType<IUserPasswordResetPayload> =
+	z.object({
+		code: z.string(),
+		password: z.string(),
+	});
+
+export const UserPasswordResetResponseSchema: z.ZodType<IUserRequestPasswordResetResponse> =
+	z.object({
+		status_code: z.number().int(),
+		message: z.string(),
+	});
 export type LoginPayloadType = z.infer<typeof LoginPayloadSchema>;
 export type TokenResponseType = z.infer<typeof TokenResponseSchema>;
 export type RefreshPayloadType = z.infer<typeof RefreshPayloadSchema>;
@@ -126,4 +151,17 @@ export type UserAPIKeyCreatePayloadType = z.infer<
 >;
 export type UserRegistrationPayloadType = z.infer<
 	typeof UserRegistrationPayloadSchema
+>;
+export type UserRequestPasswordResetPayloadType = z.infer<
+	typeof UserRequestPasswordResetPayloadSchema
+>;
+export type UserRequestPasswordResetResponseType = z.infer<
+	typeof UserRequestPasswordResetResponseSchema
+>;
+
+export type UserPasswordResetPayloadType = z.infer<
+	typeof UserPasswordResetPayloadSchema
+>;
+export type UserPasswordResetResponseType = z.infer<
+	typeof UserPasswordResetResponseSchema
 >;

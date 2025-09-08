@@ -50,6 +50,16 @@
 			Error logging in. Please check your username and password.
 		</div>
 		<PForm>
+			<PFormSeperator>
+				<div class="font-mono text-xs text-white/60 pb-3">
+					By using PRUNplanner you agree to the
+					<router-link
+						to="/imprint-tos"
+						class="hover:cursor-pointer underline">
+						Terms of Service.
+					</router-link>
+				</div>
+			</PFormSeperator>
 			<PFormItem label="Username">
 				<PInput v-model:value="inputUsername" class="w-full" />
 			</PFormItem>
@@ -61,11 +71,11 @@
 			</PFormItem>
 			<PFormSeperator>
 				<div class="font-mono text-xs text-white/60 py-3">
-					By using PRUNplanner you agree to the
+					Forgot your password? Request a
 					<router-link
-						to="/imprint-tos"
+						to="/request-password-reset"
 						class="hover:cursor-pointer underline">
-						Terms of Service.
+						Password Reset.
 					</router-link>
 				</div>
 			</PFormSeperator>
