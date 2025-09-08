@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref, Ref } from "vue";
+	import { ref, Ref, computed } from "vue";
 	import { useRoute } from "vue-router";
 
 	// UI
@@ -23,6 +23,13 @@
 	}
 
 	const routeData = useRoute();
+
+	const showHeader = computed(
+		() =>
+			routeData.name != "homepage" &&
+			routeData.name != "password-reset" &&
+			routeData.name != "request-password-reset"
+	);
 </script>
 
 <template>
@@ -38,7 +45,7 @@
 			<div>
 				<RouterLink to="/">
 					<h2
-						v-if="routeData.name != 'homepage'"
+						v-if="showHeader"
 						class="text-3xl text-prunplanner font-light">
 						<span class="font-bold">PRUN</span>planner
 					</h2>

@@ -31,10 +31,8 @@
 		HomeSharp,
 		SearchRound,
 		SettingsRound,
-		ApiSharp,
 		LogOutRound,
 		ShoppingBasketSharp,
-		CandlestickChartSharp,
 		CompareSharp,
 		ProductionQuantityLimitsSharp,
 		PersonSharp,
@@ -140,31 +138,49 @@
 			display: true,
 			children: [
 				{
-					label: "Market Data",
+					label: "Market Exploration",
 					display: true,
-					routerLink: "/not-implemented",
-					icon: CandlestickChartSharp,
-					children: [
-						{
-							label: "Exploration",
-							display: true,
-							routerLink: "/market-exploration",
-							icon: ExploreSharp,
-						},
-						{
-							label: "Recipe ROI",
-							display: true,
-							routerLink: "/roi-overview",
-							icon: MoneySharp,
-						},
-						{
-							label: "Resource ROI",
-							display: true,
-							routerLink: "/resource-roi-overview",
-							icon: TravelExploreSharp,
-						},
-					],
+					routerLink: "/market-exploration",
+					icon: ExploreSharp,
 				},
+				{
+					label: "Recipe ROI",
+					display: true,
+					routerLink: "/roi-overview",
+					icon: MoneySharp,
+				},
+				{
+					label: "Resource ROI",
+					display: true,
+					routerLink: "/resource-roi-overview",
+					icon: TravelExploreSharp,
+				},
+				// {
+				// 	label: "Market Data",
+				// 	display: true,
+				// 	routerLink: "/not-implemented",
+				// 	icon: CandlestickChartSharp,
+				// 	children: [
+				// 		{
+				// 			label: "Exploration",
+				// 			display: true,
+				// 			routerLink: "/market-exploration",
+				// 			icon: ExploreSharp,
+				// 		},
+				// 		{
+				// 			label: "Recipe ROI",
+				// 			display: true,
+				// 			routerLink: "/roi-overview",
+				// 			icon: MoneySharp,
+				// 		},
+				// 		{
+				// 			label: "Resource ROI",
+				// 			display: true,
+				// 			routerLink: "/resource-roi-overview",
+				// 			icon: TravelExploreSharp,
+				// 		},
+				// 	],
+				// },
 				{
 					label: "HQ Calculator",
 					display: true,
@@ -190,35 +206,47 @@
 				// 	icon: StarsSharp,
 				// },
 				{
-					label: "FIO",
+					label: "FIO Burn",
 					display: userStore.hasFIO,
-					routerLink: "/not-implemented",
-					icon: ApiSharp,
-					children: [
-						{
-							label: "Burn",
-							display: userStore.hasFIO,
-							routerLink: "/fio/burn",
-							icon: LocalFireDepartmentSharp,
-						},
-						// {
-						// 	label: "Storage",
-						// 	display: userStore.hasFIO,
-						// 	routerLink: "/not-implemented",
-						// },
-						{
-							label: "Repair",
-							display: userStore.hasFIO,
-							routerLink: "/fio/repair",
-							icon: AutoFixNormalSharp,
-						},
-						// {
-						// 	label: "Plan Import",
-						// 	display: userStore.hasFIO,
-						// 	routerLink: "/not-implemented",
-						// },
-					],
+					routerLink: "/fio/burn",
+					icon: LocalFireDepartmentSharp,
 				},
+				{
+					label: "FIO Repair",
+					display: userStore.hasFIO,
+					routerLink: "/fio/repair",
+					icon: AutoFixNormalSharp,
+				},
+				// {
+				// 	label: "FIO",
+				// 	display: userStore.hasFIO,
+				// 	routerLink: "/not-implemented",
+				// 	icon: ApiSharp,
+				// 	children: [
+				// 		{
+				// 			label: "Burn",
+				// 			display: userStore.hasFIO,
+				// 			routerLink: "/fio/burn",
+				// 			icon: LocalFireDepartmentSharp,
+				// 		},
+				// 		// {
+				// 		// 	label: "Storage",
+				// 		// 	display: userStore.hasFIO,
+				// 		// 	routerLink: "/not-implemented",
+				// 		// },
+				// 		{
+				// 			label: "Repair",
+				// 			display: userStore.hasFIO,
+				// 			routerLink: "/fio/repair",
+				// 			icon: AutoFixNormalSharp,
+				// 		},
+				// 		// {
+				// 		// 	label: "Plan Import",
+				// 		// 	display: userStore.hasFIO,
+				// 		// 	routerLink: "/not-implemented",
+				// 		// },
+				// 	],
+				// },
 			],
 		},
 		{

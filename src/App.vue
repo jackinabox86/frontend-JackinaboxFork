@@ -60,7 +60,7 @@
 		</template>
 		<template v-else>
 			<div class="flex flex-col flex-1">
-				<div>
+				<div class="h-screen text-white/80">
 					<HomepageHeader />
 					<Suspense>
 						<RouterView />

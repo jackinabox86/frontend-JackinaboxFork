@@ -43,9 +43,12 @@
 </script>
 
 <template>
-	<h2 class="text-white/80 font-bold text-lg">Email Verification</h2>
-	<div class="py-3 text-white/60">
-		Please enter the verification code you received via email.
+	<h2 class="text-white/80 font-bold text-lg font-mono">
+		Email Verification
+	</h2>
+	<div class="py-3 text-xs font-mono text-white/60">
+		Please enter the verification code you received via email. Maybe check
+		your spam folder.
 	</div>
 	<div class="flex flex-col">
 		<template v-if="verifyStatus !== null">
@@ -69,7 +72,7 @@
 				:disabled="!canVerify"
 				:loading="isVerifying"
 				@click="verifyEmail">
-				Verify
+				Verify Email
 			</PButton>
 		</div>
 	</div>

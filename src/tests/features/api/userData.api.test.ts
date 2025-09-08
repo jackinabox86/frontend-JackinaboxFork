@@ -7,9 +7,11 @@ import {
 	callCreateAPIKey,
 	callDeleteAPIKey,
 	callGetProfile,
+	callPasswordReset,
 	callPatchProfile,
 	callRefreshToken,
 	callRegisterUser,
+	callRequestPasswordReset,
 	callResendEmailVerification,
 	callUserLogin,
 	callVerifyEmail,
@@ -245,6 +247,34 @@ describe("Feature: Account", () => {
 			planet: "1",
 			randomplanet: "2",
 		});
+
+		expect(result).toEqual(mockResponse);
+	});
+
+	it("callRequestPasswordReset: Calls API Service and gets correct response", async () => {
+		const mockResponse = {
+			status_code: 200,
+			message: "foo",
+		};
+
+		// @ts-expect-error - mock post typing
+		apiService.post.mockResolvedValue(mockResponse);
+
+		const result = await callRequestPasswordReset("foo@moo.de");
+
+		expect(result).toEqual(mockResponse);
+	});
+
+	it("callRequestPasswordReset: Calls API Service and gets correct response", async () => {
+		const mockResponse = {
+			status_code: 200,
+			message: "foo",
+		};
+
+		// @ts-expect-error - mock post typing
+		apiService.post.mockResolvedValue(mockResponse);
+
+		const result = await callPasswordReset("foo", "moo");
 
 		expect(result).toEqual(mockResponse);
 	});

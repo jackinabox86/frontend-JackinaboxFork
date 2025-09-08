@@ -122,8 +122,10 @@ import {
 	callChangePassword,
 	callCreateAPIKey,
 	callDeleteAPIKey,
+	callPasswordReset,
 	callPatchProfile,
 	callRegisterUser,
+	callRequestPasswordReset,
 	callResendEmailVerification,
 	callVerifyEmail,
 } from "@/features/api/userData.api";
@@ -131,10 +133,14 @@ import {
 	IUserAPIKey,
 	IUserAPIKeyCreatePayload,
 	IUserChangePasswordPayload,
+	IUserRequestPasswordResetPayload,
+	IUserRequestPasswordResetResponse,
 	IUserProfile,
 	IUserProfilePatch,
 	IUserRegistrationPayload,
 	IUserVerifyEmailPayload,
+	IUserPasswordResetPayload,
+	IUserPasswordResetResponse,
 } from "@/features/api/userData.types";
 
 export function useQueryRepository() {
@@ -875,6 +881,28 @@ export function useQueryRepository() {
 			autoRefetch: false,
 			persist: false,
 		} as IQueryDefinition<IUserRegistrationPayload, IUserProfile>,
+		PostUserRequestPasswordReset: {
+			key: () => ["user", "account", "request_password_reset"],
+			fetchFn: async (params: IUserRequestPasswordResetPayload) => {
+				return await callRequestPasswordReset(params.email);
+			},
+			autoRefetch: false,
+			persist: false,
+		} as IQueryDefinition<
+			IUserRequestPasswordResetPayload,
+			IUserRequestPasswordResetResponse
+		>,
+		PostUserPasswordReset: {
+			key: () => ["user", "account", "password_reset"],
+			fetchFn: async (params: IUserPasswordResetPayload) => {
+				return await callPasswordReset(params.code, params.password);
+			},
+			autoRefetch: false,
+			persist: false,
+		} as IQueryDefinition<
+			IUserPasswordResetPayload,
+			IUserPasswordResetResponse
+		>,
 	};
 
 	return {
