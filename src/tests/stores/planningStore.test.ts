@@ -209,5 +209,11 @@ describe("FIO Data", async () => {
 				).toBe(5);
 			});
 		});
+
+		it("getStoreSize", async () => {
+			const results = await planningStore.getStoreSize();
+
+			expect(results.length).toBe(9);
+		});
 	});
 });

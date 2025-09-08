@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
 
 // Util
-import { inertClone } from "@/util/data";
+import { getObjectSize, inertClone } from "@/util/data";
 
 // Types & Interfaces
 import {
@@ -274,6 +274,35 @@ export const usePlanningStore = defineStore(
 		function getSharedList(): ISharedPlan[] {
 			return Object.values(shared.value);
 		}
+		async function getStoreSize() {
+			const stores = [
+				{ name: "Plans", source: plans.value },
+				{ name: "Empires", source: empires.value },
+				{ name: "Exchanges", source: cxs.value },
+				{ name: "Sharings", source: shared.value },
+				{
+					name: "FIO Storage Planets",
+					source: fio_storage_planets.value,
+				},
+				{ name: "FIO Storage Ships", source: fio_storage_ships.value },
+				{
+					name: "FIO Storage Warehouses",
+					source: fio_storage_warehouses.value,
+				},
+				{ name: "FIO Sites Planets", source: fio_sites_planets.value },
+				{ name: "FIO Sites Ships", source: fio_sites_ships.value },
+			];
+
+			const sizes = await Promise.all(
+				stores.map((s) => getObjectSize(s.source))
+			);
+
+			return stores.map((s, i) => ({
+				name: s.name,
+				records: Object.keys(s.source).length,
+				sizeMB: sizes[i],
+			}));
+		}
 
 		return {
 			// state
@@ -306,11 +335,25 @@ export const usePlanningStore = defineStore(
 			getPlan,
 			getAllCX,
 			getSharedList,
+			// util
+			getStoreSize,
 		};
 	},
 	{
 		persist: {
-			pick: ["plans", "empires", "cxs", "shared"],
+			pick: [
+				"plans",
+				"empires",
+				"cxs",
+				"shared",
+				"fio_storage_planets",
+				"fio_storage_warehouses",
+				"fio_storage_ships",
+				"fio_sites_planets",
+				"fio_sites_ships",
+				"fio_sites_timestamp",
+				"fio_storage_timestamp",
+			],
 		},
 		// broadcast: {
 		// 	enable: true,

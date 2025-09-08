@@ -4,6 +4,10 @@ import config from "@/lib/config";
 import { DB_SCHEMA } from "@/database/schema";
 
 type KeyOfStore<T, K extends keyof T> = T[K] extends IDBValidKey ? T[K] : never;
+export type IStoreStatistic = {
+	records: number;
+	sizeMB: number;
+};
 
 let dbPromise: Promise<IDBPDatabase> | null = null;
 
@@ -102,6 +106,38 @@ export function useIndexedDBStore<T extends object, K extends keyof T & string>(
 		await db.delete(storeName, key);
 	}
 
+	async function statistics(): Promise<IStoreStatistic> {
+		const db = await getDB();
+
+		// record count
+		const recordCount: number = await db.count(storeName);
+
+		// estimate size from sampling
+		const tx = db.transaction(storeName, "readonly");
+		const store = tx.objectStore(storeName);
+
+		const records: any[] = [];
+		let cursor = await store.openCursor();
+		while (cursor && records.length < 10) {
+			records.push(cursor.value);
+			cursor = await cursor.continue();
+		}
+
+		// stringify + measure
+		const avgSize = records.length
+			? records.reduce(
+					(sum, r) => sum + new Blob([JSON.stringify(r)]).size,
+					0
+			  ) / records.length
+			: 0;
+		const approxSize = (avgSize * recordCount) / 1024 / 1024;
+
+		return {
+			records: recordCount,
+			sizeMB: approxSize,
+		};
+	}
+
 	return {
 		keyPath,
 		get,
@@ -109,5 +145,6 @@ export function useIndexedDBStore<T extends object, K extends keyof T & string>(
 		set,
 		setMany,
 		remove,
+		statistics,
 	} as const;
 }

@@ -2,6 +2,7 @@
 
 - Implements password reset functions
 - Streamline navigation: Market and FIO don't have sub-links but are displayed directly
+- Adds Browser Storage overview and size estimation to profile view
 
 # 2025-09-07
 

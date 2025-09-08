@@ -11,6 +11,7 @@ import { ref, reactive, isReactive } from "vue";
 import {
 	copyToClipboard,
 	deepClone,
+	getObjectSize,
 	inertClone as inertCloneDefault,
 	redact,
 } from "@/util/data";
@@ -257,5 +258,12 @@ describe("deepClone (JSON fallback)", () => {
 		expect(clone).toEqual({ a: 1, b: { c: 2 } });
 		expect(clone).not.toBe(source.value);
 		expect(clone.b).not.toBe(source.value.b);
+	});
+});
+
+describe("getObjectSize", async () => {
+	it("small file", async () => {
+		const result = await getObjectSize({ foo: "moo", data: [1, 2, 3, 4] });
+		expect(result).toBeGreaterThan(0);
 	});
 });

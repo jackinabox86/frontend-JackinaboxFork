@@ -1,11 +1,71 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+	import { IStoreStatistic } from "@/database/composables/useIndexedDBStore";
+	import {
+		materialsStore,
+		buildingsStore,
+		recipesStore,
+		planetsStore,
+		exchangesStore,
+	} from "@/database/stores";
+	import { onMounted, ref, Ref } from "vue";
+
+	interface IStatistic extends IStoreStatistic {
+		name: string;
+	}
+
+	const stat: Ref<IStatistic[]> = ref([]);
+
+	import { formatAmount, formatNumber } from "@/util/numbers";
+	import { usePlanningStore } from "@/stores/planningStore";
+	const planningStore = usePlanningStore();
+
+	import { NTable } from "naive-ui";
+
+	onMounted(async () => {
+		const results = await Promise.all([
+			materialsStore.statistics(),
+			buildingsStore.statistics(),
+			recipesStore.statistics(),
+			planetsStore.statistics(),
+			exchangesStore.statistics(),
+			planningStore.getStoreSize(),
+		]);
+
+		stat.value = [
+			{ name: "Materials", ...results[0] },
+			{ name: "Buildings", ...results[1] },
+			{ name: "Recipes", ...results[2] },
+			{ name: "Planets", ...results[3] },
+			{ name: "Exchanges", ...results[4] },
+			...results[5],
+		];
+	});
+</script>
 
 <template>
 	<h2 class="text-white/80 font-bold text-lg my-auto">Browser Storage</h2>
 	<div class="py-3 text-white/60">
 		PRUNplanner minimizes API calls by storing data locally in your browser.
-		Data refreshes automatically at set intervals or if changed and you can
-		manually reset data if needed.
+		Data refreshes automatically at set intervals.
 	</div>
-	<div>Needs to be created...</div>
+	<div>
+		<NTable striped>
+			<thead>
+				<tr>
+					<th>Storage</th>
+					<th>Records</th>
+					<th class="!text-end">Approx. Size</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="element in stat" :key="element.name">
+					<td>{{ element.name }}</td>
+					<td>{{ formatAmount(element.records) }}</td>
+					<td class="!text-end">
+						{{ formatNumber(element.sizeMB) }} MB
+					</td>
+				</tr>
+			</tbody>
+		</NTable>
+	</div>
 </template>

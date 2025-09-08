@@ -167,4 +167,21 @@ describe("useIndexedDBStore", () => {
 
 		expect(result).toEqual([fakeMaterial_2]);
 	});
+
+	it("gets statistics, existing records", async () => {
+		const materials: IMaterial[] = [fakeMaterial_1, fakeMaterial_2];
+		await store.setMany(materials, true);
+
+		const result = await store.statistics();
+
+		expect(result.records).toBe(2);
+		expect(result.sizeMB).toBeGreaterThan(0);
+	});
+
+	it("gets statistics, existing records", async () => {
+		const result = await store.statistics();
+
+		expect(result.records).toBe(0);
+		expect(result.sizeMB).toBe(0);
+	});
 });

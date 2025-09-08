@@ -116,3 +116,7 @@ export function deepClone<T>(obj: T): T {
 		? structuredClone(raw)
 		: JSON.parse(JSON.stringify(raw));
 }
+
+export async function getObjectSize(obj: unknown): Promise<number> {
+	return new Blob([JSON.stringify(obj)]).size / 1024 / 1024;
+}

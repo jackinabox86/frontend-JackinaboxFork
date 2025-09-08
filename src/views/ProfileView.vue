@@ -25,7 +25,7 @@
 				</div>
 
 				<div
-					class="flex-grow grid grid-cols-1 lg:grid-cols-[25%_25%_auto] divide-x divide-white/10">
+					class="flex-grow grid grid-cols-1 lg:grid-cols-[30%_25%_auto] divide-x divide-white/10">
 					<div class="px-6 py-3"><StorageData /></div>
 					<div class="px-6 py-3"><UserPreferences /></div>
 					<div
