@@ -2,7 +2,7 @@ name: Build & Push Frontend Image
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "dockerize"]
   workflow_dispatch:       # manual allowed
 
 jobs:
