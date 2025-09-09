@@ -29,7 +29,7 @@ ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
 COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --prod
 
 # Copy
 COPY . .
