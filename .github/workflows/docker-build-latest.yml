@@ -1,8 +1,8 @@
-name: Build & Push Frontend Image
+name: Build & Push Image
 
 on:
   push:
-    branches: ["main", "dockerize"]
+    branches: ["main"]
   workflow_dispatch:       # manual allowed
 
 jobs:

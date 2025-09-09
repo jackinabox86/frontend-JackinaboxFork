@@ -8,7 +8,7 @@ Welcome to the next major version of PRUNplanner, now open-sourced and community
 
 Development previews are powered by Netlify: [http://preview.prunplanner.org/](http://preview.prunplanner.org/)
 
-Please Note, v2 uses the production backend. Changes made in the preview will be persisted to the database as if you would work with prunplanner.org. It is currently not served with HTTPS.
+Please Note, v2 uses the production backend. Changes made in the preview will be persisted to the database as if you would work with prunplanner.org.
 
 ## Stack
 
@@ -43,7 +43,36 @@ pnpm run test
 pnpm run test:ui
 ```
 
-## .env
+# Build & Run Frontend
+
+PRUNplanner offers a pre-built Docker image for the frontend, hosted on GitHub Container Registry: [prunplanner-frontend](https://github.com/orgs/PRUNplanner/packages/container/package/prunplanner-frontend). The image comes with default environment settings.
+
+You can also build and run yourself with Docker:
+
+```shell
+# Build local
+docker build -t prunplanner-frontend:latest .
+
+# Run local build
+docker run -p 80:80 prunplanner-frontend:latest --brotli --port 80
+
+# or, run pre-build image
+docker run -p 80:80 ghcr.io/prunplanner/prunplanner-frontend:latest --brotli --port 80
+```
+
+Or use it with Docker Compose in your `docker-compose.yaml`:
+
+```yaml
+services:
+    frontend:
+        image: ghcr.io/prunplanner/prunplanner-frontend:latest
+        container_name: prunplanner-frontend
+        command: --port 80 --brotli
+        ports:
+            - "80:80"
+```
+
+# Environment Variables
 
 | Key                               | Type   | Default Value                    |
 | --------------------------------- | ------ | -------------------------------- |
@@ -57,6 +86,6 @@ pnpm run test:ui
 | VITE_GAME_DATA_STALE_MINUTES_PLANETS   | int    | 180                              |
 
 
-## Highcharts
+# Highcharts
 
 PRUNplanner is allowed to use [Highcharts](https://www.highcharts.com/) as it got a license certificate granted for its `Core` and `Stock` libraries. If you want to use this repository outside of local development, please ensure to follow the Highcharts license terms and conditions that might apply.

@@ -1,0 +1,8 @@
+services:
+    frontend:
+        image: ghcr.io/prunplanner/prunplanner-frontend:latest
+        container_name: prunplanner-frontend
+        command: --port 80 --brotli
+        ports:
+            - "80:80"
+        restart: unless-stopped

@@ -1,7 +1,3 @@
-# How-to build & run locally
-# Build: docker build -t prunplanner-frontend:latest .
-# Run: docker run -p 80:80 prunplanner-frontend:latest --brotli --port 80
-
 # --- BUILD STAGE ---
 FROM node:lts-alpine AS build
 WORKDIR /app
