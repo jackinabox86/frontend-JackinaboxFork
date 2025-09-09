@@ -1,0 +1,55 @@
+name: Build & Push Frontend Image
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:       # manual allowed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout your repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Enable pnpm via corepack (Node >= 16.13)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Enable corepack for pnpm
+        run: corepack enable
+
+      # 3. Log in to GitHub Container Registry
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 4. Build & push Docker image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/prunplanner-frontend:latest
+            ghcr.io/${{ github.repository_owner }}/prunplanner-frontend:${{ github.sha }}
+          build-args: |
+            VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL || 'https://api.prunplanner.org' }}
+            VITE_SHARE_BASE_URL=${{ secrets.VITE_SHARE_BASE_URL || 'https://prunplanner.org/shared' }}
+            VITE_GAME_DATA_STALE_MINUTES_BUILDINGS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_BUILDINGS || 1440  }}
+            VITE_GAME_DATA_STALE_MINUTES_RECIPES=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_RECIPES || 1440}}
+            VITE_GAME_DATA_STALE_MINUTES_MATERIALS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_MATERIALS || 1440 }}
+            VITE_GAME_DATA_STALE_MINUTES_EXCHANGES=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_EXCHANGES || 30  }}
+            VITE_GAME_DATA_STALE_MINUTES_PLANETS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_PLANETS || 180 }}
+
+
+      # 5. Optional: output image digest
+      - name: Image digest
+        run: docker inspect ghcr.io/${{ github.repository_owner }}/prunplanner-frontend:latest --format='{{index .RepoDigests 0}}'
