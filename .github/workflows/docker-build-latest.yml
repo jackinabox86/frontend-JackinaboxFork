@@ -10,11 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout your repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Enable pnpm via corepack (Node >= 16.13)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -23,15 +33,6 @@ jobs:
       - name: Enable corepack for pnpm
         run: corepack enable
 
-      # 3. Log in to GitHub Container Registry
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
-
-      # 4. Build & push Docker image
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -50,7 +51,5 @@ jobs:
             VITE_GAME_DATA_STALE_MINUTES_EXCHANGES=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_EXCHANGES || 30  }}
             VITE_GAME_DATA_STALE_MINUTES_PLANETS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_PLANETS || 180 }}
 
-
-      # 5. Optional: output image digest
       - name: Image digest
         run: docker inspect ghcr.io/prunplanner/prunplanner-frontend:latest --format='{{index .RepoDigests 0}}'
