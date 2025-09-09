@@ -37,6 +37,7 @@ jobs:
         with:
           context: .
           push: true
+          platforms: linux/amd64,linux/arm64,windows/amd64
           tags: |
             ghcr.io/prunplanner/prunplanner-frontend:latest
             ghcr.io/prunplanner/prunplanner-frontend:${{ github.sha }}
