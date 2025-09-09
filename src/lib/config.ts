@@ -1,5 +1,4 @@
 class Config {
-	public readonly APP_VERSION: string;
 	public readonly API_BASE_URL: string;
 	public readonly SHARE_BASE_URL: string;
 
@@ -8,6 +7,8 @@ class Config {
 	public readonly GAME_DATA_STALE_MINUTES_MATERIALS: number;
 	public readonly GAME_DATA_STALE_MINUTES_EXCHANGES: number;
 	public readonly GAME_DATA_STALE_MINUTES_PLANETS: number;
+	public readonly POSTHOG_TOKEN: string;
+	public readonly POSTHOG_NAME: string;
 
 	public readonly INDEXEDDB_DBNAME: string;
 
@@ -17,7 +18,6 @@ class Config {
 		this.SHARE_BASE_URL =
 			import.meta.env.VITE_SHARE_BASE_URL ||
 			"https://prunplanner.org/shared";
-		this.APP_VERSION = import.meta.env.VITE_APP_VERSION || "undefined";
 
 		this.GAME_DATA_STALE_MINUTES_BUILDINGS =
 			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_BUILDINGS || 24 * 60;
@@ -32,6 +32,9 @@ class Config {
 
 		this.INDEXEDDB_DBNAME =
 			import.meta.env.VITE_INDEXEDDB_DBNANAME || "prunplanner";
+		this.POSTHOG_TOKEN = import.meta.env.VITE_POSTHOG_TOKEN || "";
+		this.POSTHOG_NAME =
+			import.meta.env.VITE_POSTHOG_NAME || "prunplanner_frontend";
 	}
 }
 

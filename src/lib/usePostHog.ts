@@ -1,11 +1,13 @@
 import posthog, { Properties } from "posthog-js";
 
+import config from "@/lib/config";
+
 // Util
 import { redact } from "@/util/data";
 
 export function usePostHog() {
-	const posthogToken: string | undefined = import.meta.env.VITE_POSTHOG_TOKEN;
-	const posthogName: string | undefined = import.meta.env.VITE_POSTHOG_NAME;
+	const posthogToken: string = config.POSTHOG_TOKEN;
+	const posthogName: string = config.POSTHOG_NAME;
 
 	const SENSITIVE_KEYS: string[] = [
 		"password",
