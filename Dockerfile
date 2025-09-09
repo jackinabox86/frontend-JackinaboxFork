@@ -38,5 +38,5 @@ COPY . .
 RUN pnpm run build
 
 # --- PRODUCTION STAGE ---
-FROM devforth/spa-to-http:1.0.4 AS production
+FROM devforth/spa-to-http:1.0.9 AS production
 COPY --from=build /app/dist/ .
