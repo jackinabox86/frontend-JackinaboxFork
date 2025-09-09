@@ -2,9 +2,8 @@
 # Build: docker build -t prunplanner-frontend:latest .
 # Run: docker run -p 80:80 prunplanner-frontend:latest --brotli --port 80
 
-
 # --- BUILD STAGE ---
-FROM node:22-alpine AS build
+FROM node:lts-alpine AS build
 WORKDIR /app
 
 # Enable pnpm
