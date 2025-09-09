@@ -1,8 +1,8 @@
 name: Build & Push Image
 
 on:
-  push:
-    branches: ["main"]
+  release:
+    types: ["published"]
   workflow_dispatch:       # manual allowed
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/prunplanner/prunplanner-frontend:latest
-            ghcr.io/prunplanner/prunplanner-frontend:${{ github.sha }}
+            ghcr.io/prunplanner/prunplanner-frontend:${{ github.ref_name }}
           build-args: |
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL || 'https://api.prunplanner.org' }}
             VITE_SHARE_BASE_URL=${{ secrets.VITE_SHARE_BASE_URL || 'https://prunplanner.org/shared' }}

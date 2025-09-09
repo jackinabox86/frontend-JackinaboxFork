@@ -45,7 +45,7 @@ pnpm run test:ui
 
 # Build & Run Frontend
 
-PRUNplanner offers a pre-built Docker image for the frontend, hosted on GitHub Container Registry: [prunplanner-frontend](https://github.com/orgs/PRUNplanner/packages/container/package/prunplanner-frontend). The image comes with default environment settings.
+PRUNplanner offers a pre-built Docker image for the frontend, hosted on GitHub Container Registry: [prunplanner-frontend](https://github.com/orgs/PRUNplanner/packages/container/package/prunplanner-frontend). The image comes with default environment settings and rebuilds on published repository releases.
 
 You can also build and run yourself with Docker:
 
