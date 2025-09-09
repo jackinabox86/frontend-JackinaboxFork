@@ -50,6 +50,3 @@ jobs:
             VITE_GAME_DATA_STALE_MINUTES_MATERIALS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_MATERIALS || 1440 }}
             VITE_GAME_DATA_STALE_MINUTES_EXCHANGES=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_EXCHANGES || 30  }}
             VITE_GAME_DATA_STALE_MINUTES_PLANETS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_PLANETS || 180 }}
-
-      - name: Image digest
-        run: docker inspect ghcr.io/prunplanner/prunplanner-frontend:latest --format='{{index .RepoDigests 0}}'
