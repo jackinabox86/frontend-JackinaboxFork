@@ -1,0 +1,55 @@
+name: Build & Push Image
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:       # manual allowed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Enable corepack for pnpm
+        run: corepack enable
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ghcr.io/prunplanner/prunplanner-frontend:latest
+            ghcr.io/prunplanner/prunplanner-frontend:${{ github.sha }}
+          build-args: |
+            VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL || 'https://api.prunplanner.org' }}
+            VITE_SHARE_BASE_URL=${{ secrets.VITE_SHARE_BASE_URL || 'https://prunplanner.org/shared' }}
+            VITE_GAME_DATA_STALE_MINUTES_BUILDINGS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_BUILDINGS || 1440  }}
+            VITE_GAME_DATA_STALE_MINUTES_RECIPES=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_RECIPES || 1440}}
+            VITE_GAME_DATA_STALE_MINUTES_MATERIALS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_MATERIALS || 1440 }}
+            VITE_GAME_DATA_STALE_MINUTES_EXCHANGES=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_EXCHANGES || 30  }}
+            VITE_GAME_DATA_STALE_MINUTES_PLANETS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_PLANETS || 180 }}
+
+      - name: Image digest
+        run: docker inspect ghcr.io/prunplanner/prunplanner-frontend:latest --format='{{index .RepoDigests 0}}'
