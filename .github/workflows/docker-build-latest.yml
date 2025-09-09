@@ -38,8 +38,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/prunplanner-frontend:latest
-            ghcr.io/${{ github.repository_owner }}/prunplanner-frontend:${{ github.sha }}
+            ghcr.io/prunplanner/prunplanner-frontend:latest
+            ghcr.io/prunplanner/prunplanner-frontend:${{ github.sha }}
           build-args: |
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL || 'https://api.prunplanner.org' }}
             VITE_SHARE_BASE_URL=${{ secrets.VITE_SHARE_BASE_URL || 'https://prunplanner.org/shared' }}
@@ -52,4 +52,4 @@ jobs:
 
       # 5. Optional: output image digest
       - name: Image digest
-        run: docker inspect ghcr.io/${{ github.repository_owner }}/prunplanner-frontend:latest --format='{{index .RepoDigests 0}}'
+        run: docker inspect ghcr.io/prunplanner/prunplanner-frontend:latest --format='{{index .RepoDigests 0}}'
