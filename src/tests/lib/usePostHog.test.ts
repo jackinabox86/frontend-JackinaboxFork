@@ -18,6 +18,13 @@ vi.mock("posthog-js", () => {
 	};
 });
 
+vi.mock("@/lib/config", () => ({
+	default: {
+		POSTHOG_TOKEN: "test-token",
+		POSTHOG_NAME: "test-name",
+	},
+}));
+
 import posthog from "posthog-js";
 import { usePostHog } from "@/lib/usePostHog";
 
@@ -29,11 +36,6 @@ describe("usePostHog", () => {
 	});
 
 	it("initializes posthog when token exists", () => {
-		// @ts-expect-error mock
-		import.meta.env.VITE_POSTHOG_TOKEN = "test-token";
-		// @ts-expect-error mock
-		import.meta.env.VITE_POSTHOG_NAME = "test-name";
-
 		usePostHog();
 
 		expect(posthog.init).toHaveBeenCalledWith(
