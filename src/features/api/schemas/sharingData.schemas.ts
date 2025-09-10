@@ -3,6 +3,7 @@ import { z } from "zod";
 // Types & Interfaces
 import {
 	IShared,
+	ISharedCloneResponse,
 	ISharedCreateResponse,
 } from "@/features/api/sharingData.types";
 
@@ -30,3 +31,8 @@ export const SharedCreateResponseSchema: z.ZodType<ISharedCreateResponse> =
 export type SharedCreateResponseType = z.infer<
 	typeof SharedCreateResponseSchema
 >;
+
+export const SharedCloneResponseSchema: z.ZodType<ISharedCloneResponse> =
+	z.object({ message: z.string() });
+
+export type SharedCloneResponseType = z.infer<typeof SharedCloneResponseSchema>;

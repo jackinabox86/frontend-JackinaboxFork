@@ -5,6 +5,8 @@ import { apiService } from "@/lib/apiService";
 import { z } from "zod";
 import {
 	ScharedListResponseType,
+	SharedCloneResponseSchema,
+	SharedCloneResponseType,
 	SharedCreateResponseSchema,
 	SharedCreateResponseType,
 	SharedListResponseSchema,
@@ -13,6 +15,7 @@ import {
 // Types & Interfaces
 import {
 	IShared,
+	ISharedCloneResponse,
 	ISharedCreateResponse,
 } from "@/features/api/sharingData.types";
 
@@ -61,5 +64,16 @@ export async function callCreateSharing(
 		null,
 		z.null(),
 		SharedCreateResponseSchema
+	);
+}
+
+export async function callCloneSharedPlan(
+	sharedUuid: string
+): Promise<ISharedCloneResponse> {
+	return apiService.put<null, SharedCloneResponseType>(
+		`/shared/baseplanner/${sharedUuid}/clone`,
+		null,
+		z.null(),
+		SharedCloneResponseSchema
 	);
 }

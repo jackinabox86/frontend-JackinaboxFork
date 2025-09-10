@@ -9,3 +9,7 @@ export interface ISharedCreateResponse {
 	created_date: string;
 	view_count: number;
 }
+
+export interface ISharedCloneResponse {
+	message: string;
+}

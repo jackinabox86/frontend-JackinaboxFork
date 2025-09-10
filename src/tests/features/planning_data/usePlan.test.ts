@@ -14,6 +14,7 @@ import {
 	callPatchPlanMaterialIO,
 } from "@/features/api/planData.api";
 import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
+import { callCloneSharedPlan } from "@/features/api/sharingData.api";
 
 vi.mock("@/features/api/planData.api", async () => {
 	return {
@@ -35,6 +36,13 @@ vi.mock("@/features/api/gameData.api", async () => {
 		callDataBuildings: vi.fn(),
 		callDataPlanet: vi.fn(),
 		callDataMultiplePlanets: vi.fn(),
+	};
+});
+
+vi.mock("@/features/api/sharingData.api", async () => {
+	return {
+		...(await vi.importActual("@/features/api/sharingData.api")),
+		callCloneSharedPlan: vi.fn(),
 	};
 });
 
@@ -217,5 +225,25 @@ describe("usePlan", async () => {
 			expect(planetId).toBe("1");
 			expect(planName).toBe("Unnamed");
 		});
+	});
+
+	it("cloneSharedPlan, okay", async () => {
+		const { cloneSharedPlan } = usePlan();
+		vi.mocked(callCloneSharedPlan).mockResolvedValueOnce({
+			message: "foo",
+		});
+
+		const result = await cloneSharedPlan("foo");
+
+		expect(result).toBeTruthy();
+	});
+
+	it("cloneSharedPlan, failure", async () => {
+		const { cloneSharedPlan } = usePlan();
+		vi.mocked(callCloneSharedPlan).mockRejectedValueOnce(new Error());
+
+		const result = await cloneSharedPlan("foo");
+
+		expect(result).toBeFalsy();
 	});
 });

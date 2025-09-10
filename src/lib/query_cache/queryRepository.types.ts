@@ -30,6 +30,7 @@ import {
 
 import {
 	IShared,
+	ISharedCloneResponse,
 	ISharedCreateResponse,
 } from "@/features/api/sharingData.types";
 
@@ -108,6 +109,10 @@ export interface IQueryRepository {
 	CreateSharedPlan: IQueryDefinition<
 		{ planUuid: string },
 		ISharedCreateResponse
+	>;
+	PutCloneSharedPlan: IQueryDefinition<
+		{ sharedUuid: string },
+		ISharedCloneResponse
 	>;
 	CreateEmpire: IQueryDefinition<{ data: IEmpireCreatePayload }, IPlanEmpire>;
 	DeleteEmpire: IQueryDefinition<{ empireUuid: string }, boolean>;

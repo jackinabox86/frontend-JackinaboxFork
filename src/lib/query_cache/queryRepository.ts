@@ -59,6 +59,7 @@ import {
 	callUpdateCXJunctions,
 } from "@/features/api/cxData.api";
 import {
+	callCloneSharedPlan,
 	callCreateSharing,
 	callDeleteSharing,
 	callGetSharedList,
@@ -95,6 +96,7 @@ import {
 
 import {
 	IShared,
+	ISharedCloneResponse,
 	ISharedCreateResponse,
 } from "@/features/api/sharingData.types";
 
@@ -352,6 +354,23 @@ export function useQueryRepository() {
 			persist: false,
 			autoRefetch: false,
 		} as IQueryDefinition<{ planUuid: string }, ISharedCreateResponse>,
+		PutCloneSharedPlan: {
+			key: (params: { sharedUuid: string }) => [
+				"planningdata",
+				"shared",
+				"clone",
+				params.sharedUuid,
+			],
+			fetchFn: async (params: { sharedUuid: string }) => {
+				await queryStore.invalidateKey(["planningdata", "shared"], {
+					exact: false,
+					skipRefetch: true,
+				});
+				return await callCloneSharedPlan(params.sharedUuid);
+			},
+			persist: false,
+			autoRefetch: false,
+		} as IQueryDefinition<{ sharedUuid: string }, ISharedCloneResponse>,
 		CreateEmpire: {
 			key: () => ["planningdata", "empire", "create"],
 			fetchFn: async (params: { data: IEmpireCreatePayload }) => {

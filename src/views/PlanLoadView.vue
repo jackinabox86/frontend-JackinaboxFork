@@ -51,7 +51,8 @@
 				<AsyncPlanView
 					:disabled="disabled"
 					:plan-data="planDefinition"
-					:empire-list="empireList" />
+					:empire-list="empireList"
+					:shared-plan-uuid="sharedPlanUuid" />
 			</AsyncWrapperGameData>
 		</template>
 	</WrapperPlanningDataLoader>
