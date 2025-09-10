@@ -55,22 +55,6 @@ export async function usePrice(
 		await useBuildingData();
 
 	/**
-	 * Composable internal caching:
-	 * as prices will be requested a lot from the UI, it does not make sense
-	 * to execute the whole getPrice() logic on every call if no parameters
-	 * change. Let's try to store keys of $materialTicker#$type in a Map and
-	 * return the value instead of recalculating again.
-	 */
-
-	const cache = new Map<string, number>();
-
-	// Watch cxUuid and plantNaturalId changes to reset cache
-	// also watches the actual cx preferences for change
-	watch([cxUuid, planetNaturalId, planningStore.cxs], () => {
-		cache.clear();
-	});
-
-	/**
 	 * Finds the correct price information for given exchange preference
 	 * and planet to search for. Applies whole Price Identification Logic
 	 * @author jplacht
@@ -86,16 +70,12 @@ export async function usePrice(
 	): Promise<number> {
 		const cacheKey: string = `${materialTicker}#${type}#${cxUuid.value}#${planetNaturalId.value}`;
 
-		if (cache.has(cacheKey)) return cache.get(cacheKey)!;
-
 		try {
 			// if any cx information is undefined, we return the PP30D_Universe PriceAverage
 			if (!cxUuid.value || cxUuid.value === undefined) {
 				const price = await getExchangeTicker(
 					`${materialTicker}.PP30D_UNIVERSE`
 				);
-
-				cache.set(cacheKey, price.PriceAverage ?? 0);
 				return price.PriceAverage ?? 0;
 			}
 
@@ -118,8 +98,6 @@ export async function usePrice(
 				// found planet ticker setting
 				if (planetTickerPreference) {
 					const price: number = planetTickerPreference.value;
-					cache.set(cacheKey, price);
-
 					return price;
 				}
 			}
@@ -133,8 +111,6 @@ export async function usePrice(
 			);
 			if (empireTickerPreference) {
 				const price: number = empireTickerPreference.value;
-				cache.set(cacheKey, price);
-
 				return price;
 			}
 
@@ -158,8 +134,6 @@ export async function usePrice(
 					);
 
 					const price: number = (tickerData[key] ?? 0) as number;
-
-					cache.set(cacheKey, price);
 					return price;
 				}
 			}
@@ -179,8 +153,6 @@ export async function usePrice(
 				);
 
 				const price: number = (tickerData[key] ?? 0) as number;
-
-				cache.set(cacheKey, price);
 				return price;
 			}
 
@@ -190,8 +162,6 @@ export async function usePrice(
 			);
 
 			const price: number = tickerData.PriceAverage ?? 0;
-
-			cache.set(cacheKey, price);
 			return price;
 		} catch (error) {
 			if (error instanceof Error) {
