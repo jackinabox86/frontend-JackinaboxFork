@@ -1,6 +1,9 @@
 <script setup lang="ts">
-	import { ref, Ref, computed } from "vue";
-	import { useRoute } from "vue-router";
+	import { ref, Ref } from "vue";
+
+	const { showHeader = true } = defineProps<{
+		showHeader?: boolean;
+	}>();
 
 	// UI
 	import { NCollapseTransition } from "naive-ui";
@@ -21,15 +24,6 @@
 		refShowLogin.value = false;
 		refShowRegistration.value = !refShowRegistration.value;
 	}
-
-	const routeData = useRoute();
-
-	const showHeader = computed(
-		() =>
-			routeData.name != "homepage" &&
-			routeData.name != "password-reset" &&
-			routeData.name != "request-password-reset"
-	);
 </script>
 
 <template>
@@ -58,7 +52,7 @@
 			</div>
 		</div>
 	</div>
-	<div>
+	<div class="lg:pb-5">
 		<n-collapse-transition :show="refShowLogin">
 			<div
 				class="mt-5 md:px-10 lg:px-0 bg-white/5 border-t border-b border-white/10">

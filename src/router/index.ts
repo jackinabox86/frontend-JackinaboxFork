@@ -17,6 +17,7 @@ const router = createRouter({
 		{
 			name: "homepage",
 			path: "/",
+			meta: { showHeader: false },
 			component: () => import("@/views/HomepageView.vue"),
 			props: true,
 		},
@@ -68,7 +69,7 @@ const router = createRouter({
 		{
 			name: "shared-plan",
 			path: "/shared/:sharedPlanUuid",
-			meta: { showHeaderName: true },
+			meta: { showHeader: false },
 			component: () => import("@/views/PlanLoadView.vue"),
 			props: true,
 		},
@@ -83,12 +84,6 @@ const router = createRouter({
 			path: "/fio/burn",
 			meta: { requiresAuth: true },
 			component: () => import("@/views/fio/FIOBurnView.vue"),
-		},
-		{
-			name: "debug",
-			path: "/debug",
-			meta: { requiresAuth: true },
-			component: () => import("@/lib/query_cache/QueryCacheView.vue"),
 		},
 		{
 			name: "market-exploration",
@@ -106,6 +101,7 @@ const router = createRouter({
 		{
 			name: "imprint-tos",
 			path: "/imprint-tos",
+			meta: { showHeader: false },
 			component: () => import("@/views/ImprintToSView.vue"),
 		},
 		{
@@ -136,16 +132,19 @@ const router = createRouter({
 		{
 			name: "verify-email",
 			path: "/verify-email",
+			meta: { showHeader: false },
 			component: () => import("@/views/VerifyEmailView.vue"),
 		},
 		{
 			name: "request-password-reset",
 			path: "/request-password-reset",
+			meta: { showHeader: false },
 			component: () => import("@/views/RequestPasswordResetView.vue"),
 		},
 		{
 			name: "password-reset",
 			path: "/password-reset",
+			meta: { showHeader: false },
 			component: () => import("@/views/PasswordResetView.vue"),
 		},
 		{
