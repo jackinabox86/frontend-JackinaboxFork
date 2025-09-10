@@ -4,6 +4,9 @@
 - Layout adjustments on views for non-authenticated users
 - Dockerize PostHog setup for official frontend Docker builds
 - Dependency updates / security updates
+- Remove getPrice internal caching
+- POPR Button shows "No POPR" if no report is available [#244](https://github.com/PRUNplanner/frontend/issues/244)
+- Resource ROI: streamline environment parameters, add infrastructures and active COGC [#249](https://github.com/PRUNplanner/frontend/issues/249)
 
 # 2025-09-08
 
