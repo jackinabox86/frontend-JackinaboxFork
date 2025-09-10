@@ -1,3 +1,10 @@
+# 2025-09-10
+
+- Authenticated users are able to clone shared plans
+- Layout adjustments on views for non-authenticated users
+- Dockerize PostHog setup for official frontend Docker builds
+- Dependency updates / security updates
+
 # 2025-09-08
 
 - Implements password reset functions
