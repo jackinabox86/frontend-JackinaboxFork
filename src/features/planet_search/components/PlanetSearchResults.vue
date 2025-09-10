@@ -17,7 +17,8 @@
 	import { IPlanetSearchResult } from "../usePlanetSearchResults.types";
 
 	// UI
-	import { NButton, NTooltip } from "naive-ui";
+	import { PButton } from "@/ui";
+	import { NTooltip } from "naive-ui";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import { PlusSharp } from "@vicons/material";
 
@@ -69,11 +70,11 @@
 		<XNDataTableColumn key="Plan" title="Plan" width="50">
 			<template #render-cell="{ rowData }">
 				<router-link :to="`/plan/${rowData.planetId}`">
-					<n-button size="tiny">
+					<PButton size="sm">
 						<template #icon>
 							<PlusSharp />
 						</template>
-					</n-button>
+					</PButton>
 				</router-link>
 			</template>
 		</XNDataTableColumn>

@@ -36,7 +36,8 @@
 	import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 	// UI
-	import { NButton, NDropdown, NIcon, NInput } from "naive-ui";
+	import { PButton, PInput } from "@/ui";
+	import { NDropdown, NIcon } from "naive-ui";
 	import {
 		ArrowDropDownSharp,
 		SaveSharp,
@@ -209,18 +210,17 @@
 						<template v-else>Exchanges</template>
 					</h1>
 					<div class="flex flex-row gap-x-3">
-						<n-button
+						<PButton
 							v-if="patchData"
-							size="small"
 							:loading="isPatching"
 							@click="patchCX(patchData)">
 							<template #icon><SaveSharp /></template>
 							Save
-						</n-button>
-						<n-button size="small" @click="reloadCXData">
+						</PButton>
+						<PButton @click="reloadCXData">
 							<template #icon><ChangeCircleOutlined /></template>
 							Reload
-						</n-button>
+						</PButton>
 						<HelpDrawer file-name="exchanges" />
 					</div>
 				</div>
@@ -229,9 +229,8 @@
 					class="flex-grow grid grid-cols-1 lg:grid-cols-[25%_auto] divide-x divide-white/10">
 					<div class="px-6 pb-3 pt-4 border-b border-white/10">
 						<h3 class="text-lg font-bold pb-3">Preference Name</h3>
-						<n-input
+						<PInput
 							v-model:value="selectedName"
-							size="small"
 							:status="
 								!selectedName || selectedName === ''
 									? 'warning'
