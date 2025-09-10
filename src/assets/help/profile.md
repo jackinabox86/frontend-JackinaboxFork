@@ -13,8 +13,6 @@ To reduce the load on the backend API and improve performance, PRUNplanner store
 - **FIO Data**
   This refers to your in-game personal data, such as storage and site information. To access this, you can link your Prosperous Universe account by providing your username and a FIO API key. PRUNplanner will periodically check for updates and automatically sync the latest data from the backend.
 
-You can manually clear cached game and planning data at any time. When you open an empire or plan, the tool will automatically fetch the latest data from the backend if needed.
-
 ---
 
 # Preferences

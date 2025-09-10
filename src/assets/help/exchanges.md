@@ -1,6 +1,6 @@
-# Priorities
+# Price Priorities
 
-The CX & Pricing Preferences to identify the price used for calculations are checked in the following order:
+When PRUNplanner calculates prices, it follows this order of preference:
 
 - Planet Material-based
 - Empire Material-based
@@ -8,16 +8,20 @@ The CX & Pricing Preferences to identify the price used for calculations are che
 - Empire CX-based
 - Fallback: PP30 Day Universe Price
 
-# Types
+# Preference Types
 
-Preferences can be set with the types **BUY**, **SELL** or **BOTH** and will be used for either consumed, produced or both types.
+You can set preferences as BUY, SELL, or BOTH:
 
-If only a specific type is set, but the materials price should be calculated for another, higher preferences will supersede of fall back to 0 if none is available.
+- **BUY** is used when the material is consumed.
+- **SELL** is used when the material is produced.
+- **BOTH** applies to both cases.
+
+If only one type is set, and the calculation requires the other, PRUNplanner will check for a higher-level preference. If none exists, the value defaults to 0.
 
 # Examples
 
-1: The price for LST should be used. You have no Material-based setting for Limestone defined. Therefore the Planets CX preference is applied. If no such preference exists, the Empire CX preference is used. As you have both a Planet and Empire CX preference defined the Planet CX preference will supersede your Empire CX preference.
+1: The price for LST should be used. You haven’t defined a Material-based preference for Limestone. The system checks your CX preferences: first at the Planet level, then at the Empire level. Since you’ve defined both, the Planet CX preference takes priority.
 
-2: The price for NS should be used. You have an Material-based setting for NS on the Empire level, additionally you've set your preference Material-based on the Planet that should be calculated. The Planet Material-based preference for NS will supersede your Empire Material-based definition. As there is a Material-based definition available no CX-based preference will be applied.
+2: The price for NS should be used. You’ve defined Material-based preferences for NS at both the Empire and Planet levels. The Planet Material-based preference overrides the Empire one. Because a Material-based preference exists, no CX preference is applied.
 
-3: The price for BBH should be used. You have not set any Material-based or CX-based preferences. The price for BBH therefore is calculated with 0.
+3: The price for BBH should be used. You have not set any Material-based or CX-based preferences. The price for BBH therefore is calculated with the PP30D Universe metric or falls back to 0.00 if no data is available.

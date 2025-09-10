@@ -1,1 +1,1 @@
-Needs to be written
+The HQ Upgrade Calculator helps you see exactly which materials and costs are required to upgrade your company headquarters to the next level. You can also adjust it by overwriting stock detected from your FIO integration, and it will automatically apply your exchange preferences to calculate the upgrade price.
