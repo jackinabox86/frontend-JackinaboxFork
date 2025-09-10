@@ -3,6 +3,7 @@
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
+	import { capitalizeString } from "@/util/text";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -91,24 +92,21 @@
 					<span class="font-bold">{{ rowData.buildingTicker }}</span>
 				</template>
 			</XNDataTableColumn>
-			<XNDataTableColumn
-				key="dailyYield"
-				title="Daily Yield"
-				sorter="default">
+			<XNDataTableColumn key="dailyYield" title="Daily" sorter="default">
 				<template #render-cell="{ rowData }">
 					{{ formatNumber(rowData.dailyYield) }}
 				</template>
 			</XNDataTableColumn>
 			<XNDataTableColumn
 				key="percentMaxDailyYield"
-				title="$ Max. Yield"
+				title="% Max."
 				sorter="default">
 				<template #render-cell="{ rowData }">
 					{{ formatNumber(rowData.percentMaxDailyYield * 100) }} %
 				</template>
 			</XNDataTableColumn>
 		</XNDataTableColumn>
-		<XNDataTableColumn key="planet" title="Planet Conditions">
+		<XNDataTableColumn key="planet" title="Planet">
 			<XNDataTableColumn key="popr" title="POPR">
 				<template #render-cell="{ rowData }">
 					<PlanetPOPRButton
@@ -116,36 +114,44 @@
 						button-size="sm" />
 				</template>
 			</XNDataTableColumn>
-			<XNDataTableColumn key="planetSurface" title="Surface">
+			<XNDataTableColumn key="planetCOGC" title="COGC">
 				<template #render-cell="{ rowData }">
-					<MaterialTile
-						v-for="element in rowData.planetSurface"
-						:key="element"
-						:ticker="element" />
+					{{
+						rowData.planetCOGC
+							? capitalizeString(rowData.planetCOGC)
+									.replace("Advertising ", "")
+									.replace("Workforce ", "")
+							: "-"
+					}}
 				</template>
 			</XNDataTableColumn>
-			<XNDataTableColumn key="planetPressure" title="Pressure">
+			<XNDataTableColumn key="environment" title="Environment">
 				<template #render-cell="{ rowData }">
-					<MaterialTile
-						v-for="element in rowData.planetPressure"
-						:key="element"
-						:ticker="element" />
+					<div class="flex flex-row flex-wrap gap-1">
+						<MaterialTile
+							v-for="element in rowData.planetSurface"
+							:key="element"
+							:ticker="element" />
+						<MaterialTile
+							v-for="element in rowData.planetPressure"
+							:key="element"
+							:ticker="element" />
+						<MaterialTile
+							v-for="element in rowData.planetGravity"
+							:key="element"
+							:ticker="element" />
+						<MaterialTile
+							v-for="element in rowData.planetTemperature"
+							:key="element"
+							:ticker="element" />
+					</div>
 				</template>
 			</XNDataTableColumn>
-			<XNDataTableColumn key="planetGravity" title="Gravity">
+			<XNDataTableColumn
+				key="planetInfrastructures"
+				title="Infrastructure">
 				<template #render-cell="{ rowData }">
-					<MaterialTile
-						v-for="element in rowData.planetGravity"
-						:key="element"
-						:ticker="element" />
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn key="planetTemperature" title="Temperature">
-				<template #render-cell="{ rowData }">
-					<MaterialTile
-						v-for="element in rowData.planetTemperature"
-						:key="element"
-						:ticker="element" />
+					{{ rowData.planetInfrastructures.join(", ") }}
 				</template>
 			</XNDataTableColumn>
 		</XNDataTableColumn>

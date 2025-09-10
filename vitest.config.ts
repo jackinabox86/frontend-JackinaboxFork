@@ -43,6 +43,8 @@ export default defineConfig({
 				"src/util/axiosSetup.ts",
 				"src/lib/piniaBroadcastPlugin.ts",
 				"src/lib/piniaBroadcastWorker.ts",
+				"**/*.d.ts",
+				"src/router/**",
 			],
 			reportOnFailure: true,
 		},

@@ -119,7 +119,18 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 				? ["TSH"]
 				: [];
 
-		return { surface, gravity, pressure, temperature };
+		// infrastructures
+		const infrastructures: string[] = [];
+
+		if (planet.HasLocalMarket) infrastructures.push("LM");
+		if (planet.HasChamberOfCommerce) infrastructures.push("COGC");
+		if (planet.HasWarehouse) infrastructures.push("WAR");
+		if (planet.HasAdministrationCenter) infrastructures.push("ADM");
+		if (planet.HasShipyard) infrastructures.push("SHY");
+
+		infrastructures.sort((a, b) => (a > b ? 1 : -1));
+
+		return { surface, gravity, pressure, temperature, infrastructures };
 	}
 
 	async function calculateOptimal(
@@ -129,7 +140,8 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		surface: string[],
 		gravity: string[],
 		pressure: string[],
-		temperature: string[]
+		temperature: string[],
+		infrastructures: string[]
 	): Promise<IResourceROIResult[]> {
 		const results: IResourceROIResult[] = [];
 
@@ -236,6 +248,8 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 					planetGravity: gravity,
 					planetPressure: pressure,
 					planetTemperature: temperature,
+					planetCOGC: planet.COGCProgramActive,
+					planetInfrastructures: infrastructures,
 				});
 			}
 		}
@@ -249,7 +263,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	): Promise<IResourceROIResult[]> {
 		const allResults: IResourceROIResult[] = [];
 
-		const { surface, gravity, pressure, temperature } =
+		const { surface, gravity, pressure, temperature, infrastructures } =
 			getPlanetEnvironment(planet);
 
 		for (const optimal of filteredOptimalProduction) {
@@ -260,7 +274,8 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 				surface,
 				gravity,
 				pressure,
-				temperature
+				temperature,
+				infrastructures
 			);
 			allResults.push(...results);
 		}
