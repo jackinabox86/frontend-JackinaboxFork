@@ -38,6 +38,7 @@ const config = {
 		"src/lib/piniaBroadcastWorker.ts",
 		"src/lib/piniaBroadcastPlugin.ts",
 		"src/globals.d.ts",
+		"src/router/router.d.ts",
 	],
 	ignoreDependencies: ["fast-equals"],
 } satisfies KnipConfig;

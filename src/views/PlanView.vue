@@ -11,9 +11,14 @@
 	// Router
 	import router from "@/router";
 
+	// Stores
+	import { useUserStore } from "@/stores/userStore";
+	const userStore = useUserStore();
+
 	// Types & Interfaces
 	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
 	import { IPlanet } from "@/features/api/gameData.types";
+	import { INFRASTRUCTURE_TYPE } from "@/features/planning/usePlanCalculation.types";
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
@@ -27,6 +32,7 @@
 		saveExistingPlan,
 		reloadExistingPlan,
 		patchMaterialIO,
+		cloneSharedPlan,
 	} = usePlan();
 	import { usePostHog } from "@/lib/usePostHog";
 	const { capture } = usePostHog();
@@ -63,6 +69,7 @@
 		DataObjectRound,
 		SaveSharp,
 		ChangeCircleOutlined,
+		ContentCopySharp,
 	} from "@vicons/material";
 	import { onBeforeRouteLeave } from "vue-router";
 
@@ -78,6 +85,11 @@
 		},
 		empireList: {
 			type: Array as PropType<IPlanEmpireElement[]>,
+			required: false,
+			default: undefined,
+		},
+		sharedPlanUuid: {
+			type: String,
 			required: false,
 			default: undefined,
 		},
@@ -393,10 +405,18 @@
 		refIsReloading.value = false;
 	}
 
+	// clone shared plan as logged in user
+	const sharedWasCloned: Ref<boolean> = ref(false);
+
+	async function cloneShared(): Promise<void> {
+		if (!props.sharedPlanUuid) return;
+
+		sharedWasCloned.value = await cloneSharedPlan(props.sharedPlanUuid);
+		capture("plan_shared_cloned", { sharedUuid: props.sharedPlanUuid });
+	}
+
 	// Unhead
 	import { useHead } from "@unhead/vue";
-	import { INFRASTRUCTURE_TYPE } from "@/features/planning/usePlanCalculation.types";
-
 	useHead({
 		title: computed(() =>
 			planName.value
@@ -424,7 +444,7 @@
 
 <template>
 	<div
-		class="h-view grid grid-cols-1 gap-y-6"
+		class="grid grid-cols-1 gap-y-6"
 		:class="refVisualShowConfiguration ? 'xl:grid-cols-[300px_auto]' : ''">
 		<div
 			class="border-r border-white/10"
@@ -549,7 +569,22 @@
 							</div>
 						</div>
 						<div class="flex flex-row flex-wrap gap-1">
-							<PButtonGroup>
+							<PButtonGroup v-if="userStore.isLoggedIn">
+								<PButton
+									v-if="disabled"
+									:disabled="sharedWasCloned"
+									:type="
+										!sharedWasCloned ? 'primary' : 'success'
+									"
+									@click="cloneShared">
+									<template #icon>
+										<ContentCopySharp />
+									</template>
+									<span v-if="!sharedWasCloned">
+										Clone Plan
+									</span>
+									<span v-else> Cloning Complete </span>
+								</PButton>
 								<PButton
 									v-if="saveable"
 									:loading="refIsSaving"

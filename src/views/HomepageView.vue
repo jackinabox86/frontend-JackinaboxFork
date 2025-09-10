@@ -28,8 +28,8 @@
 </script>
 
 <template>
-	<div class="mx-auto w-full max-w-7xl px-5 md:px-10 lg:px-0">
-		<div class="lg:my-10">
+	<div class="mx-auto w-full max-w-7xl pb-5 md:px-10 lg:px-0">
+		<div class="lg:mb-10">
 			<h1
 				class="bg-gradient-to-b bg-clip-text pb-4 text-7xl font-extrabold leading-tight text-transparent from-white/50 to-white">
 				Plan your empire. <br />
@@ -132,25 +132,26 @@
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="w-full justify-center">
-		<h1 class="pb-4 text-4xl tracking-tight text-white text-center mt-30">
-			Command Your Empire from Anywhere
-		</h1>
-		<p class="text-white/60 text-center text-xl mb-10">
-			Monitor bases, manage production, and control your plans
-			effortlessly. With intuitive, powerful tools, you can strategize,
-			expand, and outsmart your rivals wherever you are.
-		</p>
-		<div class="grid grid-cols-1 xl:grid-cols-3 gap-3">
-			<div
-				v-for="(screenshot, index) in screenshots"
-				:key="screenshot.image"
-				:class="[index >= 3 ? 'hidden xl:block' : '']">
-				<img :src="screenshot.image" :alt="screenshot.text" />
-				<div class="text-center font-mono text-white/60 px-2">
-					{{ screenshot.text }}
+		<div>
+			<h1
+				class="pb-4 text-4xl tracking-tight text-white text-center mt-30">
+				Command Your Empire from Anywhere
+			</h1>
+			<p class="text-white/60 text-center text-xl mb-10">
+				Monitor bases, manage production, and control your plans
+				effortlessly. With intuitive, powerful tools, you can
+				strategize, expand, and outsmart your rivals wherever you are.
+			</p>
+			<div class="grid grid-cols-1 xl:grid-cols-3 gap-3">
+				<div
+					v-for="(screenshot, index) in screenshots"
+					:key="screenshot.image"
+					:class="[index >= 3 ? 'hidden xl:block' : '']">
+					<img :src="screenshot.image" :alt="screenshot.text" />
+					<div class="text-center font-mono text-white/60 px-2">
+						{{ screenshot.text }}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -215,7 +216,7 @@
 		<br />
 		Love it? We'd be thrilled if you contributed!
 	</p>
-	<p class="text-white/60 text-center text-xl mb-10">
+	<p class="text-white/60 text-center font-mono">
 		Made with &hearts; in Munich, with contributions from around the world.
 	</p>
 </template>

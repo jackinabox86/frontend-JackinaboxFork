@@ -116,7 +116,7 @@ export function useIndexedDBStore<T extends object, K extends keyof T & string>(
 		const tx = db.transaction(storeName, "readonly");
 		const store = tx.objectStore(storeName);
 
-		const records: any[] = [];
+		const records: T[] = [];
 		let cursor = await store.openCursor();
 		while (cursor && records.length < 10) {
 			records.push(cursor.value);

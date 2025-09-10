@@ -289,6 +289,15 @@ export function usePlan() {
 		);
 	}
 
+	async function cloneSharedPlan(sharedUuid: string): Promise<boolean> {
+		try {
+			await useQuery("PutCloneSharedPlan", { sharedUuid }).execute();
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
 	return {
 		isEditDisabled,
 		mapPlanetToPlanType,
@@ -298,5 +307,6 @@ export function usePlan() {
 		reloadExistingPlan,
 		getPlanNamePlanet,
 		patchMaterialIO,
+		cloneSharedPlan,
 	};
 }

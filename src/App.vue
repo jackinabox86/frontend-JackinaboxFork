@@ -1,9 +1,12 @@
 <script setup lang="ts">
-	import { defineAsyncComponent, onMounted } from "vue";
+	import { defineAsyncComponent, onMounted, computed } from "vue";
+	import { useRoute } from "vue-router";
+	const routeData = useRoute();
 
 	// Components
+	import AppFooter from "@/layout/components/AppFooter.vue";
 	const HomepageHeader = defineAsyncComponent(
-		() => import("@/features/homepage/components/HomepageHeader.vue")
+		() => import("@/layout/components/HomepageHeader.vue")
 	);
 	const NavigationBar = defineAsyncComponent(
 		() => import("@/layout/components/NavigationBar.vue")
@@ -25,6 +28,15 @@
 	const userStore = useUserStore();
 	import { userActivity } from "@/features/user_activity/userActivityStore";
 
+	const isLoggedIn = computed(() => userStore.isLoggedIn);
+	const showUpdateNotification = computed(
+		() => isLoggedIn.value && updateAvailable.value
+	);
+	const mainContentClasses = computed(() => [
+		"flex-1 flex flex-col",
+		isLoggedIn.value ? "overflow-y-auto" : "",
+	]);
+
 	onMounted(() => {
 		startWatch();
 
@@ -36,45 +48,29 @@
 </script>
 
 <template>
-	<VersionUpdateNotification v-if="updateAvailable && userStore.isLoggedIn" />
+	<VersionUpdateNotification v-if="showUpdateNotification" />
 
-	<main class="flex h-full w-full bg-[rgb(3,7,7)] text-white/80">
-		<template v-if="userStore.isLoggedIn">
-			<NavigationBar />
-			<div class="flex flex-col flex-1 overflow-y-auto">
-				<div class="h-screen text-white/80">
-					<MobileToggle />
-					<Suspense>
-						<RouterView />
-					</Suspense>
-					<footer
-						class="sticky top-[100vh] pr-3 py-1 text-white/50 text-[10px] text-end">
-						<router-link
-							:to="'/imprint-tos'"
-							class="hover:cursor-pointer">
-							Imprint & Terms of Service
-						</router-link>
-					</footer>
-				</div>
+	<main class="flex h-full w-full text-white/80">
+		<NavigationBar v-if="isLoggedIn" />
+
+		<div :class="mainContentClasses">
+			<div class="h-full min-h-screen">
+				<HomepageHeader
+					v-if="!isLoggedIn"
+					:show-header="routeData.meta.showHeader" />
+				<MobileToggle v-if="isLoggedIn" />
+
+				<Suspense>
+					<RouterView v-if="isLoggedIn" />
+					<div v-else class="h-full w-full flex">
+						<div class="w-max mx-auto">
+							<RouterView />
+						</div>
+					</div>
+				</Suspense>
+
+				<AppFooter />
 			</div>
-		</template>
-		<template v-else>
-			<div class="flex flex-col flex-1">
-				<div class="h-screen text-white/80">
-					<HomepageHeader />
-					<Suspense>
-						<RouterView />
-					</Suspense>
-					<footer
-						class="sticky top-[100vh] pr-3 py-1 text-white/50 text-[10px] text-end">
-						<router-link
-							:to="'/imprint-tos'"
-							class="hover:cursor-pointer">
-							Imprint & Terms of Service
-						</router-link>
-					</footer>
-				</div>
-			</div>
-		</template>
+		</div>
 	</main>
 </template>

@@ -6,6 +6,7 @@ import axiosSetup from "@/util/axiosSetup";
 // Services
 import { apiService } from "@/lib/apiService";
 import {
+	callCloneSharedPlan,
 	callCreateSharing,
 	callDeleteSharing,
 	callGetSharedList,
@@ -50,12 +51,29 @@ describe("Empire Data API Calls", async () => {
 			view_count: 0,
 		};
 
-		mock
-			.onPut("/shared/baseplanner/da105ce1-25f2-479d-b1eb-944353f4784f")
-			.reply(200, fakeSharing);
+		mock.onPut(
+			"/shared/baseplanner/da105ce1-25f2-479d-b1eb-944353f4784f"
+		).reply(200, fakeSharing);
 
 		expect(
 			await callCreateSharing("da105ce1-25f2-479d-b1eb-944353f4784f")
+		).toStrictEqual(fakeSharing);
+		expect(spyApiServicePut).toHaveBeenCalled();
+	});
+
+	it("callCloneSharedPlan", async () => {
+		const spyApiServicePut = vi.spyOn(apiService, "put");
+
+		const fakeSharing = {
+			message: "foo",
+		};
+
+		mock.onPut(
+			"/shared/baseplanner/da105ce1-25f2-479d-b1eb-944353f4784f/clone"
+		).reply(200, fakeSharing);
+
+		expect(
+			await callCloneSharedPlan("da105ce1-25f2-479d-b1eb-944353f4784f")
 		).toStrictEqual(fakeSharing);
 		expect(spyApiServicePut).toHaveBeenCalled();
 	});
