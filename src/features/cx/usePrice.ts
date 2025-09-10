@@ -1,4 +1,4 @@
-import { Ref, watch } from "vue";
+import { Ref } from "vue";
 
 // Stores
 import { usePlanningStore } from "@/stores/planningStore";
@@ -68,8 +68,6 @@ export async function usePrice(
 		materialTicker: string,
 		type: "BUY" | "SELL"
 	): Promise<number> {
-		const cacheKey: string = `${materialTicker}#${type}#${cxUuid.value}#${planetNaturalId.value}`;
-
 		try {
 			// if any cx information is undefined, we return the PP30D_Universe PriceAverage
 			if (!cxUuid.value || cxUuid.value === undefined) {
