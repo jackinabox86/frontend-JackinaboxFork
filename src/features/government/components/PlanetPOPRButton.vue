@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { PropType, ref, Ref } from "vue";
+	import { ref, Ref, computed } from "vue";
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
@@ -13,24 +13,18 @@
 	import { IPopulationReport } from "@/features/api/gameData.types";
 
 	// UI
-	import { NButton, NModal } from "naive-ui";
+	import { PButton } from "@/ui";
+	import { NModal } from "naive-ui";
 
-	defineProps({
-		planetNaturalId: {
-			type: String,
-			required: true,
-		},
-		buttonSize: {
-			type: String as PropType<"tiny" | "small" | "medium" | "large">,
-			required: false,
-			default: "small",
-		},
-		buttonText: {
-			type: String,
-			required: false,
-			default: "POPR",
-		},
-	});
+	const {
+		planetNaturalId,
+		buttonSize = "md",
+		buttonText = "POPR",
+	} = defineProps<{
+		planetNaturalId: string;
+		buttonSize?: "sm" | "md";
+		buttonText?: string;
+	}>();
 
 	const showPOPRModal: Ref<boolean> = ref(false);
 	const buttonLoading: Ref<boolean> = ref(false);
@@ -58,6 +52,14 @@
 			buttonDisabled.value = true;
 		}
 	}
+
+	const compButtonText = computed(() =>
+		!buttonDisabled.value ? buttonText : "No POPR"
+	);
+
+	const buttonType = computed(() =>
+		!buttonDisabled.value ? "primary" : "error"
+	);
 </script>
 
 <template>
@@ -71,11 +73,12 @@
 			:planet-natural-id="planetNaturalId"
 			:popr-data="poprData" />
 	</n-modal>
-	<n-button
+	<PButton
 		:size="buttonSize"
 		:loading="buttonLoading"
 		:disabled="buttonDisabled"
+		:type="buttonType"
 		@click="loadData(planetNaturalId)">
-		{{ buttonText }}
-	</n-button>
+		{{ compButtonText }}
+	</PButton>
 </template>

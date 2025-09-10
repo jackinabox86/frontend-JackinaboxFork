@@ -113,7 +113,7 @@
 				<template #render-cell="{ rowData }">
 					<PlanetPOPRButton
 						:planet-natural-id="rowData.planetNaturalId"
-						button-size="tiny" />
+						button-size="sm" />
 				</template>
 			</XNDataTableColumn>
 			<XNDataTableColumn key="planetSurface" title="Surface">
