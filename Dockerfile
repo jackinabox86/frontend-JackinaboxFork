@@ -41,6 +41,9 @@ RUN pnpm run build
 FROM --platform=$BUILDPLATFORM devforth/spa-to-http:1.0.9 AS production
 COPY --from=build /app/dist/ .
 
+ARG BUILD_REVISION
+ARG BUILD_CREATED
+
 # Metadata
 LABEL org.opencontainers.image.title="PRUNplanner Frontend"
 LABEL org.opencontainers.image.description="Vue3/Vite SPA served by spa-to-http"
