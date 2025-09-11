@@ -7,8 +7,6 @@ class Config {
 	public readonly GAME_DATA_STALE_MINUTES_MATERIALS: number;
 	public readonly GAME_DATA_STALE_MINUTES_EXCHANGES: number;
 	public readonly GAME_DATA_STALE_MINUTES_PLANETS: number;
-	public readonly POSTHOG_TOKEN: string;
-	public readonly POSTHOG_NAME: string;
 
 	public readonly INDEXEDDB_DBNAME: string;
 
@@ -29,12 +27,8 @@ class Config {
 			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_EXCHANGES || 30;
 		this.GAME_DATA_STALE_MINUTES_PLANETS =
 			import.meta.env.VITE_GAME_DATA_STALE_MINUTES_PLANETS || 3 * 60;
-
 		this.INDEXEDDB_DBNAME =
 			import.meta.env.VITE_INDEXEDDB_DBNANAME || "prunplanner";
-		this.POSTHOG_TOKEN = import.meta.env.VITE_POSTHOG_TOKEN || "";
-		this.POSTHOG_NAME =
-			import.meta.env.VITE_POSTHOG_NAME || "prunplanner_frontend";
 	}
 }
 

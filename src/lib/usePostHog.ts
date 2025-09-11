@@ -1,13 +1,15 @@
 import posthog, { Properties } from "posthog-js";
 
-import config from "@/lib/config";
-
 // Util
 import { redact } from "@/util/data";
 
+// Key can be public, as its web sdk + has configured authorized urls
+const POSTHOG_PUBLIC_KEY = "phc_JVfz4wWZFbbQF37d4NQ70w3I3uZ3Jrkpfu01myYDWJJ";
+const POSTHOG_NAME = "prunplanner_frontend";
+
 export function usePostHog() {
-	const posthogToken: string = config.POSTHOG_TOKEN;
-	const posthogName: string = config.POSTHOG_NAME;
+	const posthogToken: string = POSTHOG_PUBLIC_KEY;
+	const posthogName: string = POSTHOG_NAME;
 
 	const SENSITIVE_KEYS: string[] = [
 		"password",

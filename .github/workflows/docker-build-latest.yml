@@ -36,6 +36,8 @@ jobs:
             ghcr.io/prunplanner/prunplanner-frontend:latest
             ghcr.io/prunplanner/prunplanner-frontend:${{ github.ref_name }}
           build-args: |
+            BUILD_CREATED=${{ github.event.release.published_at || github.run_started_at }}
+            BUILD_REVISION=${{ github.sha }}
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL || 'https://api.prunplanner.org' }}
             VITE_SHARE_BASE_URL=${{ secrets.VITE_SHARE_BASE_URL || 'https://prunplanner.org/shared' }}
             VITE_GAME_DATA_STALE_MINUTES_BUILDINGS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_BUILDINGS || 1440 }}
@@ -44,5 +46,13 @@ jobs:
             VITE_GAME_DATA_STALE_MINUTES_EXCHANGES=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_EXCHANGES || 30 }}
             VITE_GAME_DATA_STALE_MINUTES_PLANETS=${{ secrets.VITE_GAME_DATA_STALE_MINUTES_PLANETS || 180 }}
             VITE_INDEXEDDB_DBNAME=${{ secrets.VITE_INDEXEDDB_DBNAME || 'prunplanner' }}
-            VITE_POSTHOG_TOKEN=${{ secrets.VITE_POSTHOG_TOKEN || '' }}
-            VITE_POSTHOG_NAME=${{ secrets.VITE_POSTHOG_NAME || 'prunplanner_frontend' }}
+          labels: |
+            org.opencontainers.image.title="PRUNplanner Frontend"
+            org.opencontainers.image.description="Vue3/Vite SPA served by spa-to-http"
+            org.opencontainers.image.source="https://github.com/PRUNplanner/frontend"
+            org.opencontainers.image.licenses="MIT"
+            org.opencontainers.image.authors="Jan Placht <jplacht+prunplanner@gmail.com>"
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ github.event.release.published_at }}
+          annotations: |
+            org.opencontainers.image.description="Vue3/Vite SPA served by spa-to-http"
