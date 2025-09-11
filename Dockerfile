@@ -39,3 +39,7 @@ RUN pnpm run build
 # --- PRODUCTION STAGE ---
 FROM devforth/spa-to-http:1.0.9 AS production
 COPY --from=build /app/dist/ .
+
+# Metadata
+LABEL org.opencontainers.image.description="PRUNplanner frontend SPA"
+LABEL org.opencontainers.image.source="https://github.com/PRUNplanner/frontend"
