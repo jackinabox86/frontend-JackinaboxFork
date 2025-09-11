@@ -1,11 +1,12 @@
-# --- BUILD STAGE ---
-FROM node:lts-alpine AS build
+FROM --platform=$BUILDPLATFORM node:lts-alpine AS build
 WORKDIR /app
 
 # Enable pnpm
 RUN corepack enable
 
 # Pass build-time env variables
+ARG BUILD_REVISION
+ARG BUILD_CREATED
 ARG VITE_API_BASE_URL
 ARG VITE_SHARE_BASE_URL
 ARG VITE_GAME_DATA_STALE_MINUTES_BUILDINGS
@@ -37,9 +38,14 @@ COPY . .
 RUN pnpm run build
 
 # --- PRODUCTION STAGE ---
-FROM devforth/spa-to-http:1.0.9 AS production
+FROM --platform=$BUILDPLATFORM devforth/spa-to-http:1.0.9 AS production
 COPY --from=build /app/dist/ .
 
 # Metadata
-LABEL org.opencontainers.image.description="PRUNplanner frontend SPA"
+LABEL org.opencontainers.image.title="PRUNplanner Frontend"
+LABEL org.opencontainers.image.description="Vue3/Vite SPA served by spa-to-http"
 LABEL org.opencontainers.image.source="https://github.com/PRUNplanner/frontend"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.authors="Jan Placht <jplacht+prunplanner@gmail.com>"
+LABEL org.opencontainers.image.revision=$BUILD_REVISION
+LABEL org.opencontainers.image.created=$BUILD_CREATED
