@@ -7,7 +7,7 @@ class Config {
 	public readonly GAME_DATA_STALE_MINUTES_MATERIALS: number;
 	public readonly GAME_DATA_STALE_MINUTES_EXCHANGES: number;
 	public readonly GAME_DATA_STALE_MINUTES_PLANETS: number;
-	public readonly POSTHOG_KEY: string;
+	public readonly POSTHOG_PUBLIC_KEY: string;
 	public readonly POSTHOG_NAME: string;
 
 	public readonly INDEXEDDB_DBNAME: string;
@@ -32,7 +32,8 @@ class Config {
 
 		this.INDEXEDDB_DBNAME =
 			import.meta.env.VITE_INDEXEDDB_DBNANAME || "prunplanner";
-		this.POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY || "";
+		this.POSTHOG_PUBLIC_KEY =
+			import.meta.env.VITE_VITE_POSTHOG_PUBLIC_KEY || "";
 		this.POSTHOG_NAME =
 			import.meta.env.VITE_POSTHOG_NAME || "prunplanner_frontend";
 	}
