@@ -6,7 +6,7 @@ import config from "@/lib/config";
 import { redact } from "@/util/data";
 
 export function usePostHog() {
-	const posthogToken: string = config.POSTHOG_TOKEN;
+	const posthogToken: string = config.POSTHOG_KEY;
 	const posthogName: string = config.POSTHOG_NAME;
 
 	const SENSITIVE_KEYS: string[] = [
