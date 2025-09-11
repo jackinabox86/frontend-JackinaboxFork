@@ -26,6 +26,7 @@
 	// UI
 	import {
 		PButton,
+		PButtonGroup,
 		PForm,
 		PFormItem,
 		PInputNumber,
@@ -88,11 +89,19 @@
 		() => props.elements
 	);
 
+	const fitOptions: { weight: number; volume: number; label: string }[] = [
+		{ weight: 1000, volume: 1000, label: "1k/1k" },
+		{ weight: 2000, volume: 2000, label: "2k/2k" },
+		{ weight: 3000, volume: 1000, label: "3k/1k" },
+		{ weight: 1000, volume: 3000, label: "1k/3k" },
+		{ weight: 5000, volume: 5000, label: "5k/5k" },
+	];
+
 	const refHideInfinite: Ref<boolean> = ref(false);
 	const refMaterialOverrides: Ref<Record<string, number>> = ref({});
 	const refMaterialInactives: Ref<Set<string>> = ref(new Set([]));
 
-	const { materialTable, totalWeightVolume } = await useBurnXITAction(
+	const { materialTable, totalWeightVolume, fit } = await useBurnXITAction(
 		localElements,
 		burnResupplyDays,
 		refHideInfinite,
@@ -110,7 +119,7 @@
 		<n-drawer-content closable body-class="bg-black">
 			<template #header> {{ drawerTitle }} </template>
 
-			<div class="mb-3 grid grid-cols-1 xl:grid-cols-2 gap-3">
+			<div class="mb-3 grid grid-cols-1 xl:grid-cols-[60%_auto] gap-3">
 				<div>
 					<PForm>
 						<PFormItem label="Origin">
@@ -123,7 +132,8 @@
 							<PInputNumber
 								v-model:value="burnResupplyDays"
 								:min="0"
-								show-buttons />
+								show-buttons
+								class="w-full" />
 						</PFormItem>
 						<PFormItem label="Buy From CX">
 							<p
@@ -138,12 +148,57 @@
 									burnOrigin === 'Configure on Execution'
 								" />
 						</PFormItem>
+						<PFormItem label="Fit Ship">
+							<PButtonGroup>
+								<PButton
+									v-for="fitOption in fitOptions"
+									:key="fitOption.label"
+									@click="
+										fit(fitOption.weight, fitOption.volume)
+									">
+									{{ fitOption.label }}
+								</PButton>
+							</PButtonGroup>
+						</PFormItem>
 						<PFormItem label="Hide Infinite">
 							<PCheckbox v-model:checked="refHideInfinite" />
 						</PFormItem>
 					</PForm>
 				</div>
-				<div class="flex flex-row gap-x-3 pb-3">
+				<div class="flex flex-col gap-3 pb-3 items-end">
+					<div>
+						<PButton
+							@click="
+								() => {
+									capture('xit_burn_copy');
+
+									copyToClipboard(
+										transferJSON(
+											materialTable
+												.filter(
+													(mt) =>
+														mt.total !== Infinity &&
+														mt.total > 0 &&
+														mt.active
+												)
+												.map((m) => {
+													return {
+														ticker: m.ticker,
+														value: m.total,
+													};
+												}),
+											{
+												name: 'Burn Supply',
+												origin: burnOrigin,
+												buy: defaultBuyItemsFromCX,
+											}
+										).value
+									);
+								}
+							">
+							Copy XIT JSON
+						</PButton>
+					</div>
 					<PInput
 						v-model:value="
 							transferJSON(
@@ -169,37 +224,6 @@
 						"
 						type="textarea"
 						class="w-full" />
-					<PButton
-						@click="
-							() => {
-								capture('xit_burn_copy');
-
-								copyToClipboard(
-									transferJSON(
-										materialTable
-											.filter(
-												(mt) =>
-													mt.total !== Infinity &&
-													mt.total > 0 &&
-													mt.active
-											)
-											.map((m) => {
-												return {
-													ticker: m.ticker,
-													value: m.total,
-												};
-											}),
-										{
-											name: 'Burn Supply',
-											origin: burnOrigin,
-											buy: defaultBuyItemsFromCX,
-										}
-									).value
-								);
-							}
-						">
-						Copy
-					</PButton>
 				</div>
 			</div>
 
@@ -215,6 +239,32 @@
 						<th>Override</th>
 					</tr>
 				</thead>
+				<tbody>
+					<tr class="child:!border-b">
+						<td colspan="7">
+							<div class="flex flex-row justify-between">
+								<div>
+									Total Weight:
+									{{
+										formatNumber(
+											totalWeightVolume.totalWeight
+										)
+									}}
+									t
+								</div>
+								<div>
+									Total Volume:
+									{{
+										formatNumber(
+											totalWeightVolume.totalVolume
+										)
+									}}
+									m³
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
 				<tbody>
 					<tr v-for="e in materialTable" :key="e.ticker">
 						<td>
@@ -258,32 +308,6 @@
 						</td>
 					</tr>
 				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="7">
-							<div class="flex flex-row justify-between">
-								<div>
-									Total Weight:
-									{{
-										formatNumber(
-											totalWeightVolume.totalWeight
-										)
-									}}
-									t
-								</div>
-								<div>
-									Total Volume:
-									{{
-										formatNumber(
-											totalWeightVolume.totalVolume
-										)
-									}}
-									m³
-								</div>
-							</div>
-						</td>
-					</tr>
-				</tfoot>
 			</n-table>
 		</n-drawer-content>
 	</n-drawer>

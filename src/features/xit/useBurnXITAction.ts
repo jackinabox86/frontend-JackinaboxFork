@@ -104,8 +104,32 @@ export async function useBurnXITAction(
 		};
 	});
 
+	function fit(targetWeight: number, targetVolume: number): void {
+		function fits(days: number): boolean {
+			const old = resupplyDays.value;
+			resupplyDays.value = days;
+
+			const ok =
+				totalWeightVolume.value.totalWeight <= targetWeight &&
+				totalWeightVolume.value.totalVolume <= targetVolume;
+
+			resupplyDays.value = old;
+			return ok;
+		}
+
+		// decrease until fit or 0
+		while (resupplyDays.value > 0 && !fits(resupplyDays.value)) {
+			resupplyDays.value--;
+		}
+
+		// increase until next would exceed, max to 100 capped
+		while (resupplyDays.value < 100 && fits(resupplyDays.value + 1)) {
+			resupplyDays.value++;
+		}
+	}
 	return {
 		materialTable,
 		totalWeightVolume,
+		fit,
 	};
 }

@@ -1,3 +1,8 @@
+# 2025-09-11
+
+- FIO Burn XIT Action now allows to easily match set ship sizes to maximes days based on cargo availability [#235](https://github.com/PRUNplanner/frontend/issues/235)
+
+
 # 2025-09-10
 
 - Authenticated users are able to clone shared plans

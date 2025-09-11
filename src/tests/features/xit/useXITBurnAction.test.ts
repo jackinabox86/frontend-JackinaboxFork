@@ -89,4 +89,26 @@ describe("useBurnXITAction", async () => {
 		expect(totalWeightVolume.value.totalWeight).toBe(16.230000257492065);
 		expect(totalWeightVolume.value.totalVolume).toBe(11);
 	});
+
+	it("fit", async () => {
+		const days = ref(5);
+
+		const { fit } = await useBurnXITAction(
+			ref(elements),
+			days,
+			ref(hideInfinite),
+			ref(materialOverrides),
+			ref(materialInactives)
+		);
+
+		fit(50, 50);
+		expect(days.value).toBe(7);
+
+		fit(500, 500);
+		expect(days.value).toBe(39);
+
+		days.value = 50;
+		fit(50, 50);
+		expect(days.value).toBe(7);
+	});
 });
