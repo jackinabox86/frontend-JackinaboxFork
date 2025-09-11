@@ -54,3 +54,5 @@ jobs:
             org.opencontainers.image.authors="Jan Placht <jplacht+prunplanner@gmail.com>"
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ github.event.release.published_at }}
+          annotations: |
+            org.opencontainers.image.description="Vue3/Vite SPA served by spa-to-http"
