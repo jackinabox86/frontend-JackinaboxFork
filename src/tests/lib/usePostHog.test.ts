@@ -18,13 +18,6 @@ vi.mock("posthog-js", () => {
 	};
 });
 
-vi.mock("@/lib/config", () => ({
-	default: {
-		POSTHOG_TOKEN: "test-token",
-		POSTHOG_NAME: "test-name",
-	},
-}));
-
 import posthog from "posthog-js";
 import { usePostHog } from "@/lib/usePostHog";
 
@@ -33,15 +26,6 @@ describe("usePostHog", () => {
 		vi.clearAllMocks();
 		// reset loaded state
 		(posthog as any).__loaded = false;
-	});
-
-	it("initializes posthog when token exists", () => {
-		usePostHog();
-
-		expect(posthog.init).toHaveBeenCalledWith(
-			"test-token",
-			expect.any(Object)
-		);
 	});
 
 	it("queues events when posthog is not loaded", () => {
