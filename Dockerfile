@@ -38,8 +38,7 @@ COPY . .
 RUN pnpm run build
 
 # --- PRODUCTION STAGE ---
-ARG TARGETARCH
-FROM devforth/spa-to-http:1.0.9-${TARGETARCH} AS production
+FROM devforth/spa-to-http:1.0.9 AS production
 COPY --from=build /app/dist/ .
 
 ARG BUILD_REVISION
