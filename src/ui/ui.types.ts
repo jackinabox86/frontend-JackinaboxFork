@@ -21,6 +21,7 @@ export interface PCheckboxConfig {
 	container: string;
 	label: string;
 	input: string;
+	colors: Record<"base" | "disabled", string>;
 	checkIcon: string;
 	checkIconSVG: string;
 }

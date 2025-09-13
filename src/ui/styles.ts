@@ -62,11 +62,15 @@ export const buttonConfig: PButtonConfig = {
 
 export const checkboxConfig: PCheckboxConfig = {
 	container: "inline-flex items-center",
-	label: "flex items-center cursor-pointer relative",
-	input: "peer h-4 w-4 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-table-border checked:bg-blue-800 checked:border-blue-800",
+	label: "flex items-center relative ",
+	input: "peer h-4 w-4 transition-all cursor-pointer disabled:cursor-auto appearance-none rounded shadow hover:shadow-md border border-table-border",
+	colors: {
+		base: "checked:bg-blue-800 checked:border-blue-800",
+		disabled: "disabled:bg-white/10 disabled:border-white/10",
+	},
 	checkIcon:
-		"absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-	checkIconSVG: "h-3.5 w-3.5",
+		"absolute opacity-0 peer-checked:opacity-100 text-white peer-disabled:text-white/20 cursor-pointer peer-disabled:cursor-auto  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+	checkIconSVG: "h-3.5 w-3.5 fill-current stroke-current stroke-1",
 };
 
 export const buttonGroupConfig: PButtonGroupConfig = {

@@ -1,31 +1,34 @@
 <script setup lang="ts">
+	import { computed } from "vue";
+
 	import { checkboxConfig } from "@/ui/styles";
 	const checked = defineModel<boolean>("checked");
 
 	const { disabled = false } = defineProps<{ disabled?: boolean }>();
+
+	const inputBase = computed(() =>
+		[
+			checkboxConfig.input,
+			checkboxConfig.colors.base,
+			checkboxConfig.colors.disabled,
+		].join(" ")
+	);
 </script>
 
 <template>
 	<div class="pcheckbox" :class="checkboxConfig.container">
-		<label
-			:class="
-				!disabled
-					? checkboxConfig.label
-					: `${checkboxConfig.label} !cursor-auto`
-			">
+		<label :class="checkboxConfig.label" >
 			<input
 				v-model="checked"
 				:disabled="disabled"
 				type="checkbox"
-				:class="checkboxConfig.input" />
+				:class="inputBase" />
 			<span :class="checkboxConfig.checkIcon">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					:class="checkboxConfig.checkIconSVG"
 					viewBox="0 0 20 20"
-					fill="currentColor"
-					stroke="currentColor"
-					stroke-width="1">
+					>
 					<path
 						fill-rule="evenodd"
 						d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
