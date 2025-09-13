@@ -11,7 +11,7 @@ import {
 } from "@/ui/ui.types";
 
 export const buttonConfig: PButtonConfig = {
-	base: "flex flex-row items-center justify-center leading-none rounded-sm child:cursor-pointer cursor-pointer text-nowrap",
+	base: "flex flex-row items-center justify-center leading-none rounded-sm cursor-pointer disabled:cursor-auto text-nowrap",
 	defaultSize: "md",
 	defaultColor: "primary",
 	sizes: {
@@ -31,31 +31,31 @@ export const buttonConfig: PButtonConfig = {
 			base: "bg-blue-800 text-white active:bg-blue-600",
 			hover: "hover:bg-blue-700",
 			disabled:
-				"disabled:bg-blue-800/50 disabled:text-white/80 !cursor-auto",
+				"disabled:bg-blue-800/50 disabled:text-white/80",
 		},
 		success: {
 			base: "bg-lime-500 text-black active:bg-lime-300",
 			hover: "hover:bg-lime-400",
 			disabled:
-				"disabled:bg-lime-500/50 disabled:text-white/80 !cursor-auto",
+				"disabled:bg-lime-500/50 disabled:text-white/80",
 		},
 		secondary: {
 			base: "bg-gray-800 text-white active:bg-gray-600",
 			hover: "hover:bg-gray-700",
 			disabled:
-				"disabled:bg-gray-800/50 disabled:text-white/80 !cursor-auto",
+				"disabled:bg-gray-800/50 disabled:text-white/80",
 		},
 		error: {
 			base: "bg-red-600 text-white active:bg-red-500",
 			hover: "hover:bg-red-700",
 			disabled:
-				"disabled:bg-red-600/50 disabled:text-white/80 !cursor-auto",
+				"disabled:bg-red-600/50 disabled:text-white/80",
 		},
 		warning: {
 			base: "bg-gray-100 text-gray-900 active:bg-gray-300",
 			hover: "hover:bg-gray-200",
 			disabled:
-				"disabled:bg-gray-100/50 disabled:text-gray-900 !cursor-auto",
+				"disabled:bg-gray-100/50 disabled:text-gray-900",
 		},
 	},
 };
