@@ -109,14 +109,17 @@
 						:options="XITSTATIONWAREHOUSES" />
 				</PFormItem>
 				<PFormItem label="Buy From CX">
-					<PCheckbox
-						v-model:checked="defaultBuyItemsFromCX"
-						:disabled="burnOrigin === 'Configure on Execution'" />
+					<div class="w-full flex flex-row gap-1 my-3 h-[32px] items-center">
+						<PCheckbox
+							v-model:checked="defaultBuyItemsFromCX"
+							:disabled="burnOrigin === 'Configure on Execution'" />
 
-					<div
-						v-if="burnOrigin === 'Configure on Execution'"
-						class="p-3">
-						Requires origin warehouse to purchase
+						<div
+							v-if="burnOrigin === 'Configure on Execution'"
+							class="pl-3 text-xs text-white/50"
+							>
+							Requires origin warehouse to purchase
+						</div>
 					</div>
 				</PFormItem>
 				<PFormItem label="JSON">

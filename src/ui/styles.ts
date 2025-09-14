@@ -119,7 +119,7 @@ export const inputNumberConfig: PInputNumberConfig = {
 };
 
 export const inputConfig: PInputConfig = {
-	container: "rounded-sm leading-none bg-white/5 text-white/80",
+	container: "rounded-sm leading-none bg-white/5 text-white/80 overflow-hidden",
 	sizes: {
 		sm: {
 			container: "child:py-1 child:px-2",
