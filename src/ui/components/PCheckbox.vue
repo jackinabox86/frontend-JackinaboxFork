@@ -17,7 +17,7 @@
 
 <template>
 	<div class="pcheckbox" :class="checkboxConfig.container">
-		<label :class="checkboxConfig.label" >
+		<label :class="checkboxConfig.label">
 			<input
 				v-model="checked"
 				:disabled="disabled"
