@@ -2,6 +2,7 @@ import { IQueryDefinition } from "@/lib/query_cache/queryCache.types";
 
 // config
 import config from "@/lib/config";
+import { usePostHog } from "@/lib/usePostHog";
 
 // stores
 import { useQueryStore } from "@/lib/query_cache/queryStore";
@@ -895,6 +896,9 @@ export function useQueryRepository() {
 		PostUserRegistration: {
 			key: () => ["user", "account", "registration"],
 			fetchFn: async (params: IUserRegistrationPayload) => {
+				usePostHog().capture("user_registration", {
+					username: params.username,
+				});
 				return await callRegisterUser(params);
 			},
 			autoRefetch: false,

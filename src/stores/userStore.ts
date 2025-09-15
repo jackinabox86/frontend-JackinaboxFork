@@ -119,6 +119,8 @@ export const useUserStore = defineStore(
 		 * @author jplacht
 		 */
 		function logout(): void {
+			usePostHog().capture("user_logout");
+
 			// reset user store
 			$reset();
 
@@ -153,6 +155,8 @@ export const useUserStore = defineStore(
 
 				setToken(tokenData.access_token, tokenData.refresh_token);
 
+				usePostHog().capture("user_login");
+
 				// sets the current version to the available version
 				const { markUpdated } = useVersionCheck();
 				await markUpdated();
@@ -178,6 +182,9 @@ export const useUserStore = defineStore(
 						await callRefreshToken(refreshToken.value);
 
 					setToken(tokenData.access_token, tokenData.refresh_token);
+
+					usePostHog().capture("user_token_refresh");
+
 					return true;
 				} catch (error) {
 					console.error(error);
