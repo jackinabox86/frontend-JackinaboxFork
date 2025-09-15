@@ -90,11 +90,12 @@
 	);
 
 	const fitOptions: { weight: number; volume: number; label: string }[] = [
-		{ weight: 1000, volume: 1000, label: "1k/1k" },
-		{ weight: 2000, volume: 2000, label: "2k/2k" },
+		{ weight: 500, volume: 500, label: "500" },
+		{ weight: 1000, volume: 1000, label: "1k" },
+		{ weight: 2000, volume: 2000, label: "2k" },
 		{ weight: 3000, volume: 1000, label: "3k/1k" },
 		{ weight: 1000, volume: 3000, label: "1k/3k" },
-		{ weight: 5000, volume: 5000, label: "5k/5k" },
+		{ weight: 5000, volume: 5000, label: "5k" },
 	];
 
 	const refHideInfinite: Ref<boolean> = ref(false);
