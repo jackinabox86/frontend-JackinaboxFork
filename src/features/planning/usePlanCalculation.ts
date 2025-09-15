@@ -388,20 +388,20 @@ export async function usePlanCalculation(
 				);
 
 				if (!recipeInfo) {
-					throw new Error(
+					console.warn(
 						`Unable to find recipe info for ${b.name} with recipe id ${r.recipeid}`
 					);
+				} else {
+					activeRecipes.push({
+						recipeId: r.recipeid,
+						amount: r.amount,
+						dailyShare: 1,
+						// time adjusted to efficiency and amount
+						time: (recipeInfo.TimeMs * r.amount) / totalEfficiency,
+						recipe: { ...recipeInfo, dailyRevenue: 0, roi: 0 },
+						cogm: undefined,
+					});
 				}
-
-				activeRecipes.push({
-					recipeId: r.recipeid,
-					amount: r.amount,
-					dailyShare: 1,
-					// time adjusted to efficiency and amount
-					time: (recipeInfo.TimeMs * r.amount) / totalEfficiency,
-					recipe: { ...recipeInfo, dailyRevenue: 0, roi: 0 },
-					cogm: undefined,
-				});
 			});
 
 			// calculate total batchtime and
