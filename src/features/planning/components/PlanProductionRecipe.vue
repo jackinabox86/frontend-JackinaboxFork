@@ -151,7 +151,7 @@
 			</div>
 		</div>
 		<div
-			class="relative z-10 lg:w-[650px]"
+			class="relative z-10"
 			:class="refShowRecipeOptions ? 'visible' : 'hidden'">
 			<n-table
 				class="absolute w-full border border-pp-border !bg-black"
@@ -169,7 +169,7 @@
 					<tr
 						v-for="(recipe, index) in localRecipeOptions"
 						:key="`${recipe.BuildingTicker}#${recipe.RecipeId}`"
-						class="child:whitespace-nowrap hover:cursor-pointer hover:child:first:!border-l-3 hover:child:first:!border-l-blue-500"
+						class="child:whitespace-nowrap hover:cursor-pointer"
 						@click="
 							emit(
 								'update:building:recipe',
@@ -183,7 +183,7 @@
 									? '!border-l-3 !border-l-green-500'
 									: ''
 							">
-							<div class="flex flex-wrap gap-1">
+							<div class="flex flex-row gap-1">
 								<MaterialTile
 									v-for="material in recipe.Inputs"
 									:key="`${index}#INPUT#${material.Ticker}`"
@@ -195,7 +195,7 @@
 							{{ humanizeTimeMs(recipe.TimeMs) }}
 						</td>
 						<td>
-							<div class="flex flex-wrap gap-1">
+							<div class="flex flex-row gap-1">
 								<MaterialTile
 									v-for="material in recipe.Outputs"
 									:key="`${index}#OUTPUT#${material.Ticker}`"

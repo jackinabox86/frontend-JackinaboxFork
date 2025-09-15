@@ -183,7 +183,7 @@
 						class="flex justify-center items-center"
 						:class="{ 'px-2': !!amount }">
 						<div v-if="amount" class="pr-1">
-							{{ formatNumber(amount) }}x
+							{{ formatNumber(amount, 2, true) }}x
 						</div>
 						<div class="font-bold text-nowrap">
 							{{ ticker }}
@@ -200,7 +200,7 @@
 					class="flex flex-row w-full justify-center items-center"
 					:class="{ 'px-2': !!amount }">
 					<div v-if="amount" class="pr-1">
-						{{ formatNumber(amount) }}x
+						{{ formatNumber(amount, 2, true) }}x
 					</div>
 					<div class="font-bold text-nowrap">{{ ticker }}</div>
 				</div>
