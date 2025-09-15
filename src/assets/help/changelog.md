@@ -1,3 +1,12 @@
+# 2025-09-15 - v. 0.20.1
+
+- UI Tweaks on Buttons, Checkbox and XIT Transfer Action
+- Skip unknown recipes gracefully
+- Skip amount precision on Material Tiles
+- Add 500/500 starter ship to XIT Burn Cargo Matching
+- Reduce PostHog API Call tracking
+- Sort Plan Recipe options alphabetically by output tickers
+
 # 2025-09-12
 
 - Upgrade versioning to 0.20 to match current PRUNplanner versioning
