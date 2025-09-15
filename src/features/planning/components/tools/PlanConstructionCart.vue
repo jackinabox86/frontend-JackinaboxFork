@@ -11,13 +11,14 @@
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { usePrice } from "@/features/cx/usePrice";
+	import { useFIOStorage } from "@/features/fio/useFIOStorage";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
 
 	// Util
-	import { formatAmount, formatNumber } from "@/util/numbers";
+	import { clamp, formatAmount, formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
 	import {
@@ -28,7 +29,7 @@
 	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
-	import { PButton, PInputNumber } from "@/ui";
+	import { PButton, PInputNumber, PSelect } from "@/ui";
 	import { NTable } from "naive-ui";
 	import { CloseSharp } from "@vicons/material";
 
@@ -132,10 +133,12 @@
 
 	const xitTransferElements: ComputedRef<IXITTransferMaterial[]> = computed(
 		() =>
-			Object.entries(totalMaterials.value).map(([ticker, value]) => ({
-				ticker,
-				value,
-			}))
+			Object.entries(totalMaterials.value)
+				.map(([ticker, value]) => ({
+					ticker,
+					value,
+				}))
+				.sort((a, b) => (a.ticker > b.ticker ? 1 : -1))
 	);
 
 	const totalInformation = ref({ weight: 0, volume: 0, price: 0 });
@@ -156,6 +159,62 @@
 
 		totalInformation.value = { weight, volume, price };
 	}
+
+	const totalMaterialsSorted: ComputedRef<
+		{
+			ticker: string;
+			amount: number;
+			stock: number;
+			override: number | null;
+			total: number;
+		}[]
+	> = computed(() =>
+		Object.entries(totalMaterials.value).map(([ticker, amount]) => {
+			const stock: number = findStorageValueFromOptions(
+				refSelectedStorage.value,
+				ticker
+			);
+
+			const override: number | null = refStorageOverride.value[ticker];
+
+			const total: number = clamp(
+				override ? amount - override : amount - stock,
+				0,
+				Infinity
+			);
+
+			return {
+				ticker,
+				amount,
+				stock,
+				override,
+				total,
+			};
+		})
+	);
+
+	const xitTransferElementsOverview: ComputedRef<IXITTransferMaterial[]> =
+		computed(() =>
+			totalMaterialsSorted.value.map((e) => ({
+				ticker: e.ticker,
+				value: e.total,
+			}))
+		);
+
+	const { hasStorage, storageOptions, findStorageValueFromOptions } =
+		useFIOStorage();
+
+	const refSelectedStorage: Ref<string | undefined> = ref(
+		hasStorage.value
+			? storageOptions.value.filter(
+					(e) => e.value === `PLANET#${props.planetNaturalId}`
+			  )
+				? `PLANET#${props.planetNaturalId}`
+				: undefined
+			: undefined
+	);
+
+	const refStorageOverride: Ref<Record<string, number | null>> = ref({});
 
 	watchEffect(() => {
 		generateMatrix();
@@ -264,5 +323,68 @@
 				</tr>
 			</tbody>
 		</n-table>
+
+		<div>
+			<div class="py-3 flex flex-row justify-between">
+				<h2 class="text-white/80 font-bold text-lg my-auto">
+					Material Overview
+				</h2>
+				<div class="flex flex-row flex-wrap gap-3">
+					<template v-if="hasStorage">
+						<div class="my-auto font-bold">Storage</div>
+						<PSelect
+							v-model:value="refSelectedStorage"
+							searchable
+							:options="storageOptions"
+							class="!w-[250px]" />
+						<XITTransferActionButton
+							:elements="xitTransferElementsOverview"
+							transfer-name="Construct"
+							:drawer-width="400" />
+					</template>
+				</div>
+			</div>
+
+			<n-table striped>
+				<thead>
+					<tr>
+						<th>Material</th>
+						<th>Amount</th>
+						<th>Stock</th>
+						<th>Stock Override</th>
+						<th>Need</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr
+						v-for="material in totalMaterialsSorted"
+						:key="material.ticker">
+						<td>
+							<MaterialTile
+								:key="`CONSTRUCTION#MATERIAL#${material.ticker}`"
+								:ticker="material.ticker" />
+						</td>
+						<td>
+							{{ formatAmount(material.amount) }}
+						</td>
+						<td>
+							{{ formatAmount(material.stock) }}
+						</td>
+						<td>
+							<PInputNumber
+								v-model:value="
+									refStorageOverride[material.ticker]
+								"
+								placeholder=""
+								show-buttons
+								class="max-w-[200px]" />
+						</td>
+						<td>
+							{{ formatAmount(material.total) }}
+						</td>
+					</tr>
+				</tbody>
+			</n-table>
+		</div>
 	</div>
 </template>
