@@ -11,7 +11,7 @@ import {
 } from "@/ui/ui.types";
 
 export const buttonConfig: PButtonConfig = {
-	base: "flex flex-row items-center justify-center leading-none rounded-sm child:cursor-pointer cursor-pointer text-nowrap",
+	base: "flex flex-row items-center justify-center leading-none rounded-sm cursor-pointer disabled:cursor-auto text-nowrap",
 	defaultSize: "md",
 	defaultColor: "primary",
 	sizes: {
@@ -31,42 +31,46 @@ export const buttonConfig: PButtonConfig = {
 			base: "bg-blue-800 text-white active:bg-blue-600",
 			hover: "hover:bg-blue-700",
 			disabled:
-				"disabled:bg-blue-800/50 disabled:text-white/80 !cursor-auto",
+				"disabled:bg-blue-800/50 disabled:text-white/80",
 		},
 		success: {
 			base: "bg-lime-500 text-black active:bg-lime-300",
 			hover: "hover:bg-lime-400",
 			disabled:
-				"disabled:bg-lime-500/50 disabled:text-white/80 !cursor-auto",
+				"disabled:bg-lime-500/50 disabled:text-white/80",
 		},
 		secondary: {
 			base: "bg-gray-800 text-white active:bg-gray-600",
 			hover: "hover:bg-gray-700",
 			disabled:
-				"disabled:bg-gray-800/50 disabled:text-white/80 !cursor-auto",
+				"disabled:bg-gray-800/50 disabled:text-white/80",
 		},
 		error: {
 			base: "bg-red-600 text-white active:bg-red-500",
 			hover: "hover:bg-red-700",
 			disabled:
-				"disabled:bg-red-600/50 disabled:text-white/80 !cursor-auto",
+				"disabled:bg-red-600/50 disabled:text-white/80",
 		},
 		warning: {
 			base: "bg-gray-100 text-gray-900 active:bg-gray-300",
 			hover: "hover:bg-gray-200",
 			disabled:
-				"disabled:bg-gray-100/50 disabled:text-gray-900 !cursor-auto",
+				"disabled:bg-gray-100/50 disabled:text-gray-900",
 		},
 	},
 };
 
 export const checkboxConfig: PCheckboxConfig = {
 	container: "inline-flex items-center",
-	label: "flex items-center cursor-pointer relative",
-	input: "peer h-4 w-4 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-table-border checked:bg-blue-800 checked:border-blue-800",
+	label: "flex items-center relative ",
+	input: "peer h-4 w-4 transition-all cursor-pointer disabled:cursor-auto appearance-none rounded shadow hover:shadow-md border border-table-border",
+	colors: {
+		base: "checked:bg-blue-800 checked:border-blue-800",
+		disabled: "disabled:bg-white/10 disabled:border-white/10",
+	},
 	checkIcon:
-		"absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-	checkIconSVG: "h-3.5 w-3.5",
+		"absolute opacity-0 peer-checked:opacity-100 text-white peer-disabled:text-white/20 cursor-pointer peer-disabled:cursor-auto  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+	checkIconSVG: "h-3.5 w-3.5 fill-current stroke-current stroke-1",
 };
 
 export const buttonGroupConfig: PButtonGroupConfig = {
@@ -115,7 +119,7 @@ export const inputNumberConfig: PInputNumberConfig = {
 };
 
 export const inputConfig: PInputConfig = {
-	container: "rounded-sm leading-none bg-white/5 text-white/80",
+	container: "rounded-sm leading-none bg-white/5 text-white/80 overflow-hidden",
 	sizes: {
 		sm: {
 			container: "child:py-1 child:px-2",
