@@ -67,7 +67,18 @@
 
 	// Local State
 	const localRecipeOptions: ComputedRef<IRecipeBuildingOption[]> = computed(
-		() => props.recipeOptions
+		() => {
+			// sort by output ticker ascending, map-join multiple tickers
+			return [...props.recipeOptions].sort((a, b) => {
+				const tickerA = a.Outputs.map((o) => o.Ticker)
+					.sort()
+					.join("#");
+				const tickerB = b.Outputs.map((o) => o.Ticker)
+					.sort()
+					.join("#");
+				return tickerA.localeCompare(tickerB);
+			});
+		}
 	);
 	const localRecipeIndex: ComputedRef<number> = computed(() =>
 		props.recipeIndex.valueOf()
