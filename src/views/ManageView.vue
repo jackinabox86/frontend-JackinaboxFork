@@ -7,6 +7,10 @@
 		title: "Management | PRUNplanner",
 	});
 
+	// Composables
+	import { usePostHog } from "@/lib/usePostHog";
+	const { setUserProp } = usePostHog();
+
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
@@ -33,6 +37,14 @@
 	const empireList: Ref<IPlanEmpireElement[]> = ref([]);
 	const planList: Ref<IPlan[]> = ref([]);
 	const cxList: Ref<ICX[]> = ref([]);
+
+	async function planOnComplete() {
+		setUserProp({
+			user_plans: planList.value.length,
+			user_empires: empireList.value.length,
+			user_exchanges: cxList.value.length,
+		});
+	}
 </script>
 
 <template>
@@ -45,7 +57,8 @@
 		@data:empire:list="
 			(value: IPlanEmpireElement[]) => (empireList = value)
 		"
-		@data:plan:list="(value: IPlan[]) => (planList = value)">
+		@data:plan:list="(value: IPlan[]) => (planList = value)"
+		@complete="planOnComplete">
 		<div
 			class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
 			<h1 class="text-2xl font-bold my-auto">Management</h1>
