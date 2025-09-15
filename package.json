@@ -27,7 +27,7 @@
 		"@vue-flow/core": "^1.46.3",
 		"@vue-flow/minimap": "^1.5.4",
 		"@vue/test-utils": "2.4.6",
-		"axios": "^1.11.0",
+		"axios": "^1.12.2",
 		"dayjs": "^1.11.18",
 		"fast-equals": "^5.2.2",
 		"globals": "^16.4.0",
