@@ -13,6 +13,24 @@ import { PLANET_COGCPROGRAM_TYPE } from "@/features/api/gameData.types";
 import { IPlan, PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
 import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
+const cogcValues: string[] = [
+	"---",
+	"AGRICULTURE",
+	"CHEMISTRY",
+	"CONSTRUCTION",
+	"ELECTRONICS",
+	"FOOD_INDUSTRIES",
+	"FUEL_REFINING",
+	"MANUFACTURING",
+	"METALLURGY",
+	"RESOURCE_EXTRACTION",
+	"PIONEERS",
+	"SETTLERS",
+	"TECHNICIANS",
+	"ENGINEERS",
+	"SCIENTISTS",
+];
+
 export function usePlan() {
 	const planningStore = usePlanningStore();
 
@@ -46,7 +64,11 @@ export function usePlan() {
 	): PLAN_COGCPROGRAM_TYPE {
 		if (!input) return "---";
 		const parts = input.split("_");
-		return parts.slice(1).join("_").toUpperCase() as PLAN_COGCPROGRAM_TYPE;
+		const identifiedType = parts.slice(1).join("_").toUpperCase();
+
+		// value could be invalid or on strike, check to ensure we got a proper cogc
+		if (!cogcValues.includes(identifiedType)) return "---";
+		else return identifiedType as PLAN_COGCPROGRAM_TYPE;
 	}
 
 	/**
