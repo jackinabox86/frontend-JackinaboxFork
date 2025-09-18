@@ -122,15 +122,15 @@
 				show-buttons
 				:min="0"
 				@update:value="
-				(value: number | null) => {
-					if (value !== null) {
-						emit(
-							'update:building:recipe:amount',
-							recipeIndex,
-							value
-						);
+					(value) => {
+						if (value !== null && value !== undefined) {
+							emit(
+								'update:building:recipe:amount',
+								recipeIndex,
+								value
+							);
+						}
 					}
-				}
 				" />
 		</div>
 		<div

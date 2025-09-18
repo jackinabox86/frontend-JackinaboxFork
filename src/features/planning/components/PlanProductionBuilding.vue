@@ -82,8 +82,8 @@
 					:min="0"
 					class="max-w-[100px]"
 					@update:value="
-						(value: number | null) => {
-							if (value !== null) {
+						(value) => {
+							if (value !== null && value !== undefined) {
 								emit(
 									'update:building:amount',
 									buildingIndex,
