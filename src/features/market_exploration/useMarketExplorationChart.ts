@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 
 // Util
 import { formatDate } from "@/util/date";
+import { clamp } from "@/util/numbers";
 
 // Composables
 import { useQuery } from "@/lib/query_cache/useQuery";
@@ -162,51 +163,97 @@ export function useMarketExplorationChart(
 	 * @param {IExploration[]} data Exploration API Data
 	 * @returns {IExploration[]} Cleaned Up exploration data
 	 */
-	function sanitizeData(data: IExploration[]): IExploration[] {
-		let prevValue: number = Infinity;
+	function sanitizeData(
+		data: IExploration[],
+		multiplier: number = 3
+	): IExploration[] {
+		if (data.length === 0) return [];
 
-		let prev_first: number = Infinity;
-		let prev_max: number = Infinity;
-		let prev_min: number = Infinity;
-		let prev_last: number = Infinity;
+		// clamps to previous ranged value
+		const clampToPrevRange = (cur: number, prev: number): number => {
+			if (!isFinite(prev)) {
+				return cur;
+			}
+			const a = prev / multiplier;
+			const b = prev * multiplier;
+			const min = Math.min(a, b);
+			const max = Math.max(a, b);
+			return Math.round(clamp(cur, min, max));
+		};
 
-		if (data.length > 0) {
-			prev_first = data[0].price_first;
-			prev_max = data[0].price_max;
-			prev_min = data[0].price_min;
-			prev_last = data[0].price_last;
-		}
+		// two datapoints being identical
+		const sameRelevantFields = (
+			a: IExploration,
+			b: IExploration
+		): boolean =>
+			a.price_first === b.price_first &&
+			a.price_last === b.price_last &&
+			a.price_average === b.price_average &&
+			a.price_min === b.price_min &&
+			a.price_max === b.price_max;
 
-		for (let i = 0; i < data.length; i++) {
-			// sanitize volume data
-			if (data[i].volume_max === prevValue) data[i].volume_max = 0;
-			else prevValue = data[i].volume_max;
+		// sanitized data
+		const out: IExploration[] = [{ ...data[0] }];
 
-			// sanitize chart candles data
-			if (
-				i > 0 &&
-				(data[i].price_first > 3 * prev_first ||
-					data[i].price_max > 3 * prev_max ||
-					data[i].price_min > 3 * prev_min ||
-					data[i].price_last > 3 * prev_last)
-			) {
-				if (data[i].price_first > 3 * prev_first)
-					data[i].price_first = Math.round(3 * prev_first);
-				if (data[i].price_max > 3 * prev_max)
-					data[i].price_max = Math.round(3 * prev_max);
-				if (data[i].price_min > 3 * prev_min)
-					data[i].price_min = Math.round(3 * prev_min);
-				if (data[i].price_last > 3 * prev_last)
-					data[i].price_last = Math.round(3 * prev_last);
-			} else {
-				prev_first = data[i].price_first;
-				prev_max = data[i].price_max;
-				prev_min = data[i].price_min;
-				prev_last = data[i].price_last;
+		// last trusted, non spiking datapoint
+		let baseline = { ...data[0] };
+
+		for (let i = 1; i < data.length; i++) {
+			const previousTrusted = baseline;
+			const currentOriginal = data[i];
+			const currentModified: IExploration = { ...currentOriginal };
+
+			// if all relevant fields are identical, set volume to 0
+			if (sameRelevantFields(previousTrusted, currentOriginal)) {
+				currentModified.volume_max = 0;
+			}
+
+			// clamp each value relative to baseline
+			const first = clampToPrevRange(
+				currentModified.price_first,
+				previousTrusted.price_first
+			);
+			const max = clampToPrevRange(
+				currentModified.price_max,
+				previousTrusted.price_max
+			);
+			const min = clampToPrevRange(
+				currentModified.price_min,
+				previousTrusted.price_min
+			);
+			const last = clampToPrevRange(
+				currentModified.price_last,
+				previousTrusted.price_last
+			);
+			const avg = clampToPrevRange(
+				currentModified.price_average,
+				previousTrusted.price_average
+			);
+
+			// determine if any field was clamped
+			const wasClamped =
+				first !== currentModified.price_first ||
+				max !== currentModified.price_max ||
+				min !== currentModified.price_min ||
+				last !== currentModified.price_last ||
+				avg !== currentModified.price_average;
+
+			// apply sanitized values
+			currentModified.price_first = first;
+			currentModified.price_max = max;
+			currentModified.price_min = min;
+			currentModified.price_last = last;
+			currentModified.price_average = avg;
+
+			out.push(currentModified);
+
+			// only update baseline if no clamp happened
+			if (!wasClamped) {
+				baseline = { ...currentOriginal };
 			}
 		}
 
-		return data;
+		return out;
 	}
 
 	return {
