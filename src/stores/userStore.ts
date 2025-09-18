@@ -183,8 +183,6 @@ export const useUserStore = defineStore(
 
 					setToken(tokenData.access_token, tokenData.refresh_token);
 
-					usePostHog().capture("user_token_refresh");
-
 					return true;
 				} catch (error) {
 					console.error(error);
@@ -213,11 +211,21 @@ export const useUserStore = defineStore(
 						});
 
 						if (
-							result.fio_apikey !== null &&
-							result.prun_username !== null
-						)
-							setUserProp({ fio_enabled: true });
-						else setUserProp({ fio_enabled: false });
+							result.fio_apikey !== profile.value?.fio_apikey ||
+							result.prun_username !==
+								profile.value?.prun_username
+						) {
+							if (
+								result.fio_apikey !== null &&
+								result.prun_username !== null
+							)
+								setUserProp({ fio_enabled: true });
+							else setUserProp({ fio_enabled: false });
+
+							setUserProp({
+								prun_username: result.prun_username,
+							});
+						}
 
 						profile.value = result;
 					});
