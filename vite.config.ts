@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import path, { resolve } from "path";
+import path from "path";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -9,17 +9,16 @@ import Components from "unplugin-vue-components/vite";
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { Plugin } from "vite";
-import { readFileSync } from "fs";
 
-// read package.json version for indexeddb
-const packageJson = JSON.parse(
-	readFileSync(resolve(__dirname, "package.json"), "utf-8")
-);
-const versionString = packageJson.version;
+// read package.json
+import pkg from "./package.json";
+
+const dbVersionString = pkg.dbVersion;
+const appVersion = pkg.version;
 
 // convert to numeric version
-const [major, minor, patch] = versionString.split(".").map(Number);
-const INDEXEDDB_VERSION = major * 10000 + minor * 100 + patch;
+const [major, minor, patch] = dbVersionString.split(".").map(Number);
+const indexedDBVersion = major * 10000 + minor * 100 + patch;
 
 export function skipEmptyChunks(): Plugin {
 	return {
@@ -50,8 +49,8 @@ export function skipEmptyChunks(): Plugin {
 export default defineConfig({
 	base: "/",
 	define: {
-		__INDEXEDDB_VERSION__: INDEXEDDB_VERSION,
-		__APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+		__INDEXEDDB_VERSION__: JSON.stringify(indexedDBVersion),
+		__APP_VERSION__: JSON.stringify(appVersion),
 	},
 	server: {
 		watch: {
