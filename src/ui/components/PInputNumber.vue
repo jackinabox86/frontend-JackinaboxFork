@@ -3,7 +3,7 @@
 	import { inputNumberConfig } from "@/ui/styles";
 
 	const value = defineModel<number | null>("value", {
-		required: true,
+		required: false,
 		type: [Number, null],
 	});
 
@@ -38,7 +38,7 @@
 
 	function canChange(e: number): boolean {
 		if (disabled) return false;
-		if (value.value === null) return true;
+		if (value.value === null || value.value === undefined) return true;
 
 		if (value.value + e >= min && value.value + e <= max) return true;
 		return false;
@@ -46,7 +46,8 @@
 
 	function change(e: number) {
 		if (canChange(e)) {
-			if (value.value === null) value.value = 0;
+			if (value.value === null || value.value === undefined)
+				value.value = 0;
 			value.value += e;
 		}
 	}

@@ -59,12 +59,12 @@
 				:min="0"
 				class="w-full min-w-[80px]"
 				@update:value="
-						(value: number | null) => {
-							if (value !== null) {
-								emit('update:infrastructure', inf, value);
-							}
+					(value) => {
+						if (value) {
+							emit('update:infrastructure', inf, value);
 						}
-					" />
+					}
+				" />
 		</template>
 	</div>
 </template>

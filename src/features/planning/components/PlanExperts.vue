@@ -62,8 +62,8 @@
 				:max="5"
 				class="w-full min-w-[70px]"
 				@update:value="
-					(value: number | null) => {
-						if (value !== null) {
+					(value) => {
+						if (value) {
 							emit('update:expert', expert.name, value);
 						}
 					}
