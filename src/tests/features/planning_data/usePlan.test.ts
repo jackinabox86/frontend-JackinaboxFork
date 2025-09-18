@@ -66,6 +66,9 @@ describe("usePlan", async () => {
 			"AGRICULTURE"
 		);
 		expect(mapPlanetToPlanType(null)).toBe("---");
+		expect(mapPlanetToPlanType("Invalid")).toBe("---");
+		// @ts-expect-error fake data
+		expect(mapPlanetToPlanType("On_Strike")).toBe("---");
 	});
 
 	it("createBlankDefinition", async () => {
