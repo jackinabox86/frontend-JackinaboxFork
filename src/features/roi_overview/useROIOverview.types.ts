@@ -30,4 +30,6 @@ export interface IROIResult {
 	dailyProfit: number;
 	planCost: number;
 	planROI: number;
+	planArea: number;
+	planProfitArea: number;
 }

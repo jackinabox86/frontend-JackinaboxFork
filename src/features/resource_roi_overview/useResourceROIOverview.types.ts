@@ -12,6 +12,8 @@ export interface IResourceROIResult {
 	dailyProfit: number;
 	planCost: number;
 	planROI: number;
+	planArea: number;
+	planProfitArea: number;
 	distanceAI1: number;
 	distanceCI1: number;
 	distanceIC1: number;

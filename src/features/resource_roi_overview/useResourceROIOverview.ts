@@ -39,6 +39,8 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 	const progressCurrent = ref(0);
 	const progressTotal = ref(0);
 
+	const calculatePLimit: number = 64;
+
 	// Filter for all extraction buildings
 	const filteredOptimalProduction = optimalProduction.filter((e) =>
 		["RIG", "EXT", "COL"].includes(e.ticker)
@@ -229,6 +231,9 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 					dailyProfit: overviewData.profit,
 					planCost: overviewData.totalConstructionCost,
 					planROI: overviewData.roi,
+					planArea: newResult.area.areaUsed,
+					planProfitArea:
+						overviewData.profit / newResult.area.areaUsed,
 					distanceAI1:
 						planet.Distances.find(
 							(e) => e.name === "Antares Station"
@@ -300,7 +305,7 @@ export function useResourceROIOverview(cxUuid: Ref<string | undefined>) {
 		await loadPlanetNames(planets.map((p) => p.PlanetNaturalId));
 
 		// limit parallel execution
-		const limit = pLimit(32);
+		const limit = pLimit(calculatePLimit);
 
 		const promises = planets.map((planet) =>
 			limit(() => calculatePlanet(planet, materialTicker))
