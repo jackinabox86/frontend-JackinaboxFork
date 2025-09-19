@@ -14,6 +14,7 @@
 
 	// Composables
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
+	import { useUserStore } from '@/stores/userStore';
 
 	// Types & Interfaces
 	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
@@ -36,6 +37,7 @@
 	// UI
 	import { PButton, PButtonGroup, PInputNumber, PSelect } from "@/ui";
 	import { NIcon } from "naive-ui";
+	import { RouterLink } from 'vue-router';
 	import {
 		XNDataTable,
 		XNDataTableColumn,
@@ -70,6 +72,7 @@
 
 	const { hasStorage, storageOptions, findStorageValueFromOptions } =
 		useFIOStorage();
+	const userStore = useUserStore();
 
 	const refStockRequirement: Ref<number> = ref(20);
 	const refSelectedStorage: Ref<string | undefined> = ref(
@@ -189,7 +192,13 @@
 		selection based on whether you wish to restock workforce and production
 		supplies or focus on a specific category, and specify the duration for
 		which the supplied stock should sustain.
+		<template v-if="userStore.hasFIO">
+			<div class="text-black/80 bg-prunplanner w-100 rounded p-1 mt-1 mx-auto text-center">
+				Use the <RouterLink to="/fio/burn" class="text-blue-500 font-bold hover:underline">FIO Burn</RouterLink> tool for more advanced supply cart options
+			</div>
+		</template>
 	</div>
+
 	<div
 		class="border border-b-0 rounded-[3px] border-white/20 p-3 flex flex-row justify-between">
 		<div>
