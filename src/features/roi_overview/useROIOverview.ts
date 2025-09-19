@@ -124,6 +124,8 @@ export async function useROIOverview(
 				dailyProfit: overviewData.profit,
 				planCost: overviewData.totalConstructionCost,
 				planROI: overviewData.roi,
+				planArea: result.area.areaUsed,
+				planProfitArea: overviewData.profit / result.area.areaUsed,
 			});
 		}
 
