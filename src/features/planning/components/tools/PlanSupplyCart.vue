@@ -193,9 +193,7 @@
 		supplies or focus on a specific category, and specify the duration for
 		which the supplied stock should sustain.
 		<template v-if="userStore.hasFIO">
-			<div class="text-black/80 bg-prunplanner w-100 rounded p-1 mt-1 mx-auto text-center">
-				Use the <RouterLink to="/fio/burn" class="text-blue-500 font-bold hover:underline">FIO Burn</RouterLink> tool for more advanced supply cart options
-			</div>
+			Use the <RouterLink to="/fio/burn" class="text-link-primary font-bold hover:underline">FIO Burn</RouterLink> tool for more advanced supply cart options.
 		</template>
 	</div>
 
