@@ -1,10 +1,13 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, ref, watch } from "vue";
+	import { computed, ComputedRef, PropType, Ref, ref, watch } from "vue";
 
 	// Composables
 	import { usePrice } from "@/features/cx/usePrice";
+	import { useRepairAnalysis } from "@/features/repair_analysis/useRepairAnalysis";
 
 	// Components
+	import DayRepairMaterialTable from "@/features/repair_analysis/components/DayRepairMaterialTable.vue";
+	import XITTransferActionButton from "@/features/xit/components/XITTransferActionButton.vue";
 	import { Chart } from "highcharts-vue";
 
 	// Types & Interfaces
@@ -13,7 +16,10 @@
 		IPlanRepairAnalysisElement,
 	} from "@/features/planning/components/tools/planRepairAnalysis.types";
 	import { PSelectOption } from "@/ui/ui.types";
-	import { IMaterialIOMinimal } from "@/features/planning/usePlanCalculation.types";
+	import {
+		IMaterialIO,
+		IMaterialIOMinimal,
+	} from "@/features/planning/usePlanCalculation.types";
 	import { Options } from "highcharts";
 
 	// UI
@@ -56,16 +62,20 @@
 	);
 
 	const selectedBuilding = ref(localData.value.length > 0 ? 0 : undefined);
+	const selectedDay = ref(90);
+	const repairAnalysisElements = ref<IPlanRepairAnalysisElement[]>([]);
+	const dailyRepairMaterials: Ref<Record<number, IMaterialIO[]>> = ref({});
+	const singleMat = ref<{ name: string; data: (number | undefined)[] }[]>([]);
 
 	const { getPrice } = await usePrice(localCxUuid, localPlanetNaturalId);
-
-	const rep = ref<IPlanRepairAnalysisElement[]>([]);
+	const { calculateDailyRepairMaterials, daySelectOptions } =
+		await useRepairAnalysis(localCxUuid, localPlanetNaturalId);
 
 	async function calculateRep() {
 		const r: IPlanRepairAnalysisElement[] = [];
 
 		if (selectedBuilding.value === undefined) {
-			rep.value = r;
+			repairAnalysisElements.value = r;
 			return;
 		}
 
@@ -118,38 +128,34 @@
 			r[0].profit = r[1].profit;
 		}
 
-		rep.value = r;
+		repairAnalysisElements.value = r;
 	}
 
-	// Recalculate whenever selectedBuilding or localData changes
-	watch([selectedBuilding, localData], calculateRep, {
-		deep: true,
-		immediate: true,
-	});
-
 	const maxValue: ComputedRef<number> = computed(() => {
-		return Math.max(...rep.value.map((o) => o.profit));
+		return Math.max(...repairAnalysisElements.value.map((o) => o.profit));
 	});
 
 	const maxDay: ComputedRef<number> = computed(() => {
-		return rep.value.findIndex((e) => e.profit === maxValue.value);
+		return repairAnalysisElements.value.findIndex(
+			(e) => e.profit === maxValue.value
+		);
 	});
 
-	const singleMat = ref<{ name: string; data: (number | undefined)[] }[]>([]);
-
 	async function calculateSingleMat() {
-		if (!rep.value.length) {
+		if (!repairAnalysisElements.value.length) {
 			singleMat.value = [];
 			return;
 		}
 
-		const mats = rep.value[0].materials.map((m) => m.ticker);
+		const mats = repairAnalysisElements.value[0].materials.map(
+			(m) => m.ticker
+		);
 
 		const results = await Promise.all(
 			mats.map(async (mat) => ({
 				name: mat,
 				data: await Promise.all(
-					rep.value.map(async (r) => {
+					repairAnalysisElements.value.map(async (r) => {
 						const material = r.materials.find(
 							(e) => e.ticker === mat
 						);
@@ -164,13 +170,11 @@
 		singleMat.value = results;
 	}
 
-	watch(rep, calculateSingleMat, { deep: true, immediate: true });
-
 	const chartOptions: ComputedRef<Options> = computed(() => {
 		return {
 			chart: {
 				type: "line",
-				height: "400px",
+				height: "300px",
 			},
 			yAxis: {
 				title: {
@@ -192,7 +196,7 @@
 			series: [
 				{
 					name: "Repair Analyis",
-					data: rep.value.map((r) => r.profit),
+					data: repairAnalysisElements.value.map((r) => r.profit),
 				},
 				{
 					name: "Last Optimal Profit",
@@ -216,14 +220,14 @@
 		const s = [
 			{
 				name: "Total Cost",
-				data: rep.value.map((r) => r.dailyRepair),
+				data: repairAnalysisElements.value.map((r) => r.dailyRepair),
 			},
 		].concat(singleMat.value as { name: string; data: number[] }[]);
 
 		return {
 			chart: {
 				type: "line",
-				height: "400px",
+				height: "300px",
 			},
 			tooltip: {
 				headerFormat:
@@ -249,6 +253,40 @@
 			},
 		} as Options;
 	});
+
+	const selectPlanTransferMaterials = computed(() => {
+		if (
+			!dailyRepairMaterials.value ||
+			!dailyRepairMaterials.value[selectedDay.value]
+		)
+			return [];
+
+		return dailyRepairMaterials.value[selectedDay.value].map((e) => ({
+			ticker: e.ticker,
+			value: e.input,
+		}));
+	});
+
+	// Recalculate whenever selectedBuilding or localData changes
+	watch(
+		[selectedBuilding, localData],
+		async () => {
+			calculateRep();
+			dailyRepairMaterials.value = await calculateDailyRepairMaterials(
+				localData.value
+			);
+		},
+		{
+			deep: true,
+			immediate: true,
+		}
+	);
+
+	// calculate single material if repair materials change
+	watch(repairAnalysisElements, calculateSingleMat, {
+		deep: true,
+		immediate: true,
+	});
 </script>
 
 <template>
@@ -258,45 +296,65 @@
 			<template #icon><CloseSharp /></template>
 		</PButton>
 	</div>
-	<div class="text-white/50 pb-3">
-		The Repair Analysis is based on the work of
-		<a
-			href="https://docs.google.com/spreadsheets/d/1ELsfw4ii1hQFWDd-BL4JzwqHc-wGVXbJtvAeprv0pZ0/edit?gid=753753671#gid=753753671"
-			target="_blank"
-			class="underline">
-			MoonSugarTravels PrUn building repair calculator
-		</a>
-		who deeply analyzed the degradation mechanics and how to find the
-		optimal intersection of profitability and repair cost.
-	</div>
-	<div class="w-1/2 min-w-[400px] pb-3">
-		<PForm>
-			<PFormItem label="Building">
-				<PSelect
-					v-model:value="selectedBuilding"
-					:options="selectionOptions"
-					class="w-full" />
-			</PFormItem>
-		</PForm>
-	</div>
-	<template v-if="selectionOptions.length > 0">
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-			<div>
-				<h2 class="text-lg font-bold pb-3">Profit Curve</h2>
-				<chart
-					v-if="rep.length > 0"
-					ref="chart"
-					class="hc"
-					:options="chartOptions as Options" />
-			</div>
-			<div>
-				<h2 class="text-lg font-bold pb-3">Repair Cost Breakdown</h2>
-				<chart
-					v-if="rep.length > 0"
-					ref="chart"
-					class="hc"
-					:options="costOptions as Options" />
+	<div class="grid grid-cols-1 xl:grid-cols-[400px_auto] gap-3 gap-x-6">
+		<div>
+			<h2 class="font-bold pb-3">Plan</h2>
+
+			<PForm>
+				<PFormItem label="Select Day">
+					<div class="w-full flex flex-row justify-between">
+						<PSelect
+							v-model:value="selectedDay"
+							:options="daySelectOptions"
+							searchable
+							class="w-1/2 max-w-[200px]" />
+
+						<XITTransferActionButton
+							:elements="selectPlanTransferMaterials" />
+					</div>
+				</PFormItem>
+			</PForm>
+
+			<div class="py-3">
+				<DayRepairMaterialTable
+					v-if="
+						dailyRepairMaterials &&
+						dailyRepairMaterials[selectedDay]
+					"
+					:materials="dailyRepairMaterials[selectedDay]" />
 			</div>
 		</div>
-	</template>
+		<div>
+			<h2 class="font-bold pb-3">Individual Building</h2>
+			<PForm>
+				<PFormItem label="Select Building">
+					<PSelect
+						v-model:value="selectedBuilding"
+						:options="selectionOptions"
+						class="w-1/2 max-w-[200px]" />
+				</PFormItem>
+			</PForm>
+
+			<template v-if="selectionOptions.length > 0">
+				<div class="flex flex-col">
+					<div>
+						<h2 class="font-bold py-3">Profit Curve</h2>
+						<chart
+							v-if="repairAnalysisElements.length > 0"
+							ref="chart"
+							class="hc"
+							:options="chartOptions" />
+					</div>
+					<div>
+						<h2 class="font-bold pb-3">Repair Cost Breakdown</h2>
+						<chart
+							v-if="repairAnalysisElements.length > 0"
+							ref="chart"
+							class="hc"
+							:options="costOptions" />
+					</div>
+				</div>
+			</template>
+		</div>
+	</div>
 </template>
