@@ -11,7 +11,7 @@
 	} from "@/features/planning/usePlanCalculation.types";
 
 	// UI
-	import { NTable } from "naive-ui";
+	import { PTable } from "@/ui";
 
 	defineProps({
 		visitationData: {
@@ -26,7 +26,7 @@
 </script>
 
 <template>
-	<n-table striped>
+	<PTable striped>
 		<tbody class="child:child:first:font-bold child:child:last:text-end">
 			<tr>
 				<td>Storage</td>
@@ -81,5 +81,5 @@
 				</td>
 			</tr>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

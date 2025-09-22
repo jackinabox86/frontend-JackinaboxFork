@@ -27,8 +27,7 @@
 	import { formatNumber, formatAmount } from "@/util/numbers";
 
 	// UI
-	import { PButton } from "@/ui";
-	import { NTable } from "naive-ui";
+	import { PButton, PTable } from "@/ui";
 	import { CloseSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -161,7 +160,7 @@
 		v-if="responseData && !hasError"
 		class="grid grid-cols-1 xl:grid-cols-[40%_auto] gap-3">
 		<div>
-			<n-table>
+			<PTable>
 				<thead>
 					<tr>
 						<th></th>
@@ -280,7 +279,7 @@
 						</td>
 					</tr>
 				</tbody>
-			</n-table>
+			</PTable>
 
 			<div class="text-white/50 py-3">
 				Habitation optimization leverages the workforce requirements of
@@ -292,7 +291,7 @@
 			</div>
 		</div>
 		<div>
-			<n-table>
+			<PTable striped>
 				<thead>
 					<tr>
 						<th>Infrastructure</th>
@@ -329,7 +328,7 @@
 						</td>
 					</tr>
 				</tbody>
-			</n-table>
+			</PTable>
 		</div>
 	</div>
 </template>

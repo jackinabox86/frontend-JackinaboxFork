@@ -30,8 +30,7 @@
 	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
-	import { PButton, PInputNumber, PSelect } from "@/ui";
-	import { NTable } from "naive-ui";
+	import { PButton, PInputNumber, PSelect, PTable } from "@/ui";
 	import { CloseSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -248,7 +247,7 @@
 		</div>
 	</div>
 	<div class="overflow-auto">
-		<n-table class="table-auto overflow-scroll w-full">
+		<PTable striped>
 			<thead>
 				<tr>
 					<th>Building</th>
@@ -334,7 +333,7 @@
 					</td>
 				</tr>
 			</tbody>
-		</n-table>
+		</PTable>
 
 		<div>
 			<div class="py-3 flex flex-row justify-between">
@@ -357,7 +356,7 @@
 				</div>
 			</div>
 
-			<n-table striped>
+			<PTable striped>
 				<thead>
 					<tr>
 						<th>Material</th>
@@ -447,7 +446,7 @@
 						</td>
 					</tr>
 				</tbody>
-			</n-table>
+			</PTable>
 		</div>
 	</div>
 </template>

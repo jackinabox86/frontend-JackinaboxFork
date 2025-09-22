@@ -11,7 +11,7 @@
 	import { BUILDING_EXPERTISE_TYPE } from "@/features/api/gameData.types";
 
 	// UI
-	import { NTable } from "naive-ui";
+	import { PTable } from "@/ui";
 
 	defineProps({
 		expertiseAnalysis: {
@@ -24,7 +24,7 @@
 <template>
 	<h3 class="font-bold pb-3">Building Expertises</h3>
 
-	<n-table striped>
+	<PTable striped>
 		<thead>
 			<tr>
 				<th>Expertise</th>
@@ -49,5 +49,5 @@
 				</td>
 			</tr>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

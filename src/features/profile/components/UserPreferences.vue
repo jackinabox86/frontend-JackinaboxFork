@@ -24,8 +24,8 @@
 		PSelect,
 		PInputNumber,
 		PCheckbox,
+		PTable,
 	} from "@/ui";
-	import { NTable } from "naive-ui";
 
 	const planningStore = usePlanningStore();
 
@@ -144,7 +144,7 @@
 		provides an overview of the preferences you've customized so far — to
 		modify them, navigate to the corresponding plan.
 	</div>
-	<n-table striped>
+	<PTable striped>
 		<thead>
 			<tr>
 				<th>Plan</th>
@@ -165,5 +165,5 @@
 				</td>
 			</tr>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

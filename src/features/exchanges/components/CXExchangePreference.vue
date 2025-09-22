@@ -9,8 +9,7 @@
 	import { ExchangeType, PreferenceType } from "../manageCX.types";
 
 	// UI
-	import { PSelect, PButton, PTag } from "@/ui";
-	import { NTable } from "naive-ui";
+	import { PSelect, PButton, PTag, PTable } from "@/ui";
 	import { PlusSharp, ClearSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -71,7 +70,7 @@
 		</div>
 	</div>
 	<div class="pt-3">
-		<n-table striped>
+		<PTable striped>
 			<tr
 				v-for="preference in localCXOptions"
 				:key="`${preference.type}#${preference.exchange}`">
@@ -107,6 +106,6 @@
 				class="text-center child:!text-white/50">
 				<td colspan="3">No Exchange Preference Configured</td>
 			</tr>
-		</n-table>
+		</PTable>
 	</div>
 </template>

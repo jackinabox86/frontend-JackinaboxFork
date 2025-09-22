@@ -11,7 +11,7 @@
 	import { IProductionBuildingRecipeCOGM } from "../../usePlanCalculation.types";
 
 	// UI
-	import { NTable } from "naive-ui";
+	import { PTable } from "@/ui";
 
 	defineProps({
 		data: {
@@ -22,7 +22,7 @@
 </script>
 
 <template>
-	<n-table>
+	<PTable>
 		<tbody>
 			<tr>
 				<th colspan="4">Parameters</th>
@@ -146,5 +146,5 @@
 				</td>
 			</tr>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

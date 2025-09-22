@@ -30,8 +30,8 @@
 		PSelectMultiple,
 		PCheckbox,
 		PInputNumber,
+		PTable,
 	} from "@/ui";
-	import { NTable } from "naive-ui";
 	import { SearchSharp } from "@vicons/material";
 
 	const refIsLoading: Ref<boolean> = ref(false);
@@ -221,7 +221,7 @@
 			<h3 class="pb-3">Planet Environment</h3>
 
 			<div class="flex flex-row gap-x-3">
-				<n-table>
+				<PTable class="w-full">
 					<tbody>
 						<tr class="child:w-[25%]">
 							<td>Surface</td>
@@ -310,7 +310,7 @@
 							</td>
 						</tr>
 					</tbody>
-				</n-table>
+				</PTable>
 
 				<div class="flex flex-col gap-y-3">
 					<PButton secondary @click="environmentDefault">

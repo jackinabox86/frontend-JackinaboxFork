@@ -30,8 +30,9 @@
 		PFormItem,
 		PInput,
 		PSelect,
+		PTable,
 	} from "@/ui";
-	import { NDrawer, NDrawerContent, NTable } from "naive-ui";
+	import { NDrawer, NDrawerContent } from "naive-ui";
 
 	const props = defineProps({
 		elements: {
@@ -109,15 +110,17 @@
 						:options="XITSTATIONWAREHOUSES" />
 				</PFormItem>
 				<PFormItem label="Buy From CX">
-					<div class="w-full flex flex-row gap-1 my-3 h-[32px] items-center">
+					<div
+						class="w-full flex flex-row gap-1 my-3 h-[32px] items-center">
 						<PCheckbox
 							v-model:checked="defaultBuyItemsFromCX"
-							:disabled="burnOrigin === 'Configure on Execution'" />
+							:disabled="
+								burnOrigin === 'Configure on Execution'
+							" />
 
 						<div
 							v-if="burnOrigin === 'Configure on Execution'"
-							class="pl-3 text-xs text-white/50"
-							>
+							class="pl-3 text-xs text-white/50">
 							Requires origin warehouse to purchase
 						</div>
 					</div>
@@ -157,7 +160,7 @@
 				</PFormItem>
 			</PForm>
 
-			<n-table striped class="mt-3">
+			<PTable striped class="mt-3">
 				<thead>
 					<tr>
 						<th>Ticker</th>
@@ -176,7 +179,7 @@
 						<td>{{ formatAmount(element.value) }}</td>
 					</tr>
 				</tbody>
-			</n-table>
+			</PTable>
 		</n-drawer-content>
 	</n-drawer>
 </template>
