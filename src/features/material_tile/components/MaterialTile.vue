@@ -32,8 +32,8 @@
 	import { PSelectOption } from "@/ui/ui.types";
 
 	// UI
-	import { PTooltip, PSelect } from "@/ui";
-	import { NDrawer, NDrawerContent, NTable } from "naive-ui";
+	import { PTooltip, PSelect, PTable } from "@/ui";
+	import { NDrawer, NDrawerContent } from "naive-ui";
 
 	// Props
 	const props = defineProps({
@@ -213,7 +213,7 @@
 						&nbsp;
 					</div>
 				</template>
-				<n-table>
+				<PTable>
 					<tbody>
 						<tr>
 							<th>Value</th>
@@ -231,7 +231,7 @@
 							</td>
 						</tr>
 					</tbody>
-				</n-table>
+				</PTable>
 			</PTooltip>
 		</div>
 	</div>

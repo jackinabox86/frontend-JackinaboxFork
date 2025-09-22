@@ -11,8 +11,7 @@
 	import { IUserAPIKey } from "@/features/api/userData.types";
 
 	// UI
-	import { PInput, PButton } from "@/ui";
-	import { NTable } from "naive-ui";
+	import { PInput, PButton, PTable } from "@/ui";
 	import { ClearSharp } from "@vicons/material";
 
 	const { apiKeys } = defineProps<{ apiKeys: IUserAPIKey[] }>();
@@ -70,7 +69,7 @@
 		</div>
 	</div>
 
-	<n-table striped>
+	<PTable striped>
 		<thead>
 			<tr>
 				<th>Name</th>
@@ -106,5 +105,5 @@
 				</td>
 			</tr>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

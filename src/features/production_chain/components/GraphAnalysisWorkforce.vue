@@ -10,7 +10,7 @@
 	import { WORKFORCECOLORS } from "@/features/production_chain/components/ChainNode.types";
 
 	// UI
-	import { NTable } from "naive-ui";
+	import { PTable } from "@/ui";
 
 	defineProps({
 		workforceAnalysis: {
@@ -22,7 +22,7 @@
 
 <template>
 	<h3 class="font-bold py-3">Workforce</h3>
-	<n-table striped>
+	<PTable striped>
 		<thead>
 			<tr>
 				<th>Workforce</th>
@@ -47,5 +47,5 @@
 				</td>
 			</tr>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

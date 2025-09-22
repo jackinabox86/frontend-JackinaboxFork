@@ -12,7 +12,7 @@
 	import { IMaterialExchangeOverview } from "@/database/services/useExchangeData.types";
 
 	// UI
-	import { NTable } from "naive-ui";
+	import { PTable } from "@/ui";
 
 	defineProps({
 		ticker: {
@@ -27,7 +27,7 @@
 </script>
 
 <template>
-	<n-table :key="`CX#OverviewTable#${ticker}`" striped>
+	<PTable :key="`CX#OverviewTable#${ticker}`" striped>
 		<thead>
 			<tr>
 				<th>{{ ticker }}</th>
@@ -93,5 +93,5 @@
 				</td>
 			</tr>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

@@ -11,7 +11,7 @@
 	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
-	import { NTable } from "naive-ui";
+	import { PTable } from "@/ui";
 
 	const { materials } = defineProps<{
 		materials: IMaterialIO[];
@@ -31,7 +31,7 @@
 </script>
 
 <template>
-	<n-table striped>
+	<PTable striped>
 		<thead>
 			<tr>
 				<th>Material</th>
@@ -87,5 +87,5 @@
 				</td>
 			</tr>
 		</tfoot>
-	</n-table>
+	</PTable>
 </template>

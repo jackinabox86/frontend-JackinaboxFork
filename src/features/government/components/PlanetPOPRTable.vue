@@ -9,7 +9,8 @@
 	import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
-	import { NTable, NIcon } from "naive-ui";
+	import { PTable } from "@/ui";
+	import { NIcon } from "naive-ui";
 	import { CheckSharp, ClearSharp } from "@vicons/material";
 
 	defineProps({
@@ -51,7 +52,7 @@
 		Planet {{ planetNaturalId }} has no population data.
 	</div>
 
-	<n-table striped>
+	<PTable striped>
 		<thead>
 			<tr>
 				<th></th>
@@ -240,5 +241,5 @@
 				</tr>
 			</template>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

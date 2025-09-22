@@ -2,8 +2,7 @@
 	import { computed } from "vue";
 	import { useQueryStore } from "@/lib/query_cache/queryStore";
 
-	import { PButton, PTag } from "@/ui";
-	import { NTable } from "naive-ui";
+	import { PButton, PTag, PTable } from "@/ui";
 
 	// Grab the Pinia store
 	const queryStore = useQueryStore();
@@ -30,7 +29,7 @@
 		<div class="flex flex-row justify-between pb-3">
 			<h2 class="text-2xl">Query Cache</h2>
 		</div>
-		<n-table striped>
+		<PTable striped>
 			<thead>
 				<tr>
 					<th>Key</th>
@@ -117,6 +116,6 @@
 					<td colspan="9">No queries in cache.</td>
 				</tr>
 			</tbody>
-		</n-table>
+		</PTable>
 	</div>
 </template>

@@ -12,8 +12,7 @@
 	} from "@/features/planning/usePlanCalculation.types";
 
 	// UI
-	import { PButton } from "@/ui";
-	import { NTable } from "naive-ui";
+	import { PButton, PTable } from "@/ui";
 	import { CheckSharp, RadioButtonUncheckedSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -43,7 +42,7 @@
 </script>
 
 <template>
-	<n-table striped>
+	<PTable striped>
 		<thead>
 			<tr>
 				<th>Type</th>
@@ -152,5 +151,5 @@
 				</td>
 			</tr>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

@@ -12,8 +12,7 @@
 	import { PreferenceType } from "../manageCX.types";
 
 	// UI
-	import { PSelect, PButton, PInputNumber, PTag } from "@/ui";
-	import { NTable } from "naive-ui";
+	import { PSelect, PButton, PInputNumber, PTag, PTable } from "@/ui";
 	import { PlusSharp, ClearSharp } from "@vicons/material";
 	import { formatNumber } from "@/util/numbers";
 
@@ -91,7 +90,7 @@
 		</div>
 	</div>
 	<div class="pt-3">
-		<n-table striped>
+		<PTable striped>
 			<tr
 				v-for="preference in sortedCXOptions"
 				:key="`${preference.type}#${preference.ticker}`">
@@ -136,6 +135,6 @@
 				class="text-center child:!text-white/50">
 				<td colspan="4">No Ticker Preferences Configured</td>
 			</tr>
-		</n-table>
+		</PTable>
 	</div>
 </template>

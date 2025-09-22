@@ -33,8 +33,9 @@
 		PCheckbox,
 		PSelect,
 		PInput,
+		PTable,
 	} from "@/ui";
-	import { NDrawer, NDrawerContent, NTable } from "naive-ui";
+	import { NDrawer, NDrawerContent } from "naive-ui";
 
 	// Constants
 	import { XITSTATIONWAREHOUSES } from "@/features/xit/xitConstants";
@@ -228,7 +229,7 @@
 				</div>
 			</div>
 
-			<n-table striped>
+			<PTable striped>
 				<thead>
 					<tr>
 						<th></th>
@@ -309,7 +310,7 @@
 						</td>
 					</tr>
 				</tbody>
-			</n-table>
+			</PTable>
 		</n-drawer-content>
 	</n-drawer>
 </template>

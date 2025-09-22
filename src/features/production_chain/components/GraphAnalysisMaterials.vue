@@ -12,7 +12,7 @@
 	import { IGraphFlowMaterialAnalysis } from "@/features/production_chain/productionGraph.types";
 
 	// UI
-	import { NTable } from "naive-ui";
+	import { PTable } from "@/ui";
 
 	defineProps({
 		materialAnalysis: {
@@ -24,7 +24,7 @@
 
 <template>
 	<h3 class="font-bold py-3">Materials</h3>
-	<n-table striped>
+	<PTable striped>
 		<thead>
 			<tr>
 				<th>Material</th>
@@ -45,5 +45,5 @@
 				</td>
 			</tr>
 		</tbody>
-	</n-table>
+	</PTable>
 </template>

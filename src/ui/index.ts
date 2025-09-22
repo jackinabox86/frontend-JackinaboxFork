@@ -13,3 +13,4 @@ export { default as PSelectMultiple } from "@/ui/components/PSelectMultiple.vue"
 export { default as PTag } from "@/ui/components/PTag.vue";
 export { default as PProgressBar } from "@/ui/components/PProgressBar.vue";
 export { default as PSpin } from "@/ui/components/PSpin.vue";
+export { default as PTable } from "@/ui/components/PTable.vue";

@@ -26,8 +26,7 @@
 	}
 
 	// UI
-	import { PButton, PSelectMultiple } from "@/ui";
-	import { NTable } from "naive-ui";
+	import { PButton, PSelectMultiple, PTable } from "@/ui";
 	import { CloseSharp } from "@vicons/material";
 
 	const props = defineProps({
@@ -227,12 +226,12 @@
 				>.
 			</p>
 
-			<n-table striped>
-				<thead class="child:text-center">
+			<PTable striped>
+				<thead>
 					<tr>
 						<th />
-						<th>m³</th>
-						<th>t</th>
+						<th class="!text-center">m³</th>
+						<th class="!text-center">t</th>
 					</tr>
 				</thead>
 				<tbody class="child:child:text-center">
@@ -258,7 +257,7 @@
 						</td>
 					</tr>
 				</tbody>
-			</n-table>
+			</PTable>
 
 			<p class="py-3">
 				Exclude local materials from visitation frequency calculation
@@ -287,7 +286,7 @@
 		<div>
 			<h3 class="font-bold text-lg pb-3">Shipping</h3>
 
-			<n-table striped>
+			<PTable striped>
 				<thead>
 					<tr>
 						<th>Ship m³</th>
@@ -323,7 +322,7 @@
 						<td class="text-center">{{ shipData.importLimit }}</td>
 					</tr>
 				</tbody>
-			</n-table>
+			</PTable>
 		</div>
 	</div>
 </template>
