@@ -35,7 +35,7 @@ export function usePostHog() {
 			ui_host: "https://eu.posthog.com",
 			defaults: "2025-05-24",
 			person_profiles: "identified_only",
-			name: posthogName ?? "localhost",
+			name: posthogName,
 		});
 
 		// register global versions
