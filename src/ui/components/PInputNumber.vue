@@ -70,6 +70,7 @@
 				v-if="showButtons"
 				:class="`${inputNumberConfig.buttonContainer} ${inputNumberConfig.sizes[size].buttonContainer}`">
 				<div
+					class="ph-no-capture"
 					:class="
 						canChange(-1)
 							? inputNumberConfig.buttonChangeAllowed
@@ -86,6 +87,7 @@
 					</svg>
 				</div>
 				<div
+					class="ph-no-capture"
 					:class="
 						canChange(1)
 							? inputNumberConfig.buttonChangeAllowed
