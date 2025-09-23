@@ -202,10 +202,27 @@
 			</div>
 		</div>
 	</div>
+	<div>
+		<h1 class="pb-4 text-4xl tracking-tight text-white text-center mt-20">
+			Powered by tools we love to use
+		</h1>
+		<div class="flex flex-row items-center justify-center pt-3 gap-10">
+			<a href="https://posthog.com/" target="_blank">
+				<img
+					src="/images/homepage/posthog-logo-white@2x.png"
+					class="h-[30px]" />
+			</a>
+			<a href="https://www.highcharts.com/" target="_blank">
+				<img
+					src="/images/homepage/highcharts-logo.png"
+					class="h-[30px]" />
+			</a>
+		</div>
+	</div>
 	<h1 class="pb-4 text-4xl tracking-tight text-white text-center mt-30">
 		Free &amp; Open Source
 	</h1>
-	<p class="text-white/60 text-center text-xl mb-10">
+	<p class="text-white/60 text-center text-xl mb-5">
 		PRUNplanner is completely free to use, and its frontend is fully
 		<a
 			href="https://github.com/PRUNplanner/frontend"
