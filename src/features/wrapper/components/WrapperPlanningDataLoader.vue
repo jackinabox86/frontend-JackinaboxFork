@@ -12,8 +12,7 @@
 	import RenderingProgress from "@/layout/components/RenderingProgress.vue";
 
 	// UI
-	import { PSpin } from "@/ui";
-	import { NIcon } from "naive-ui";
+	import { PSpin, PIcon } from "@/ui";
 	import { CheckSharp, ClearSharp } from "@vicons/material";
 
 	const props: PlanningDataLoaderProps =
@@ -47,10 +46,10 @@
 							<div v-if="e.loading" class="my-1">
 								<PSpin />
 							</div>
-							<n-icon v-else :size="20">
+							<PIcon v-else :size="20">
 								<CheckSharp v-if="!e.error" />
 								<ClearSharp v-else />
-							</n-icon>
+							</PIcon>
 						</div>
 						<div>{{ e.name }}</div>
 					</div>

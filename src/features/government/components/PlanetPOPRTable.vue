@@ -9,8 +9,7 @@
 	import { IWorkforceRecord } from "@/features/planning/usePlanCalculation.types";
 
 	// UI
-	import { PTable } from "@/ui";
-	import { NIcon } from "naive-ui";
+	import { PTable, PIcon } from "@/ui";
 	import { CheckSharp, ClearSharp } from "@vicons/material";
 
 	defineProps({
@@ -124,7 +123,7 @@
 				<tr>
 					<td class="font-bold">Plan Check</td>
 					<td>
-						<n-icon>
+						<PIcon>
 							<component
 								:is="
 									assessPlanWorkforce(
@@ -144,10 +143,10 @@
 										? 'text-positive'
 										: 'text-negative'
 								" />
-						</n-icon>
+						</PIcon>
 					</td>
 					<td>
-						<n-icon>
+						<PIcon>
 							<component
 								:is="
 									assessPlanWorkforce(
@@ -167,10 +166,10 @@
 										? 'text-positive'
 										: 'text-negative'
 								" />
-						</n-icon>
+						</PIcon>
 					</td>
 					<td>
-						<n-icon>
+						<PIcon>
 							<component
 								:is="
 									assessPlanWorkforce(
@@ -190,10 +189,10 @@
 										? 'text-positive'
 										: 'text-negative'
 								" />
-						</n-icon>
+						</PIcon>
 					</td>
 					<td>
-						<n-icon>
+						<PIcon>
 							<component
 								:is="
 									assessPlanWorkforce(
@@ -213,10 +212,10 @@
 										? 'text-positive'
 										: 'text-negative'
 								" />
-						</n-icon>
+						</PIcon>
 					</td>
 					<td>
-						<n-icon>
+						<PIcon>
 							<component
 								:is="
 									assessPlanWorkforce(
@@ -236,7 +235,7 @@
 										? 'text-positive'
 										: 'text-negative'
 								" />
-						</n-icon>
+						</PIcon>
 					</td>
 				</tr>
 			</template>

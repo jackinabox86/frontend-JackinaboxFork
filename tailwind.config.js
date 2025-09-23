@@ -8,7 +8,9 @@ module.exports = {
 			addVariant("child-hover", "& > *:hover");
 			addVariant("not-first", ({ modifySelectors, separator }) => {
 				modifySelectors(({ className }) => {
-					return `.${e(`not-first${separator}${className}`)}:not(:first-child)`;
+					return `.${e(
+						`not-first${separator}${className}`
+					)}:not(:first-child)`;
 				});
 			});
 		},
@@ -46,6 +48,9 @@ module.exports = {
 				prunplanner: "#c0e219",
 				positive: "rgba(192,226,24,1)",
 				negative: "rgba(199,0,57,1)",
+			},
+			spacing: {
+				em: "1em",
 			},
 		},
 	},

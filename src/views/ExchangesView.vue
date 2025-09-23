@@ -36,8 +36,8 @@
 	import { ICXPlanetMap } from "@/features/exchanges/manageCX.types";
 
 	// UI
-	import { PButton, PInput } from "@/ui";
-	import { NDropdown, NIcon } from "naive-ui";
+	import { PButton, PInput, PIcon } from "@/ui";
+	import { NDropdown } from "naive-ui";
 	import {
 		ArrowDropDownSharp,
 		SaveSharp,
@@ -201,9 +201,9 @@
 							:options="selectorDropdownOptions"
 							@select="(value: string) => localCXUuid = value">
 							<div>
-								<n-icon class="-mr-1">
+								<PIcon class="-mr-1">
 									<ArrowDropDownSharp />
-								</n-icon>
+								</PIcon>
 								{{ cxName }}
 							</div>
 						</n-dropdown>

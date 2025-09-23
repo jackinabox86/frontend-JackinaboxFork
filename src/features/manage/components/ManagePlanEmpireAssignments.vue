@@ -34,8 +34,8 @@
 	import ManageAssignmentFilters from "@/features/manage/components/ManageAssignmentFilters.vue";
 
 	// UI
-	import { PCheckbox, PButton } from "@/ui";
-	import { useDialog, NIcon } from "naive-ui";
+	import { PCheckbox, PButton, PIcon } from "@/ui";
+	import { useDialog } from "naive-ui";
 	const dialog = useDialog();
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import {
@@ -374,18 +374,18 @@
 			<x-n-data-table-column :key="`ASSIGN#${e.empireUuid}`">
 				<template #title>
 					<div class="py-1 flex flex-row justify-center gap-1">
-						<n-icon
-							color="rgba(192,226,24,1)"
-							size="16"
+						<PIcon
+							color="rgb(192,226,24)"
+							:size="16"
 							@click="changeAllToEmpire(e.empireUuid, true)">
 							<AddCircleOutlineSharp />
-						</n-icon>
-						<n-icon
-							color="rgba(199,0,57,1)"
-							size="16"
+						</PIcon>
+						<PIcon
+							color="rgb(199,0,57)"
+							:size="16"
 							@click="changeAllToEmpire(e.empireUuid, false)">
 							<CircleOutlined />
-						</n-icon>
+						</PIcon>
 					</div>
 				</template>
 				<template #render-cell="{ rowData }">

@@ -17,8 +17,7 @@
 	import { IPlanetSearchResult } from "../usePlanetSearchResults.types";
 
 	// UI
-	import { PButton } from "@/ui";
-	import { NTooltip } from "naive-ui";
+	import { PButton, PTooltip } from "@/ui";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 	import { PlusSharp } from "@vicons/material";
 
@@ -154,7 +153,7 @@
 		<XNDataTableColumn key="environment" title="Environment">
 			<template #render-cell="{ rowData }">
 				<div class="flex flex-row flex-wrap gap-1">
-					<n-tooltip v-if="rowData.environmentSurface.length !== 0">
+					<PTooltip v-if="rowData.environmentSurface.length !== 0">
 						<template #trigger>
 							<div>
 								<MaterialTile
@@ -163,8 +162,8 @@
 							</div>
 						</template>
 						Surface
-					</n-tooltip>
-					<n-tooltip v-if="rowData.environmentGravity.length !== 0">
+					</PTooltip>
+					<PTooltip v-if="rowData.environmentGravity.length !== 0">
 						<template #trigger>
 							<div>
 								<MaterialTile
@@ -173,8 +172,8 @@
 							</div>
 						</template>
 						Gravity
-					</n-tooltip>
-					<n-tooltip
+					</PTooltip>
+					<PTooltip
 						v-if="rowData.environmentTemperature.length !== 0">
 						<template #trigger>
 							<div>
@@ -186,8 +185,8 @@
 							</div>
 						</template>
 						Temperature
-					</n-tooltip>
-					<n-tooltip v-if="rowData.environmentPressure.length !== 0">
+					</PTooltip>
+					<PTooltip v-if="rowData.environmentPressure.length !== 0">
 						<template #trigger>
 							<div>
 								<MaterialTile
@@ -196,7 +195,7 @@
 							</div>
 						</template>
 						Pressure
-					</n-tooltip>
+					</PTooltip>
 				</div>
 			</template>
 		</XNDataTableColumn>

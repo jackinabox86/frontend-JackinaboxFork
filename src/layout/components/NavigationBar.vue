@@ -25,8 +25,7 @@
 	import { IMenuSection } from "@/layout/components/navigation.types";
 
 	// UI
-	import { PTag, PTooltip } from "@/ui";
-	import { NIcon, NTable } from "naive-ui";
+	import { PTag, PTooltip, PTable, PIcon } from "@/ui";
 	import {
 		HomeSharp,
 		SearchRound,
@@ -359,19 +358,19 @@
 								active-class="bg-white/10 rounded-sm">
 								<PTooltip v-if="!isFull" placement="right">
 									<template #trigger>
-										<n-icon v-if="item.icon" size="20">
+										<PIcon v-if="item.icon" :size="20">
 											<component :is="item.icon" />
-										</n-icon>
+										</PIcon>
 									</template>
 									{{ item.label }}
 								</PTooltip>
 								<template v-else>
-									<n-icon
+									<PIcon
 										v-if="item.icon"
 										class="mr-2"
-										size="20">
+										:size="20">
 										<component :is="item.icon" />
-									</n-icon>
+									</PIcon>
 									{{ item.label }}
 								</template>
 							</RouterLink>
@@ -383,22 +382,22 @@
 									@click="item.functionCall()">
 									<PTooltip v-if="!isFull" placement="right">
 										<template #trigger>
-											<n-icon
+											<PIcon
 												v-if="item.icon"
 												:class="isFull ? 'mr-2' : ''"
-												size="20">
+												:size="20">
 												<component :is="item.icon" />
-											</n-icon>
+											</PIcon>
 										</template>
 										{{ item.label }}
 									</PTooltip>
 									<template v-else>
-										<n-icon
+										<PIcon
 											v-if="item.icon"
 											:class="isFull ? 'mr-2' : ''"
-											size="20">
+											:size="20">
 											<component :is="item.icon" />
-										</n-icon>
+										</PIcon>
 										{{ item.label }}
 									</template>
 								</div>
@@ -417,12 +416,12 @@
 											itemClass,
 											isFull ? 'visible' : 'hidden',
 										]">
-										<n-icon
+										<PIcon
 											v-if="item.icon"
 											:class="isFull ? 'mr-2' : ''"
-											size="20">
+											:size="20">
 											<component :is="item.icon" />
-										</n-icon>
+										</PIcon>
 										{{ item.label }}
 										<!-- Arrow Icon -->
 										<svg
@@ -467,29 +466,29 @@
 													v-if="!isFull"
 													placement="right">
 													<template #trigger>
-														<n-icon
+														<PIcon
 															v-if="children.icon"
-															size="20">
+															:size="20">
 															<component
 																:is="
 																	children.icon
 																" />
-														</n-icon>
+														</PIcon>
 													</template>
 													{{ children.label }}
 												</PTooltip>
 												<template v-else>
-													<n-icon
+													<PIcon
 														v-if="children.icon"
 														:class="
 															isFull ? 'mr-2' : ''
 														"
-														size="20">
+														:size="20">
 														<component
 															:is="
 																children.icon
 															" />
-													</n-icon>
+													</PIcon>
 													<template v-if="isFull">
 														{{ children.label }}
 													</template>
@@ -522,7 +521,7 @@
 								{{ isFull ? "FIO Active" : "FIO" }}
 							</PTag>
 						</template>
-						<NTable striped>
+						<PTable striped>
 							<thead>
 								<tr>
 									<th>Type</th>
@@ -550,7 +549,7 @@
 									</td>
 								</tr>
 							</tbody>
-						</NTable>
+						</PTable>
 					</PTooltip>
 					<PTag v-else size="sm" type="warning" :bordered="false">
 						{{ isFull ? "FIO Inactive" : "FIO" }}
