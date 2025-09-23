@@ -235,26 +235,6 @@
 				</template>
 			</XNDataTableColumn>
 			<XNDataTableColumn
-				key="outputProfit"
-				title="Output Profit"
-				sorter="default">
-				<template #title>
-					<div class="text-end">Output Profit</div>
-				</template>
-				<template #render-cell="{ rowData }">
-					<div
-						class="text-end text-nowrap"
-						:class="
-							rowData.outputProfit > 0
-								? 'text-positive'
-								: 'text-negative'
-						">
-						{{ formatNumber(rowData.outputProfit) }}
-						<span class="pl-1 font-light text-white/50"> $ </span>
-					</div>
-				</template>
-			</XNDataTableColumn>
-			<XNDataTableColumn
 				key="dailyProfit"
 				title="Daily Profit"
 				sorter="default">
