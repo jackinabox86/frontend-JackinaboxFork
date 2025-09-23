@@ -14,7 +14,7 @@
 
 	// Composables
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
-	import { useUserStore } from '@/stores/userStore';
+	import { useUserStore } from "@/stores/userStore";
 
 	// Types & Interfaces
 	import { IMaterialIO } from "@/features/planning/usePlanCalculation.types";
@@ -35,9 +35,8 @@
 	import { formatNumber, formatAmount, clamp } from "@/util/numbers";
 
 	// UI
-	import { PButton, PButtonGroup, PInputNumber, PSelect } from "@/ui";
-	import { NIcon } from "naive-ui";
-	import { RouterLink } from 'vue-router';
+	import { PButton, PButtonGroup, PInputNumber, PSelect, PIcon } from "@/ui";
+	import { RouterLink } from "vue-router";
 	import {
 		XNDataTable,
 		XNDataTableColumn,
@@ -193,7 +192,13 @@
 		supplies or focus on a specific category, and specify the duration for
 		which the supplied stock should sustain.
 		<template v-if="userStore.hasFIO">
-			Use the <RouterLink to="/fio/burn" class="text-link-primary font-bold hover:underline">FIO Burn</RouterLink> tool for more advanced supply cart options.
+			Use the
+			<RouterLink
+				to="/fio/burn"
+				class="text-link-primary font-bold hover:underline"
+				>FIO Burn</RouterLink
+			>
+			tool for more advanced supply cart options.
 		</template>
 	</div>
 
@@ -293,7 +298,7 @@
 		<XNDataTableColumn key="workforce" title="Workforce" sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="text-center">
-					<n-icon
+					<PIcon
 						:class="
 							rowData.workforce
 								? 'text-positive'
@@ -301,14 +306,14 @@
 						">
 						<CheckCircleOutlineSharp v-if="rowData.workforce" />
 						<RemoveCircleOutlineSharp v-else />
-					</n-icon>
+					</PIcon>
 				</div>
 			</template>
 		</XNDataTableColumn>
 		<XNDataTableColumn key="producton" title="Production" sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="text-center">
-					<n-icon
+					<PIcon
 						:class="
 							rowData.production
 								? 'text-positive'
@@ -316,7 +321,7 @@
 						">
 						<CheckCircleOutlineSharp v-if="rowData.production" />
 						<RemoveCircleOutlineSharp v-else />
-					</n-icon>
+					</PIcon>
 				</div>
 			</template>
 		</XNDataTableColumn>

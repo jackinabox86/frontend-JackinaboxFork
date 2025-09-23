@@ -14,7 +14,7 @@
 	});
 
 	// UI
-	import { NForm, NFormItem } from "naive-ui";
+	import { PForm, PFormItem } from "@/ui";
 
 	/*
 	 * ROI Overview assumes a fully standard planet, so we're going for Montem (OT-580b)
@@ -39,20 +39,16 @@
 						class="px-6 py-3 border-b border-white/10 flex flex-row justify-between">
 						<h1 class="text-2xl font-bold my-auto">ROI Overview</h1>
 						<div class="flex flex-row gap-x-3">
-							<n-form
-								size="small"
-								label-placement="left"
-								label-width="auto"
-								label-align="left">
-								<n-form-item label="CX Preference">
+							<PForm>
+								<PFormItem label="CX Preference">
 									<CXPreferenceSelector
 										:cx-uuid="refSelectedCXUuid"
 										@update:cxuuid="
 											(value) =>
 												(refSelectedCXUuid = value)
 										" />
-								</n-form-item>
-							</n-form>
+								</PFormItem>
+							</PForm>
 							<HelpDrawer file-name="tools_roi_overview" />
 						</div>
 					</div>

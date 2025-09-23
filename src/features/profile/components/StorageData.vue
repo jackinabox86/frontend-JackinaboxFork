@@ -19,7 +19,7 @@
 	import { usePlanningStore } from "@/stores/planningStore";
 	const planningStore = usePlanningStore();
 
-	import { NTable } from "naive-ui";
+	import { PTable } from "@/ui";
 
 	onMounted(async () => {
 		const results = await Promise.all([
@@ -49,7 +49,7 @@
 		Data refreshes automatically at set intervals.
 	</div>
 	<div>
-		<NTable striped>
+		<PTable striped>
 			<thead>
 				<tr>
 					<th>Storage</th>
@@ -66,6 +66,6 @@
 					</td>
 				</tr>
 			</tbody>
-		</NTable>
+		</PTable>
 	</div>
 </template>

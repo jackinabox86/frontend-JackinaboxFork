@@ -58,8 +58,7 @@
 	);
 
 	// UI
-	import { PButton, PButtonGroup, PTooltip, PSpin } from "@/ui";
-	import { NIcon } from "naive-ui";
+	import { PButton, PButtonGroup, PTooltip, PSpin, PIcon } from "@/ui";
 	import {
 		AutoAwesomeMosaicOutlined,
 		AutoAwesomeMosaicFilled,
@@ -520,8 +519,8 @@
 			<div class="border-b border-white/10 p-3">
 				<div class="flex flex-row">
 					<div class="child:mt-1 pr-6 child:cursor-pointer">
-						<n-icon
-							size="24"
+						<PIcon
+							:size="24"
 							@click="
 								refVisualShowConfiguration =
 									!refVisualShowConfiguration
@@ -529,7 +528,7 @@
 							<AutoAwesomeMosaicFilled
 								v-if="!refVisualShowConfiguration" />
 							<AutoAwesomeMosaicOutlined v-else />
-						</n-icon>
+						</PIcon>
 					</div>
 					<div class="flex flex-grow flex-wrap gap-3 justify-between">
 						<div class="flex flex-row flex-wrap gap-1">
