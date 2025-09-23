@@ -60,7 +60,7 @@
 				class="w-full min-w-[80px]"
 				@update:value="
 					(value) => {
-						if (value) {
+						if (value !== null && value !== undefined) {
 							emit('update:infrastructure', inf, value);
 						}
 					}
