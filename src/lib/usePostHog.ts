@@ -7,6 +7,9 @@ import { redact } from "@/util/data";
 const POSTHOG_PUBLIC_KEY = "phc_JVfz4wWZFbbQF37d4NQ70w3I3uZ3Jrkpfu01myYDWJJ";
 const POSTHOG_NAME = "prunplanner_frontend";
 
+// initialize only once
+let isInitialized = false;
+
 export function usePostHog() {
 	const posthogToken: string = POSTHOG_PUBLIC_KEY;
 	const posthogName: string = POSTHOG_NAME;
@@ -29,13 +32,15 @@ export function usePostHog() {
 	// Queue, in case PostHog is not yet ready
 	const eventQueue: Array<[string, Properties | null | undefined]> = [];
 
-	if (posthogToken && isClient()) {
+	if (!isInitialized && posthogToken && isClient()) {
 		posthog.init(posthogToken, {
 			api_host: "https://squirrel.prunplanner.org/relay-DWJJ",
 			ui_host: "https://eu.posthog.com",
 			defaults: "2025-05-24",
 			person_profiles: "identified_only",
 			name: posthogName,
+			autocapture: true,
+			capture_pageview: false,
 		});
 
 		// register global versions
@@ -50,6 +55,8 @@ export function usePostHog() {
 			);
 			eventQueue.length = 0;
 		});
+
+		isInitialized = true;
 	}
 
 	function capture<T extends Properties | null | undefined>(

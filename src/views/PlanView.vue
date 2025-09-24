@@ -34,8 +34,7 @@
 		patchMaterialIO,
 		cloneSharedPlan,
 	} = usePlan();
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
 	import { inertClone } from "@/util/data";
@@ -178,7 +177,7 @@
 	function openTool(key: toolOptions): void {
 		refShowTool.value = null;
 
-		capture("plan_tool_view", { name: key });
+		trackEvent("plan_tool_view", { name: key });
 		nextTick(() => {
 			key != refShowTool.value
 				? (refShowTool.value = key)
@@ -348,9 +347,8 @@
 			// reset modified state
 			handleResetModified();
 
-			capture("plan_save", {
-				planUuid: refPlanData.value.uuid,
-				planetId: planetData.PlanetNaturalId,
+			trackEvent("plan_save", {
+				planetNaturalId: planetData.PlanetNaturalId,
 			});
 
 			refIsSaving.value = false;
@@ -369,9 +367,8 @@
 
 						// reset modified state
 						handleResetModified();
-						capture("plan_create", {
-							planUuid: newUuid,
-							planetId: planetData.PlanetNaturalId,
+						trackEvent("plan_create", {
+							planetNaturalId: planetData.PlanetNaturalId,
 						});
 
 						router.push(
@@ -397,9 +394,8 @@
 			(result: IPlan) => (refPlanData.value = result)
 		);
 
-		capture("plan_reload", {
-			planUuid: refPlanData.value.uuid,
-			planetId: planetData.PlanetNaturalId,
+		trackEvent("plan_reload", {
+			planetNaturalId: planetData.PlanetNaturalId,
 		});
 		refIsReloading.value = false;
 	}
@@ -411,7 +407,10 @@
 		if (!props.sharedPlanUuid) return;
 
 		sharedWasCloned.value = await cloneSharedPlan(props.sharedPlanUuid);
-		capture("plan_shared_cloned", { sharedUuid: props.sharedPlanUuid });
+		trackEvent("plan_shared_cloned", {
+			planetNaturalId: planetData.PlanetNaturalId,
+			sharedUuid: props.sharedPlanUuid,
+		});
 	}
 
 	// Unhead
@@ -427,9 +426,8 @@
 	// Route Guard
 	onBeforeRouteLeave(() => {
 		if (modified.value) {
-			capture("plan_leave_changed", {
-				planUuid: refPlanData.value.uuid,
-				planetId: planetData.PlanetNaturalId,
+			trackEvent("plan_leave_changed", {
+				planetNaturalId: planetData.PlanetNaturalId,
 			});
 
 			const answer = confirm(
