@@ -15,6 +15,7 @@
 	} from "@/features/planning/usePlanCalculation.types";
 
 	// Util
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 	import { humanizeTimeMs } from "@/util/date";
 	import { formatNumber } from "@/util/numbers";
 
@@ -260,7 +261,15 @@
 			<PButton
 				size="sm"
 				:disabled="!cogmEnabled"
-				@click="() => (refShowCOGM = true)">
+				@click="
+					() => {
+						refShowCOGM = true;
+						trackEvent('plan_tool_cogm', {
+							planetNaturalId: props.planetId,
+							recipeId: localRecipeData.recipeId,
+						});
+					}
+				">
 				<template #icon><AnalyticsOutlined /> </template>
 			</PButton>
 			<PButton
