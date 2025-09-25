@@ -52,6 +52,26 @@ export const prunplannerTheme: GlobalThemeOverrides = {
 		tdColorSorting: "rgba(255,255,255,0)",
 		tdColorHover: "rgba(255,255,255,0.03)",
 	},
+	Table: {
+		thTextColor: "rgba(255,255,255,0.9)",
+		tdTextColor: "rgba(255,255,255,0.8)",
+		fontSizeMedium: "14px",
+		thFontWeight: "bold",
+		// color
+		thColor: BLACK,
+		tdColorStriped: "rgb(3,5,10)",
+		tdColor: "rgba(255,255,255,0.02)",
+		tdColorHover: "rgba(255,255,255,0.03)",
+		thColorModal: GRAY_DARK,
+		thColorPopover: GRAY_DARK,
+		tdColorStripedModal: GRAY_DARK,
+		tdColorStripedPopover: GRAY_DARK,
+		tdColorModal: "rgba(255,255,255,0.02)",
+		tdColorPopover: "rgba(255,255,255,0.02)",
+		// padding
+		thPaddingMedium: "5px 10px",
+		tdPaddingMedium: "5px 10px",
+	},
 	Drawer: {
 		color: GRAY_DARK,
 	},
