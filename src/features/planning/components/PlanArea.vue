@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { computed, PropType, WritableComputedRef } from "vue";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import { IAreaResult } from "@/features/planning/usePlanCalculation.types";
@@ -16,6 +17,10 @@
 			type: Object as PropType<IAreaResult>,
 			required: true,
 		},
+		planetNaturalId: {
+			type: String,
+			required: true,
+		},
 	});
 
 	const emit = defineEmits<{
@@ -25,7 +30,13 @@
 	// Local State
 	const localPermits: WritableComputedRef<number> = computed({
 		get: () => props.areaData.permits,
-		set: (value: number) => emit("update:permits", value),
+		set: (value: number) => {
+			emit("update:permits", value);
+			trackEvent("plan_update_permits", {
+				permits: value,
+				planetNaturalId: props.planetNaturalId,
+			});
+		},
 	});
 </script>
 

@@ -155,7 +155,16 @@
 									v-for="fitOption in fitOptions"
 									:key="fitOption.label"
 									@click="
-										fit(fitOption.weight, fitOption.volume)
+										() => {
+											fit(
+												fitOption.weight,
+												fitOption.volume
+											);
+											trackEvent('xit_burn_fit_ship', {
+												weight: fitOption.weight,
+												volume: fitOption.volume,
+											});
+										}
 									">
 									{{ fitOption.label }}
 								</PButton>

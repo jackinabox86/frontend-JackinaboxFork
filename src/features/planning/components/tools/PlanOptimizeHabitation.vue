@@ -11,6 +11,7 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import {
@@ -253,7 +254,9 @@
 												value: responseData!.optimize_area
 													[ticker],
 											});
-										})
+										});
+
+										trackEvent('plan_tool_optimize_habitation', {applyType: 'area'});
 									}
 								">
 								Apply Area
@@ -271,7 +274,9 @@
 												value: responseData!.optimize_cost
 													[ticker],
 											});
-										})
+										});
+
+										trackEvent('plan_tool_optimize_habitation', {applyType: 'cost'});
 									}
 								">
 								Apply Cost

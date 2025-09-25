@@ -484,6 +484,7 @@
 				<PlanArea
 					:disabled="disabled"
 					:area-data="result.area"
+					:planet-natural-id="planetData.PlanetNaturalId"
 					@update:permits="handleUpdatePermits" />
 			</div>
 			<div class="p-3 pt-0">
@@ -493,6 +494,7 @@
 				<PlanInfrastructure
 					:disabled="disabled"
 					:infrastructure-data="result.infrastructure"
+					:planet-natural-id="planetData.PlanetNaturalId"
 					@update:infrastructure="handleUpdateInfrastructure" />
 			</div>
 			<div class="p-3 pt-0">
@@ -502,6 +504,7 @@
 					:disabled="disabled"
 					:corphq="result.corphq"
 					:cogc="result.cogc"
+					:planet-natural-id="planetData.PlanetNaturalId"
 					@update:corphq="handleUpdateCorpHQ"
 					@update:cogc="handleUpdateCOGC" />
 			</div>
@@ -510,6 +513,7 @@
 				<PlanExperts
 					:disabled="disabled"
 					:expert-data="result.experts"
+					:planet-natural-id="planetData.PlanetNaturalId"
 					@update:expert="handleUpdateExpert" />
 			</div>
 		</div>
@@ -520,8 +524,13 @@
 						<PIcon
 							:size="24"
 							@click="
-								refVisualShowConfiguration =
-									!refVisualShowConfiguration
+								() => {
+									refVisualShowConfiguration =
+										!refVisualShowConfiguration;
+									trackEvent('plan_show_configuration', {
+										visible: refVisualShowConfiguration,
+									});
+								}
 							">
 							<AutoAwesomeMosaicFilled
 								v-if="!refVisualShowConfiguration" />
@@ -675,6 +684,7 @@
 							<PlanWorkforce
 								:disabled="disabled"
 								:workforce-data="result.workforce"
+								:planet-natural-id="planetData.PlanetNaturalId"
 								@update:lux="handleUpdateWorkforceLux" />
 						</div>
 						<div>

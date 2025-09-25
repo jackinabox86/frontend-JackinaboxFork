@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { computed, ComputedRef, PropType } from "vue";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import {
@@ -21,6 +22,10 @@
 		},
 		expertData: {
 			type: Object as PropType<IExpertRecord>,
+			required: true,
+		},
+		planetNaturalId: {
+			type: String,
 			required: true,
 		},
 	});
@@ -65,6 +70,11 @@
 					(value) => {
 						if (value !== null && value !== undefined) {
 							emit('update:expert', expert.name, value);
+							trackEvent('plan_update_expert', {
+								planetNaturalId: props.planetNaturalId,
+								expertType: expert.name,
+								amount: value,
+							});
 						}
 					}
 				" />
