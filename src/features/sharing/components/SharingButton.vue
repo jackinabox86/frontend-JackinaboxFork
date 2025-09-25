@@ -3,8 +3,7 @@
 
 	// Composables
 	import { useSharing } from "@/features/sharing/useSharing";
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
 	import { copyToClipboard } from "@/util/data";
@@ -49,13 +48,13 @@
 		await deleteSharing();
 		isDeleting.value = false;
 		showModal.value = false;
-		capture("plan_share_delete", { planUuid: props.planUuid });
+		trackEvent("plan_share_delete");
 	}
 
 	async function doCreateSharing(): Promise<void> {
 		isCreating.value = true;
 		await createSharing();
-		capture("plan_share_create", { planUuid: props.planUuid });
+		trackEvent("plan_share_create");
 		isCreating.value = false;
 	}
 

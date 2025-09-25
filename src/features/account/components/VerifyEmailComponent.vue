@@ -5,8 +5,7 @@
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// UI
 	import { PInput, PButton } from "@/ui";
@@ -33,7 +32,7 @@
 			.execute()
 			.then((result: boolean) => {
 				verifyStatus.value = result;
-				capture("user_verify_email", { status: result });
+				trackEvent("user_verify_email", { status: result });
 			})
 			.finally(() => {
 				isVerifying.value = false;

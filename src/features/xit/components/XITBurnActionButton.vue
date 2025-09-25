@@ -5,8 +5,7 @@
 	import { useBurnXITAction } from "@/features/xit/useBurnXITAction";
 	import { useXITAction } from "@/features/xit/useXITAction";
 	import { usePreferences } from "@/features/preferences/usePreferences";
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	const {
 		burnResupplyDays,
@@ -78,7 +77,7 @@
 
 	function show(): void {
 		if (!showDrawer.value) {
-			capture("xit_burn_show");
+			trackEvent("xit_burn_show");
 
 			loadDrawer.value = true;
 			nextTick().then(() => (showDrawer.value = true));
@@ -156,7 +155,16 @@
 									v-for="fitOption in fitOptions"
 									:key="fitOption.label"
 									@click="
-										fit(fitOption.weight, fitOption.volume)
+										() => {
+											fit(
+												fitOption.weight,
+												fitOption.volume
+											);
+											trackEvent('xit_burn_fit_ship', {
+												weight: fitOption.weight,
+												volume: fitOption.volume,
+											});
+										}
 									">
 									{{ fitOption.label }}
 								</PButton>
@@ -172,7 +180,7 @@
 						<PButton
 							@click="
 								() => {
-									capture('xit_burn_copy');
+									trackEvent('xit_burn_copy');
 
 									copyToClipboard(
 										transferJSON(

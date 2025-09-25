@@ -1,5 +1,6 @@
 <script setup lang="ts">
-	import { defineAsyncComponent } from "vue";
+	import { defineAsyncComponent, onMounted } from "vue";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
@@ -32,6 +33,13 @@
 
 	const notShared: boolean =
 		props.sharedPlanUuid === undefined ? true : false;
+
+	onMounted(() =>
+		trackEvent("plan_view", {
+			planetNaturalId: props.planetNaturalId,
+			shared: !notShared,
+		})
+	);
 </script>
 
 <template>

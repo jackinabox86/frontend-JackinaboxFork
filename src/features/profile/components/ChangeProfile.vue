@@ -5,8 +5,7 @@
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Stores
 	import { useUserStore } from "@/stores/userStore";
@@ -38,7 +37,7 @@
 	);
 
 	async function patchProfile(): Promise<void> {
-		capture("user_profile_change");
+		trackEvent("user_profile_change");
 
 		isUpdating.value = true;
 
@@ -58,7 +57,7 @@
 	}
 
 	async function requestVerification(): Promise<void> {
-		capture("user_request_email_verification");
+		trackEvent("user_request_email_verification");
 
 		try {
 			await useQuery("PostUserResendEmailVerification", null).execute();

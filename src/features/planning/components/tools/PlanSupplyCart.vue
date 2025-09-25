@@ -195,9 +195,9 @@
 			Use the
 			<RouterLink
 				to="/fio/burn"
-				class="text-link-primary font-bold hover:underline"
-				>FIO Burn</RouterLink
-			>
+				class="text-link-primary font-bold hover:underline">
+				<span>FIO Burn</span>
+			</RouterLink>
 			tool for more advanced supply cart options.
 		</template>
 	</div>

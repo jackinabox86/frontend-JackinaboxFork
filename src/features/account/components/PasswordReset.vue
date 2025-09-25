@@ -5,8 +5,7 @@
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// UI
 	import { PForm, PFormItem, PInput, PButton } from "@/ui";
@@ -34,7 +33,7 @@
 		isLoading.value = true;
 		requestResponse.value = null;
 
-		capture("password_reset");
+		trackEvent("user_password_reset");
 
 		await useQuery("PostUserPasswordReset", {
 			code: inputCode.value!,

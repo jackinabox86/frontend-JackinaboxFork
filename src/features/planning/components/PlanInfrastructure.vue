@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { computed, ComputedRef, PropType } from "vue";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import {
@@ -17,6 +18,10 @@
 		},
 		infrastructureData: {
 			type: Object as PropType<IInfrastructureRecord>,
+			required: true,
+		},
+		planetNaturalId: {
+			type: String,
 			required: true,
 		},
 	});
@@ -62,6 +67,11 @@
 					(value) => {
 						if (value !== null && value !== undefined) {
 							emit('update:infrastructure', inf, value);
+							trackEvent('plan_update_infrastructure', {
+								planetNaturalId: props.planetNaturalId,
+								infrastructureType: inf,
+								amount: value,
+							});
 						}
 					}
 				" />

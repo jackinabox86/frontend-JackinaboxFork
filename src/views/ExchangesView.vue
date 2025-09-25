@@ -13,8 +13,7 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
 	import { inertClone } from "@/util/data";
@@ -154,8 +153,8 @@
 		if (selectedCX.value) {
 			isPatching.value = true;
 
-			capture("exchange_patch", {
-				exchangeUuid: selectedCX.value.uuid,
+			trackEvent("exchange_patch", {
+				cxUuid: selectedCX.value.uuid,
 				location: "exchanges_view",
 			});
 
@@ -170,7 +169,7 @@
 	}
 
 	function reloadCXData(): void {
-		capture("exchange_reload", { location: "exchanges_view" });
+		trackEvent("exchange_reload", { location: "exchanges_view" });
 		selectedCX.value = inertClone(rawSelectedCX.value);
 		selectedName.value = selectedCX.value!.name;
 		generatePlanetMap(localPlanetList.value);

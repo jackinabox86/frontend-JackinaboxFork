@@ -9,7 +9,7 @@ import {
 import { useUserStore } from "@/stores/userStore";
 
 // Composables
-import { usePostHog } from "@/lib/usePostHog";
+import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -181,7 +181,11 @@ router.beforeEach((to, _, next: NavigationGuardNext) => {
 	}
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { posthog } = usePostHog();
+router.afterEach((to, from) => {
+	trackEvent("page_view", {
+		page_name: to.name?.toString() ?? to.path,
+		referrer: from.name?.toString(),
+	});
+});
 
 export default router;

@@ -6,8 +6,7 @@
 	const { transferJSON } = useXITAction();
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	const { burnOrigin, defaultBuyItemsFromCX } = usePreferences();
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -84,7 +83,7 @@
 
 	function show(): void {
 		if (!showDrawer.value) {
-			capture("xit_transfer_show");
+			trackEvent("xit_transfer_show");
 			loadDrawer.value = true;
 			nextTick().then(() => (showDrawer.value = true));
 		}
@@ -143,7 +142,7 @@
 							<PButton
 								@click="
 									() => {
-										capture('xit_transfer_copy');
+										trackEvent('xit_transfer_copy');
 										copyToClipboard(
 											transferJSON(localElements, {
 												name: transferName,

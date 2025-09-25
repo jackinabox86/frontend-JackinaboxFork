@@ -9,8 +9,7 @@
 	// Composables
 	import { usePreferences } from "@/features/preferences/usePreferences";
 	const { layoutNavigationStyle } = usePreferences();
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// API
 	import { useQuery } from "@/lib/query_cache/useQuery";
@@ -291,7 +290,7 @@
 			? (layoutNavigationStyle.value = "collapsed")
 			: (layoutNavigationStyle.value = "full");
 
-		capture("navigation_toggle", { size: layoutNavigationStyle.value });
+		trackEvent("navigation_toggle", { size: layoutNavigationStyle.value });
 	}
 
 	const isFull = computed(() => !!(layoutNavigationStyle.value === "full"));

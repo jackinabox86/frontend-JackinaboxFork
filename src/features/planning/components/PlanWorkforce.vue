@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { computed, ComputedRef, PropType } from "vue";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Utils
 	import { capitalizeString } from "@/util/text";
@@ -22,6 +23,10 @@
 		},
 		workforceData: {
 			type: Object as PropType<IWorkforceRecord>,
+			required: true,
+		},
+		planetNaturalId: {
+			type: String,
 			required: true,
 		},
 	});
@@ -75,13 +80,20 @@
 						size="sm"
 						type="success"
 						@click="
-							() =>
+							() => {
 								emit(
 									'update:lux',
 									workforce.name,
 									'lux1',
 									!workforce.lux1
-								)
+								);
+								trackEvent('plan_update_workforce', {
+									planetNaturalId: props.planetNaturalId,
+									workforceType: workforce.name,
+									luxType: 'Lux1',
+									value: !workforce.lux1,
+								});
+							}
 						">
 						<template #icon>
 							<CheckSharp />
@@ -93,13 +105,20 @@
 						size="sm"
 						type="error"
 						@click="
-							() =>
+							() => {
 								emit(
 									'update:lux',
 									workforce.name,
 									'lux1',
 									!workforce.lux1
-								)
+								);
+								trackEvent('plan_update_workforce', {
+									planetNaturalId: props.planetNaturalId,
+									workforceType: workforce.name,
+									luxType: 'Lux1',
+									value: !workforce.lux1,
+								});
+							}
 						">
 						<template #icon>
 							<RadioButtonUncheckedSharp />
@@ -113,13 +132,20 @@
 						size="sm"
 						type="success"
 						@click="
-							() =>
+							() => {
 								emit(
 									'update:lux',
 									workforce.name,
 									'lux2',
 									!workforce.lux2
-								)
+								);
+								trackEvent('plan_update_workforce', {
+									planetNaturalId: props.planetNaturalId,
+									workforceType: workforce.name,
+									luxType: 'Lux2',
+									value: !workforce.lux1,
+								});
+							}
 						">
 						<template #icon>
 							<CheckSharp />
@@ -131,13 +157,20 @@
 						size="sm"
 						type="error"
 						@click="
-							() =>
+							() => {
 								emit(
 									'update:lux',
 									workforce.name,
 									'lux2',
 									!workforce.lux2
-								)
+								);
+								trackEvent('plan_update_workforce', {
+									planetNaturalId: props.planetNaturalId,
+									workforceType: workforce.name,
+									luxType: 'Lux2',
+									value: !workforce.lux1,
+								});
+							}
 						">
 						<template #icon>
 							<RadioButtonUncheckedSharp />

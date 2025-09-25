@@ -15,8 +15,7 @@
 	// Composables
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { useExchangeData } from "@/database/services/useExchangeData";
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import MaterialDataChart from "@/features/market_exploration/components/MaterialDataChart.vue";
@@ -128,7 +127,9 @@
 	function toggleDrawer(): void {
 		if (!props.disableDrawer) {
 			refShowDrawer.value = !refShowDrawer.value;
-			capture("materialtile_market_drawer", { material: props.ticker });
+			trackEvent("materialtile_market_drawer", {
+				materialTicker: props.ticker,
+			});
 		}
 	}
 

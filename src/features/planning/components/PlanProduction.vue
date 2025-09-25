@@ -3,6 +3,7 @@
 
 	// Composables
 	import { useBuildingData } from "@/database/services/useBuildingData";
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
@@ -98,6 +99,7 @@
 				@update:value="
 					(value) => {
 						emit('create:building', value as string);
+						trackEvent('plan_create_building', {planetNaturalId: props.planetId, buildingTicker: value as string})
 					}
 				" />
 		</div>
@@ -113,33 +115,48 @@
 		:planet-id="planetId"
 		@update:building:amount="
 			(index: number, value: number) =>
-				emit('update:building:amount', index, value)
+				{
+					emit('update:building:amount', index, value);
+					trackEvent('plan_update_building', {planetNaturalId: props.planetId, buildingTicker: building.name, amount: value})
+				}
 		"
 		@delete:building="(index: number) => emit('delete:building', index)"
 		@update:building:recipe:amount="
 			(buildingIndex: number, recipeIndex: number, value: number) =>
-				emit(
-					'update:building:recipe:amount',
-					buildingIndex,
-					recipeIndex,
-					value
-				)
+				{
+					emit(
+						'update:building:recipe:amount',
+						buildingIndex,
+						recipeIndex,
+						value
+					);
+					trackEvent('plan_update_building_recipe_amount', {planetNaturalId: props.planetId, buildingTicker: building.name, recipeIndex: recipeIndex, amount: value})
+			}
 		"
 		@delete:building:recipe="
 			(buildingIndex: number, recipeIndex: number) =>
-				emit('delete:building:recipe', buildingIndex, recipeIndex)
+				{
+					emit('delete:building:recipe', buildingIndex, recipeIndex);
+					trackEvent('plan_update_building_delete_recipe', {planetNaturalId: props.planetId, buildingTicker: building.name, recipeIndex: recipeIndex})
+				}
 		"
 		@add:building:recipe="
 			(buildingIndex: number) =>
-				emit('add:building:recipe', buildingIndex)
+				{
+					emit('add:building:recipe', buildingIndex);
+					trackEvent('plan_update_building_add_recipe', {planetNaturalId: props.planetId, buildingTicker: building.name})
+				}
 		"
 		@update:building:recipe="
 			(buildingIndex: number, recipeIndex: number, recipeId: string) =>
-				emit(
-					'update:building:recipe',
-					buildingIndex,
-					recipeIndex,
-					recipeId
-				)
+				{
+					emit(
+						'update:building:recipe',
+						buildingIndex,
+						recipeIndex,
+						recipeId
+					);
+					trackEvent('plan_update_building_change_recipe', {planetNaturalId: props.planetId, buildingTicker: building.name, recipeId})
+				}
 		" />
 </template>
