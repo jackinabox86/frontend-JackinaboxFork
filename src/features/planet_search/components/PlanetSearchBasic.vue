@@ -5,8 +5,7 @@
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import { IPlanet } from "@/features/api/gameData.types";
@@ -30,7 +29,7 @@
 		if (canSearch.value) {
 			isLoading.value = true;
 
-			capture("planet_search_basic");
+			trackEvent("planet_search_basic", { searchId: refSearchId.value! });
 
 			try {
 				await useQuery("GetPlanetSearchSingle", {

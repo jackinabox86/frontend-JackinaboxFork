@@ -5,8 +5,7 @@
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// UI
 	import { PForm, PFormItem, PInput, PButton } from "@/ui";
@@ -32,7 +31,7 @@
 	async function patchPassword(): Promise<void> {
 		isChanging.value = true;
 
-		capture("user_password_change");
+		trackEvent("user_password_change");
 
 		await useQuery("PatchUserChangePassword", {
 			old: refCurrentPassword.value,

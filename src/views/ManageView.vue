@@ -8,8 +8,7 @@
 	});
 
 	// Composables
-	import { usePostHog } from "@/lib/usePostHog";
-	const { setUserProp } = usePostHog();
+	import { trackUser } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import WrapperPlanningDataLoader from "@/features/wrapper/components/WrapperPlanningDataLoader.vue";
@@ -39,7 +38,7 @@
 	const cxList: Ref<ICX[]> = ref([]);
 
 	async function planOnComplete() {
-		setUserProp({
+		trackUser({
 			user_plans: planList.value.length,
 			user_empires: empireList.value.length,
 			user_exchanges: cxList.value.length,

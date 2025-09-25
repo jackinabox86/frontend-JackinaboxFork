@@ -21,8 +21,7 @@
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	const { materialSelectOptions } = useMaterialData();
 	// Composables
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import { IGraphFlow } from "@/features/production_chain/productionGraph.types";
@@ -54,7 +53,12 @@
 	async function generate(resetSelection: boolean = false) {
 		if (resetSelection) selectedRecipes.value = {};
 
-		capture("production_chain", { material: selectedMaterial.value });
+		trackEvent("production_chain", {
+			materialTicker: selectedMaterial.value,
+			amount: selectedAmount.value,
+			recipes: Object.values(selectedRecipes.value),
+			terminals: selectedTerminals.value,
+		});
 
 		graphData.value = await create(
 			selectedMaterial.value,

@@ -3,8 +3,7 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import { ICX } from "@/stores/planningStore.types";
@@ -52,7 +51,7 @@
 		if (compCanCreate.value) {
 			refIsCreating.value = true;
 
-			capture("manage_cx_create");
+			trackEvent("manage_cx_create");
 
 			await useQuery("CreateCX", {
 				cxName: refNewCXName.value!,
@@ -83,7 +82,7 @@
 	async function deleteCX(cxUuid: string): Promise<void> {
 		refIsDeleting.value = cxUuid;
 
-		capture("manage_cx_delete", { cxUuid: cxUuid });
+		trackEvent("manage_cx_delete", { cxUuid });
 
 		const deletionResult: boolean = await useQuery("DeleteCX", {
 			cxUuid: cxUuid,

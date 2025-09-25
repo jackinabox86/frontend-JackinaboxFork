@@ -2,13 +2,12 @@
 	import { useVersionCheck } from "@/lib/useVersionCheck";
 	const { markUpdated } = useVersionCheck();
 
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	async function reload(): Promise<void> {
 		markUpdated()
 			.then(() => {
-				capture("version_reload");
+				trackEvent("version_reload");
 			})
 			.finally(() => {
 				window.location.reload();

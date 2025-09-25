@@ -14,8 +14,13 @@ import { usePlanningStore } from "@/stores/planningStore";
 import { useQueryStore } from "@/lib/query_cache/queryStore";
 
 // Composables
-import { usePostHog } from "@/lib/usePostHog";
 import { useVersionCheck } from "@/lib/useVersionCheck";
+import {
+	trackEvent,
+	trackUser,
+	resetUser,
+	identifyUser,
+} from "@/lib/analytics/useAnalytics";
 
 // Types & Interfaces
 import {
@@ -31,8 +36,6 @@ import { preferenceDefaults } from "@/features/preferences/userDefaults";
 export const useUserStore = defineStore(
 	"prunplanner_user",
 	() => {
-		const { posthog, setUserProp } = usePostHog();
-
 		// state
 		const accessToken: Ref<string | undefined> = ref(undefined);
 		const refreshToken: Ref<string | undefined> = ref(undefined);
@@ -119,13 +122,13 @@ export const useUserStore = defineStore(
 		 * @author jplacht
 		 */
 		function logout(): void {
-			usePostHog().capture("user_logout");
+			trackEvent("user_logout");
 
 			// reset user store
 			$reset();
 
 			// reset posthog users
-			posthog.reset();
+			resetUser();
 
 			const planningStore = usePlanningStore();
 			planningStore.$reset();
@@ -155,7 +158,7 @@ export const useUserStore = defineStore(
 
 				setToken(tokenData.access_token, tokenData.refresh_token);
 
-				usePostHog().capture("user_login");
+				trackEvent("user_login", { username });
 
 				// sets the current version to the available version
 				const { markUpdated } = useVersionCheck();
@@ -206,7 +209,7 @@ export const useUserStore = defineStore(
 				try {
 					await callGetProfile().then((result: IUserProfile) => {
 						// identify users for posthog
-						posthog.identify(result.user_id.toString(), {
+						identifyUser(result.user_id.toString(), {
 							username: result.username,
 						});
 
@@ -219,10 +222,10 @@ export const useUserStore = defineStore(
 								result.fio_apikey !== null &&
 								result.prun_username !== null
 							)
-								setUserProp({ fio_enabled: true });
-							else setUserProp({ fio_enabled: false });
+								trackUser({ fio_enabled: true });
+							else trackUser({ fio_enabled: false });
 
-							setUserProp({
+							trackUser({
 								prun_username: result.prun_username,
 							});
 						}

@@ -6,8 +6,7 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Components
 	import PlanCOGMTable from "@/features/planning/components/tools/PlanCOGMTable.vue";
@@ -74,7 +73,7 @@
 	}
 
 	function reload(): void {
-		capture("exchange_reload", { location: "cogm" });
+		trackEvent("exchange_reload", { location: "cogm" });
 		getCXData();
 	}
 
@@ -85,8 +84,8 @@
 			isPatching.value = true;
 
 			try {
-				capture("exchange_patch", {
-					exchangeUuid: selectedCX.value.uuid,
+				trackEvent("exchange_patch", {
+					cxUuid: selectedCX.value.uuid,
 					location: "cogm",
 				});
 

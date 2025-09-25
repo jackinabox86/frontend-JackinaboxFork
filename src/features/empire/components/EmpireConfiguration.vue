@@ -3,8 +3,7 @@
 
 	// Composables
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
 	import { inertClone } from "@/util/data";
@@ -68,7 +67,7 @@
 	 * @returns {void}
 	 */
 	function reload(): void {
-		capture("empire_reload");
+		trackEvent("empire_reload");
 		localData.value = inertClone(props.data);
 	}
 
@@ -81,7 +80,7 @@
 	 */
 	async function save(): Promise<void> {
 		isLoading.value = true;
-		capture("empire_patch", { empireUuid: localData.value.uuid });
+		trackEvent("empire_patch");
 
 		const patchData: IEmpirePatchPayload = {
 			faction: localData.value.faction as PLAN_FACTION,

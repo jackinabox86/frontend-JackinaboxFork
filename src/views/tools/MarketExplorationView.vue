@@ -17,8 +17,7 @@
 
 	// Composables
 	import { useMarketExplorationChart } from "@/features/market_exploration/useMarketExplorationChart";
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import { PSelectOption } from "@/ui/ui.types";
@@ -50,9 +49,9 @@
 	} = useMarketExplorationChart(selectedExchange, selectedMaterial);
 
 	function fetch(): void {
-		capture("marketexploration_explore", {
+		trackEvent("marketexploration_explore", {
 			exchange: selectedExchange.value,
-			material: selectedMaterial.value,
+			materialTicker: selectedMaterial.value,
 		});
 		fetchData();
 	}

@@ -5,8 +5,7 @@
 	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Composables
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import {
@@ -135,10 +134,7 @@
 	async function doSearch() {
 		refIsLoading.value = true;
 
-		capture("planet_search_advanced", {
-			materials: searchPayload.value.Materials,
-			cogc: searchPayload.value.COGC,
-		});
+		trackEvent("planet_search_advanced", searchPayload.value);
 
 		try {
 			const data: IPlanet[] = await useQuery("PostPlanetSearch", {

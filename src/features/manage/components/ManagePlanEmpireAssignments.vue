@@ -13,8 +13,7 @@
 	import { usePlanetData } from "@/database/services/usePlanetData";
 	const { planetNames, loadPlanetName } = usePlanetData();
 	import { useQuery } from "@/lib/query_cache/useQuery";
-	import { usePostHog } from "@/lib/usePostHog";
-	const { capture } = usePostHog();
+	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Util
 	import { inertClone } from "@/util/data";
@@ -163,13 +162,13 @@
 	}
 
 	function reload(): void {
-		capture("manage_plans_reload");
+		trackEvent("manage_plans_reload");
 		localEmpires.value = inertClone(props.empires);
 		generateMatrix();
 	}
 
 	function changeAllToEmpire(empireUuid: string, value: boolean): void {
-		capture("manage_plans_assign_all", { empireUuid: empireUuid });
+		trackEvent("manage_plans_assign_all", { value });
 
 		matrix.value.forEach((mv) => {
 			// check if part of filtered view
@@ -228,7 +227,7 @@
 	async function patchJunctions(): Promise<void> {
 		refIsPatching.value = true;
 
-		capture("manage_plans_junctions_update");
+		trackEvent("manage_plans_junctions_update");
 
 		useQuery("PatchEmpirePlanJunctions", {
 			junctions: patchJunctionData.value,
@@ -244,7 +243,7 @@
 	): Promise<void> {
 		refIsCloning.value = planUuid;
 
-		capture("manage_plans_clone", { planUuid: planUuid });
+		trackEvent("manage_plans_clone", { planUuid });
 
 		useQuery("ClonePlan", {
 			planUuid: planUuid,
@@ -272,7 +271,7 @@
 	async function deletePlan(planUuid: string): Promise<void> {
 		refIsDeleting.value = planUuid;
 
-		capture("manage_plans_delete", { planUuid: planUuid });
+		trackEvent("manage_plans_delete", { planUuid });
 
 		useQuery("DeletePlan", {
 			planUuid: planUuid,
