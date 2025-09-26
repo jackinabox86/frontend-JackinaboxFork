@@ -307,7 +307,7 @@
 					message="One does not simply calculate empire plans." />
 
 				<div v-else>
-					<div class="min-h-screen flex flex-col">
+					<div class="flex flex-col">
 						<div
 							class="px-6 py-3 border-b border-white/10 flex flex-row justify-between gap-x-3">
 							<div class="flex flex-row gap-3">
@@ -325,10 +325,10 @@
 						</div>
 
 						<div
-							class="flex-grow grid grid-cols-1 lg:grid-cols-[40%_auto] divide-x divide-white/10">
+							class="flex-grow grid grid-cols-1 xl:grid-cols-[1fr_auto]">
 							<div>
 								<div
-									class="px-6 pb-3 pt-4 border-b border-white/10 my-auto">
+									class="px-6 pb-3 pt-6 my-auto">
 									<PForm>
 										<PFormItem label="Switch Empire">
 											<PSelect
@@ -348,31 +348,39 @@
 										</PFormItem>
 									</PForm>
 								</div>
-								<div class="p-6 border-b border-white/10">
+								<div class="p-6">
 									<AsyncEmpireCostOverview
 										:cost-overview="costOverview" />
 								</div>
-								<div class="p-6 border-b border-white/10">
-									<Suspense>
-										<AsyncEmpirePlanList
-											:plan-list-data="planListData" />
-										<template #fallback>
-											<RenderingProgress :height="200" />
-										</template>
-									</Suspense>
-								</div>
-								<div class="p-6 border-b border-white/10">
-									<Suspense v-if="selectedEmpire">
-										<AsyncEmpireConfiguration
-											:data="selectedEmpire"
-											@reload:empires="reloadEmpires" />
-										<template #fallback>
-											<RenderingProgress :height="200" />
-										</template>
-									</Suspense>
+								<div class="flex flex-wrap child:p-6">
+									<div>
+										<Suspense>
+											<AsyncEmpirePlanList
+												:plan-list-data="
+													planListData
+												" />
+											<template #fallback>
+												<RenderingProgress
+													:height="200" />
+											</template>
+										</Suspense>
+									</div>
+									<div>
+										<Suspense v-if="selectedEmpire">
+											<AsyncEmpireConfiguration
+												:data="selectedEmpire"
+												@reload:empires="
+													reloadEmpires
+												" />
+											<template #fallback>
+												<RenderingProgress
+													:height="200" />
+											</template>
+										</Suspense>
+									</div>
 								</div>
 							</div>
-							<div class="p-6">
+							<div class="p-6 overflow-x-auto">
 								<EmpireMaterialIOFiltered
 									:content="mainContent"
 									:empire-material-i-o="

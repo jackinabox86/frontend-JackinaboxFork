@@ -16,8 +16,8 @@
 </script>
 
 <template>
-	<div class="grid grid-cols-1 2xl:grid-cols-3 gap-6 child:child:text-center">
-		<div>
+	<div class="grid grid-cols-[1fr_auto_auto_auto_1fr] gap-6 child:child:text-center">
+		<div class="col-2">
 			<div class="text-white/40 text-xs">Profit</div>
 			<div class="text-white text-xl">
 				{{ formatNumber(costOverview.totalProfit) }}

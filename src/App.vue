@@ -34,7 +34,6 @@
 	);
 	const mainContentClasses = computed(() => [
 		"flex-1 flex flex-col",
-		isLoggedIn.value ? "overflow-y-auto" : "",
 	]);
 
 	onMounted(() => {
