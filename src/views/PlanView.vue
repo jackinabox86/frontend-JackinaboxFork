@@ -63,7 +63,7 @@
 	);
 
 	// UI
-	import { PButton, PButtonGroup, PTooltip, PSpin, PIcon } from "@/ui";
+	import { PButton, PButtonGroup, PTooltip, PSpin } from "@/ui";
 	import {
 		ShoppingBasketSharp,
 		AttachMoneySharp,
@@ -462,10 +462,10 @@
 			//() => result.value.autoOptimizeHabs,
 		],
 		() => {
-			//TODO: if (result.value.autoOptimizeHabs) {
-			if (true) {
-				applyOptimizeHabs("auto");
-			}
+			//TODO:
+			//if (result.value.autoOptimizeHabs) {
+			applyOptimizeHabs("auto");
+			//}
 		}
 	);
 </script>

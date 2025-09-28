@@ -398,8 +398,8 @@ export async function usePlanCalculationHandlers(
 	 *
 	 * @param {boolean} value Plan should automatically optimize habitations
 	 */
-	function handleUpdateAutoOptimizeHabs(value: boolean): void {
-		// Stub, back-end can't store this yet
+	function handleUpdateAutoOptimizeHabs(_value: boolean): void {
+		// TODO: Stub, back-end can't store this yet
 		modified.value = true;
 	}
 

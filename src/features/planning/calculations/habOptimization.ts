@@ -23,7 +23,7 @@ const HabArea = {
 export function calculateAvailableArea(
 totalArea: number, usedArea: number, infrastructure: Record<INFRASTRUCTURE_TYPE, number>): number {
 	let currentHabArea = 0;
-	for (let habType in HabArea) {
+	for (const habType in HabArea) {
 		const habCount = infrastructure[habType as INFRASTRUCTURE_TYPE] || 0;
 		const habArea = HabArea[habType as keyof typeof HabArea];
 		currentHabArea += habCount * habArea;
@@ -55,8 +55,8 @@ export function optimizeHabs(
 		return optimizeHabs("area", costs, workforceRequired, availableArea);
 	}
 
-	let constraints = new Map<string, Constraint>();
-	for (let workforceType in workforceRequired) {
+	const constraints = new Map<string, Constraint>();
+	for (const workforceType in workforceRequired) {
 		const required =
 			workforceRequired[workforceType as keyof IWorkforceRecord].required;
 		if (required !== 0) {

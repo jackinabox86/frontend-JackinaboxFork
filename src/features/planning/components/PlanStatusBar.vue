@@ -1,6 +1,5 @@
 <script setup lang="ts">
 	import { computed, PropType } from "vue";
-	import { trackEvent } from "@/lib/analytics/useAnalytics";
 
 	// Types & Interfaces
 	import {
@@ -73,7 +72,7 @@
 </script>
 
 <template>
-	<div class="flex flex-row flex-wrap font-bold child:mr-3">
+	<div class="flex flex-row font-bold child:mr-3">
 		<div :class="corphq ? 'visible' : 'collapse md:invisible'">
 			<span class="text-positive">HQ</span>
 		</div>
