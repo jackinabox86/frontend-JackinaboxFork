@@ -73,7 +73,7 @@
 </script>
 
 <template>
-	<div class="flex flex-row font-bold child:mr-3">
+	<div class="flex flex-row flex-wrap font-bold child:mr-3">
 		<div :class="corphq ? 'visible' : 'collapse md:invisible'">
 			<span class="text-positive">HQ</span>
 		</div>

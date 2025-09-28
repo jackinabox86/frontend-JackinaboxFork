@@ -22,12 +22,12 @@
 	}
 
 	.ptable th {
-		@apply bg-black text-left px-2 py-1 font-bold;
+		@apply bg-black text-left font-bold;
 	}
 
 	.ptable th,
 	.ptable td {
-		@apply px-3 py-1;
+		@apply px-1 py-1 sm:px-2 @lg:px-2;
 	}
 
 	.ptable th {

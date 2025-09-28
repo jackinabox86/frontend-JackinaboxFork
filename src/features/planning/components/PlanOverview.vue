@@ -26,7 +26,7 @@
 </script>
 
 <template>
-	<div class="flex flex-row gap-6 child:shrink-0">
+	<div class="flex flex-row flex-wrap gap-6 child:shrink-0">
 		<div>
 			<slot name="heading" text="Overview"></slot>
 			<PTable striped>

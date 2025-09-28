@@ -709,10 +709,10 @@
 			</div>
 			<!-- Main Plan View -->
 			<div
-				class="row-6 col-span-full grid grid-cols-1 @[1350px]:grid-cols-[auto_450px] pt-3 gap-3">
+				class="row-6 col-span-full grid grid-cols-1 @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
 				<div>
 					<div class="flex flex-row flex-wrap gap-6">
-						<div class="shrink-0">
+						<div>
 							<h2 class="text-white/80 font-bold text-lg pb-3">
 								Workforce
 							</h2>

@@ -44,6 +44,21 @@
 	const localWorkforceData: ComputedRef<IWorkforceRecord> = computed(
 		() => props.workforceData
 	);
+
+	// Click Handlers
+	function updateLux(
+		workforce: WORKFORCE_TYPE,
+		luxType: "lux1" | "lux2",
+		value: boolean
+	) {
+		emit("update:lux", workforce, luxType, value);
+		trackEvent("plan_update_workforce", {
+			planetNaturalId: props.planetNaturalId,
+			workforceType: workforce,
+			luxType: luxType === "lux1" ? "Lux1" : "Lux2",
+			value: value,
+		});
+	}
 </script>
 
 <template>
@@ -75,105 +90,29 @@
 				</td>
 				<td class="text-center">
 					<PButton
-						v-if="workforce.lux1"
 						:disabled="disabled"
 						size="sm"
-						type="success"
+						:type="workforce.lux1 ? 'success' : 'error'"
 						@click="
-							() => {
-								emit(
-									'update:lux',
-									workforce.name,
-									'lux1',
-									!workforce.lux1
-								);
-								trackEvent('plan_update_workforce', {
-									planetNaturalId: props.planetNaturalId,
-									workforceType: workforce.name,
-									luxType: 'Lux1',
-									value: !workforce.lux1,
-								});
-							}
+							updateLux(workforce.name, 'lux1', !workforce.lux1)
 						">
 						<template #icon>
-							<CheckSharp />
-						</template>
-					</PButton>
-					<PButton
-						v-else
-						:disabled="disabled"
-						size="sm"
-						type="error"
-						@click="
-							() => {
-								emit(
-									'update:lux',
-									workforce.name,
-									'lux1',
-									!workforce.lux1
-								);
-								trackEvent('plan_update_workforce', {
-									planetNaturalId: props.planetNaturalId,
-									workforceType: workforce.name,
-									luxType: 'Lux1',
-									value: !workforce.lux1,
-								});
-							}
-						">
-						<template #icon>
-							<RadioButtonUncheckedSharp />
+							<CheckSharp v-if="workforce.lux1" />
+							<RadioButtonUncheckedSharp v-else />
 						</template>
 					</PButton>
 				</td>
 				<td class="text-center">
 					<PButton
-						v-if="workforce.lux2"
 						:disabled="disabled"
 						size="sm"
-						type="success"
+						:type="workforce.lux2 ? 'success' : 'error'"
 						@click="
-							() => {
-								emit(
-									'update:lux',
-									workforce.name,
-									'lux2',
-									!workforce.lux2
-								);
-								trackEvent('plan_update_workforce', {
-									planetNaturalId: props.planetNaturalId,
-									workforceType: workforce.name,
-									luxType: 'Lux2',
-									value: !workforce.lux1,
-								});
-							}
+							updateLux(workforce.name, 'lux2', !workforce.lux2)
 						">
 						<template #icon>
-							<CheckSharp />
-						</template>
-					</PButton>
-					<PButton
-						v-else
-						:disabled="disabled"
-						size="sm"
-						type="error"
-						@click="
-							() => {
-								emit(
-									'update:lux',
-									workforce.name,
-									'lux2',
-									!workforce.lux2
-								);
-								trackEvent('plan_update_workforce', {
-									planetNaturalId: props.planetNaturalId,
-									workforceType: workforce.name,
-									luxType: 'Lux2',
-									value: !workforce.lux1,
-								});
-							}
-						">
-						<template #icon>
-							<RadioButtonUncheckedSharp />
+							<CheckSharp v-if="workforce.lux2" />
+							<RadioButtonUncheckedSharp v-else />
 						</template>
 					</PButton>
 				</td>

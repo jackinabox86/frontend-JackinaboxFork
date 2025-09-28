@@ -8,6 +8,7 @@
 	import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
 
 	// Util
+	import { capitalizeString } from "@/util/text";
 	import { formatNumber } from "@/util/numbers";
 
 	// UI
@@ -91,11 +92,9 @@
 					{{ localBuildingData.name }} -
 					{{ localBuildingData.amount }}
 				</h3>
-				<span
-					class="capitalize"
-					:class="isPlanetCogc ? 'text-positive' : ''"
-					>{{ expertiseString }}</span
-				>
+				<span :class="isPlanetCogc ? 'text-positive' : ''">{{
+					capitalizeString(expertiseString)
+				}}</span>
 			</div>
 			<div
 				class="col-1 row-2 @lg:row-1 @lg:col-2 @lg:justify-self-end-safe flex flex-row flex-wrap gap-x-1">
