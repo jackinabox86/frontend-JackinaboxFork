@@ -371,13 +371,15 @@ export const useQueryStore = defineStore(
 					entry.expireTime &&
 					!entry.loading &&
 					entry.error === null &&
+					entry.timestamp &&
+					entry.expireTime &&
 					now - entry.timestamp > entry.expireTime
 				) {
 					// identify correct definition
 					const definition: IQueryRepository[K] =
 						queryRepository.repository[entry.definitionName as K];
 
-					if (definition.autoRefetch) {
+					if (definition && definition.autoRefetch) {
 						execute(
 							entry.definitionName as K,
 							entry.params as ParamsOfDefinition<
