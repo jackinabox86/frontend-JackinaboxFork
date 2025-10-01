@@ -4,14 +4,13 @@ import posthog, { Properties } from "posthog-js";
 import { redact } from "@/util/data";
 
 // Key can be public, as its web sdk + has configured authorized urls
-const POSTHOG_PUBLIC_KEY = "phc_JVfz4wWZFbbQF37d4NQ70w3I3uZ3Jrkpfu01myYDWJJ";
+const POSTHOG_PUBLIC_KEY = window.__APP_CONFIG__?.POSTHOG_KEY;
 const POSTHOG_NAME = "prunplanner_frontend";
 
 // initialize only once
 let isInitialized = false;
 
 export function usePostHog() {
-	const posthogToken: string = POSTHOG_PUBLIC_KEY;
 	const posthogName: string = POSTHOG_NAME;
 
 	const SENSITIVE_KEYS: string[] = [
@@ -32,8 +31,8 @@ export function usePostHog() {
 	// Queue, in case PostHog is not yet ready
 	const eventQueue: Array<[string, Properties | null | undefined]> = [];
 
-	if (!isInitialized && posthogToken && isClient()) {
-		posthog.init(posthogToken, {
+	if (!isInitialized && POSTHOG_PUBLIC_KEY && isClient()) {
+		posthog.init(POSTHOG_PUBLIC_KEY, {
 			api_host: "https://squirrel.prunplanner.org/relay-DWJJ",
 			ui_host: "https://eu.posthog.com",
 			defaults: "2025-05-24",
