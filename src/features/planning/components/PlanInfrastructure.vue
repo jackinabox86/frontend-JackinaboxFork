@@ -1,11 +1,8 @@
 <script setup lang="ts">
-	import {
-		computed,
-		ComputedRef,
-		PropType,
-		WritableComputedRef,
-	} from "vue";
+	import { computed, ComputedRef, PropType, WritableComputedRef } from "vue";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
+
+	import { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
 
 	// Types & Interfaces
 	import {
@@ -14,8 +11,14 @@
 	} from "@/features/planning/usePlanCalculation.types";
 
 	// UI
-	import { PButton, PForm, PFormItem, PCheckbox, PInputNumber, PTooltip } from "@/ui";
-import { HabSolverGoal } from "../calculations/habOptimization";
+	import {
+		PButton,
+		PForm,
+		PFormItem,
+		PCheckbox,
+		PInputNumber,
+		PTooltip,
+	} from "@/ui";
 
 	const props = defineProps({
 		disabled: {

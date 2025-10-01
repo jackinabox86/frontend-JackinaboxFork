@@ -78,9 +78,9 @@
 		</div>
 		<div>
 			<span>COGC: </span>
-			<span :class="props.cogc === '---' ? 'text-negative' : ''">{{
-				cogcTextMapping[props.cogc]
-			}}</span>
+			<span :class="props.cogc === '---' ? 'text-negative' : ''">
+				{{ cogcTextMapping[props.cogc] }}
+			</span>
 		</div>
 		<div>
 			<span>Area: </span>
@@ -89,8 +89,8 @@
 					areaData.areaUsed > areaData.areaTotal
 						? 'text-negative'
 						: ''
-				"
-				>{{ areaData.areaUsed }}
+				">
+				{{ areaData.areaUsed }}
 			</span>
 			<span>/{{ areaData.areaTotal }}</span>
 		</div>
@@ -99,15 +99,15 @@
 			<span
 				:class="
 					overviewData.profit > 0 ? 'text-positive' : 'text-negative'
-				"
-				>{{ formatNumber(overviewData.profit) }}</span
-			>
+				">
+				{{ formatNumber(overviewData.profit) }}
+			</span>
 		</div>
 		<div>
 			<span>Experts: </span>
-			<span :class="expertsString === 'None' ? 'text-negative' : ''">{{
-				expertsString
-			}}</span>
+			<span :class="expertsString === 'None' ? 'text-negative' : ''">
+				{{ expertsString }}
+			</span>
 		</div>
 	</div>
 </template>

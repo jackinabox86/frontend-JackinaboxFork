@@ -97,8 +97,8 @@
 				<thead class="child:text-center">
 					<tr>
 						<th />
-						<th>m³</th>
-						<th>t</th>
+						<th class="!text-center">m³</th>
+						<th class="!text-center">t</th>
 					</tr>
 				</thead>
 				<tbody class="child:child:text-center">

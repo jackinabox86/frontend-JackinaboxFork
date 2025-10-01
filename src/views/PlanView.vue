@@ -492,7 +492,7 @@
 			</div>
 			<!-- Status Bar (sticky) -->
 			<div
-				class="row-3 md:row-2 md:col-span-full xl:row-1 md:col-2 w-full md:w-auto justify-self-start md:justify-self-center my-auto p-3 sticky top-0 z-1000 bg-(--app-bg) md:rounded-b-lg">
+				class="row-3 md:row-2 md:col-span-full xl:row-1 w-full md:w-auto justify-self-start md:justify-self-center my-auto p-3 sticky top-0 z-1000 bg-(--app-bg) md:rounded-b-lg">
 				<PlanStatusBar
 					:area-data="result.area"
 					:corphq="result.corphq"
@@ -631,7 +631,7 @@
 							</h2>
 
 							<div
-								class="flex flex-col gap-y-3 sm:border sm:border-white/10 sm:rounded-lg sm:p-3">
+								class="flex flex-col gap-y-3 sm:border sm:border-white/10 sm:rounded sm:p-3">
 								<PlanConfiguration
 									:disabled="disabled"
 									:plan-name="planName"
@@ -668,7 +668,7 @@
 								Infrastructure
 							</h2>
 							<div
-								class="sm:border sm:border-white/10 sm:rounded-lg sm:p-3">
+								class="sm:border sm:border-white/10 sm:rounded sm:p-3">
 								<PlanInfrastructure
 									:disabled="disabled"
 									:infrastructure-data="result.infrastructure"
@@ -690,7 +690,7 @@
 								Experts
 							</h2>
 							<div
-								class="sm:border sm:border-white/10 sm:rounded-lg sm:p-3">
+								class="sm:border sm:border-white/10 sm:rounded sm:p-3">
 								<PlanExperts
 									:disabled="disabled"
 									:expert-data="result.experts"
