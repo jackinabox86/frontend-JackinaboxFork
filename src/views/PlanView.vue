@@ -34,6 +34,7 @@
 	const { findEmpireCXUuid } = useCXData();
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { usePlan } from "@/features/planning_data/usePlan";
+	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
 	const {
 		createNewPlan,
 		saveExistingPlan,
@@ -137,13 +138,24 @@
 		handleAddBuildingRecipe,
 		handleChangeBuildingRecipe,
 		handleChangePlanName,
-		handleUpdateAutoOptimizeHabs,
 	} = calculation;
 
 	const planetData: IPlanet = await getPlanet(props.planData.planet_id);
 
 	const refMaterialIOShowBasked: Ref<boolean> = ref(false);
 	const refMaterialIOSplitted: Ref<boolean> = ref(false);
+
+	// Plan Preferences
+	const planPrefs = computed<ReturnType<typeof usePlanPreferences> | null>(
+		() => {
+			return !props.disabled && props.planData.uuid !== undefined
+				? usePlanPreferences(props.planData.uuid)
+				: null;
+		}
+	);
+
+	const refAutoOptimizeHabs =
+		planPrefs.value === null ? ref(true) : planPrefs.value.autoOptimizeHabs;
 
 	/**
 	 * Handle initial empire uuid assignment
@@ -432,13 +444,19 @@
 		);
 	});
 
-	function applyOptimizeHabs(goal: HabSolverGoal) {
+	function applyOptimizeHabs(goal: HabSolverGoal, force: boolean) {
+		// skip, if autooptimization is deactivated and not forced,
+		// forcing only happens from the button clicks in configuration
+
+		if (!refAutoOptimizeHabs.value && !force) return;
+
 		const solution = optimizeHabs(
 			goal,
 			result.value.infrastructureCosts,
 			result.value.workforce,
 			availableHabArea.value
 		);
+
 		if (solution.status === "optimal") {
 			for (const [hab, count] of solution.variables) {
 				const habType = hab as INFRASTRUCTURE_TYPE;
@@ -459,13 +477,9 @@
 			() => result.value.workforce.engineer.required,
 			() => result.value.workforce.scientist.required,
 			() => result.value.infrastructureCosts,
-			//() => result.value.autoOptimizeHabs,
 		],
 		() => {
-			//TODO:
-			//if (result.value.autoOptimizeHabs) {
-			applyOptimizeHabs("auto");
-			//}
+			applyOptimizeHabs("auto", false);
 		}
 	);
 </script>
@@ -672,7 +686,7 @@
 								<PlanInfrastructure
 									:disabled="disabled"
 									:infrastructure-data="result.infrastructure"
-									:auto-optimize-habs="true"
+									:auto-optimize-habs="refAutoOptimizeHabs"
 									:planet-natural-id="
 										planetData.PlanetNaturalId
 									"
@@ -680,9 +694,12 @@
 										handleUpdateInfrastructure
 									"
 									@update:auto-optimize-habs="
-										handleUpdateAutoOptimizeHabs
+										(v: boolean, goal: HabSolverGoal) => {
+											if(planPrefs !== null) refAutoOptimizeHabs = v;
+											applyOptimizeHabs(goal, false);
+										}
 									"
-									@optimize-habs="applyOptimizeHabs" />
+									@optimize-habs="(goal: HabSolverGoal) => applyOptimizeHabs(goal, true)" />
 							</div>
 						</div>
 						<div>

@@ -7,6 +7,7 @@ import {
 	IWorkforceRecord,
 } from "@/features/planning/usePlanCalculation.types";
 import { IInfrastructureCosts } from "@/features/cx/usePrice.types";
+export type HabSolverGoal = "auto" | "cost" | "area";
 
 const HabArea = {
 	HB1: 10,
@@ -21,7 +22,10 @@ const HabArea = {
 };
 
 export function calculateAvailableArea(
-totalArea: number, usedArea: number, infrastructure: Record<INFRASTRUCTURE_TYPE, number>): number {
+	totalArea: number,
+	usedArea: number,
+	infrastructure: Record<INFRASTRUCTURE_TYPE, number>
+): number {
 	let currentHabArea = 0;
 	for (const habType in HabArea) {
 		const habCount = infrastructure[habType as INFRASTRUCTURE_TYPE] || 0;
@@ -32,7 +36,6 @@ totalArea: number, usedArea: number, infrastructure: Record<INFRASTRUCTURE_TYPE,
 	return totalArea - productionArea;
 }
 
-export type HabSolverGoal = "auto" | "cost" | "area";
 export function optimizeHabs(
 	goal: HabSolverGoal,
 	costs: IInfrastructureCosts,
@@ -46,7 +49,7 @@ export function optimizeHabs(
 			costs,
 			workforceRequired,
 			availableArea,
-			constrainArea=true
+			(constrainArea = true)
 		);
 		if (costWorked.status === "optimal") {
 			return costWorked;

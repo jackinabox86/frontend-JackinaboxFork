@@ -1,7 +1,6 @@
 <script setup lang="ts">
 	import { computed, ComputedRef, PropType, WritableComputedRef } from "vue";
 	import { trackEvent } from "@/lib/analytics/useAnalytics";
-
 	import { HabSolverGoal } from "@/features/planning/calculations/habOptimization";
 
 	// Types & Interfaces
@@ -45,7 +44,11 @@
 			infrastructure: INFRASTRUCTURE_TYPE,
 			value: number
 		): void;
-		(e: "update:auto-optimize-habs", value: boolean): void;
+		(
+			e: "update:auto-optimize-habs",
+			value: boolean,
+			goal: HabSolverGoal
+		): void;
 		(e: "optimize-habs", goal: HabSolverGoal): void;
 	}>();
 
@@ -69,7 +72,7 @@
 	const localAutoOptimizeHabs: WritableComputedRef<boolean> = computed({
 		get: () => props.autoOptimizeHabs,
 		set: (value: boolean) => {
-			emit("update:auto-optimize-habs", value);
+			emit("update:auto-optimize-habs", value, "auto");
 		},
 	});
 </script>

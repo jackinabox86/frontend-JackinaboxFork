@@ -22,5 +22,6 @@ export const preferenceDefaults: IPreferenceDefault = {
 	planDefaults: {
 		includeCM: false,
 		visitationMaterialExclusions: [],
+		autoOptimizeHabs: true,
 	},
 };
