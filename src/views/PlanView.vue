@@ -476,7 +476,8 @@
 		<div
 			class="px-3 grid grid-cols-1 grid-rows-[repeat(6,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
 			<!-- Plan Name & Selector -->
-			<div class="row-1 col-1 flex flex-row gap-x-3 py-3 items-baseline">
+			<div
+				class="row-1 col-1 flex flex-row flex-wrap gap-x-3 py-3 items-baseline">
 				<h1 class="text-2xl font-bold text-white">
 					{{ planName }}
 				</h1>
@@ -542,62 +543,76 @@
 					<HelpDrawer file-name="plan" />
 				</PButtonGroup>
 			</div>
-			<!-- Header Border -->
 			<!-- Tools Container -->
 			<div class="row-4 md:col-span-3">
 				<!-- Toolbar -->
 				<div
-					class="flex flex-wrap grow lg:justify-end border-y border-white/10 gap-3 py-3 my-auto">
+					class="flex flex-wrap grow @3xl:justify-between border-y border-white/10 gap-3 py-3 child:my-auto">
 					<PButton
 						:type="
 							refShowTool === 'configuration'
 								? 'primary'
 								: 'secondary'
 						"
+						class="hidden @3xl:inline-block"
 						@click="toggleTool('configuration')">
 						Configuration
 					</PButton>
-					<PButton
-						:type="refShowTool === 'popr' ? 'primary' : 'secondary'"
-						@click="toggleTool('popr')">
-						POPR
-					</PButton>
-					<PButton
-						:type="
-							refShowTool === 'visitation-frequency'
-								? 'primary'
-								: 'secondary'
-						"
-						@click="toggleTool('visitation-frequency')">
-						Visitation Frequency
-					</PButton>
-					<PButton
-						:type="
-							refShowTool === 'construction-cart'
-								? 'primary'
-								: 'secondary'
-						"
-						@click="toggleTool('construction-cart')">
-						Construction Cart
-					</PButton>
-					<PButton
-						:type="
-							refShowTool === 'supply-cart'
-								? 'primary'
-								: 'secondary'
-						"
-						@click="toggleTool('supply-cart')">
-						Supply Cart
-					</PButton>
-					<PButton
-						:type="
-							refShowTool === 'repair-analysis'
-								? 'primary'
-								: 'secondary'
-						"
-						@click="toggleTool('repair-analysis')">
-						Repair Analysis
-					</PButton>
+					<div class="flex flex-wrap grow @3xl:justify-end gap-3">
+						<PButton
+							:type="
+								refShowTool === 'configuration'
+									? 'primary'
+									: 'secondary'
+							"
+							class="@3xl:hidden"
+							@click="toggleTool('configuration')">
+							Configuration
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'popr' ? 'primary' : 'secondary'
+							"
+							@click="toggleTool('popr')">
+							POPR
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'visitation-frequency'
+									? 'primary'
+									: 'secondary'
+							"
+							@click="toggleTool('visitation-frequency')">
+							Visitation Frequency
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'construction-cart'
+									? 'primary'
+									: 'secondary'
+							"
+							@click="toggleTool('construction-cart')">
+							Construction Cart
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'supply-cart'
+									? 'primary'
+									: 'secondary'
+							"
+							@click="toggleTool('supply-cart')">
+							Supply Cart
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'repair-analysis'
+									? 'primary'
+									: 'secondary'
+							"
+							@click="toggleTool('repair-analysis')">
+							Repair Analysis
+						</PButton>
+					</div>
 				</div>
 				<!-- Tool View -->
 				<div
@@ -609,14 +624,14 @@
 					">
 					<div
 						v-if="refShowTool === 'configuration'"
-						class="flex flex-wrap gap-6">
-						<div class="flex flex-col gap-3">
-							<div class="min-w-[300px]">
-								<h2
-									class="text-white/80 font-bold text-lg pb-3">
-									Configuration
-								</h2>
+						class="flex flex-wrap sm:justify-center-safe gap-6">
+						<div class="flex flex-col min-w-[300px]">
+							<h2 class="text-white/80 font-bold text-lg pb-3">
+								Configuration
+							</h2>
 
+							<div
+								class="flex flex-col gap-y-3 sm:border sm:border-white/10 sm:rounded-lg sm:p-3">
 								<PlanConfiguration
 									:disabled="disabled"
 									:plan-name="planName"
@@ -624,19 +639,12 @@
 									:active-empire="computedActiveEmpire"
 									:plan-empires="planEmpires"
 									@update:active-empire="
-								(empireUuid: string) => {
-									refEmpireUuid = empireUuid;
-									refCXUuid = findEmpireCXUuid(empireUuid);
-								}
-							"
+										(empireUuid: string) => {
+											refEmpireUuid = empireUuid;
+											refCXUuid = findEmpireCXUuid(empireUuid);
+										}
+									"
 									@update:plan-name="handleChangePlanName" />
-							</div>
-
-							<div>
-								<h2
-									class="text-white/80 font-bold text-lg pb-3">
-									Area
-								</h2>
 								<PlanArea
 									:disabled="disabled"
 									:area-data="result.area"
@@ -644,14 +652,6 @@
 										planetData.PlanetNaturalId
 									"
 									@update:permits="handleUpdatePermits" />
-							</div>
-
-							<div>
-								<h2
-									class="text-white/80 font-bold text-lg pb-3">
-									Bonuses
-								</h2>
-
 								<PlanBonuses
 									:disabled="disabled"
 									:corphq="result.corphq"
@@ -667,28 +667,38 @@
 							<h2 class="text-white/80 font-bold text-lg pb-3">
 								Infrastructure
 							</h2>
-							<PlanInfrastructure
-								:disabled="disabled"
-								:infrastructure-data="result.infrastructure"
-								:auto-optimize-habs="true"
-								:planet-natural-id="planetData.PlanetNaturalId"
-								@update:infrastructure="
-									handleUpdateInfrastructure
-								"
-								@update:auto-optimize-habs="
-									handleUpdateAutoOptimizeHabs
-								"
-								@optimize-habs="applyOptimizeHabs" />
+							<div
+								class="sm:border sm:border-white/10 sm:rounded-lg sm:p-3">
+								<PlanInfrastructure
+									:disabled="disabled"
+									:infrastructure-data="result.infrastructure"
+									:auto-optimize-habs="true"
+									:planet-natural-id="
+										planetData.PlanetNaturalId
+									"
+									@update:infrastructure="
+										handleUpdateInfrastructure
+									"
+									@update:auto-optimize-habs="
+										handleUpdateAutoOptimizeHabs
+									"
+									@optimize-habs="applyOptimizeHabs" />
+							</div>
 						</div>
 						<div>
 							<h2 class="text-white/80 font-bold text-lg pb-3">
 								Experts
 							</h2>
-							<PlanExperts
-								:disabled="disabled"
-								:expert-data="result.experts"
-								:planet-natural-id="planetData.PlanetNaturalId"
-								@update:expert="handleUpdateExpert" />
+							<div
+								class="sm:border sm:border-white/10 sm:rounded-lg sm:p-3">
+								<PlanExperts
+									:disabled="disabled"
+									:expert-data="result.experts"
+									:planet-natural-id="
+										planetData.PlanetNaturalId
+									"
+									@update:expert="handleUpdateExpert" />
+							</div>
 						</div>
 					</div>
 					<Suspense v-else-if="refShowTool && compViewToolMeta">
@@ -696,8 +706,7 @@
 							<component
 								:is="compViewToolComponent"
 								v-bind="compViewToolMeta.props"
-								v-on="compViewToolMeta.listeners"
-								@close="() => (refShowTool = null)" />
+								v-on="compViewToolMeta.listeners" />
 						</template>
 						<template #fallback>
 							<div class="w-full text-center py-5">
@@ -711,7 +720,8 @@
 			<div
 				class="row-6 col-span-full grid grid-cols-1 @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
 				<div>
-					<div class="flex flex-row flex-wrap gap-6">
+					<div
+						class="flex flex-row flex-wrap sm:justify-center-safe gap-6">
 						<div>
 							<h2 class="text-white/80 font-bold text-lg pb-3">
 								Workforce
@@ -722,7 +732,7 @@
 								:planet-natural-id="planetData.PlanetNaturalId"
 								@update:lux="handleUpdateWorkforceLux" />
 						</div>
-						<div class="grow shink-0">
+						<div>
 							<PlanOverview
 								:visitation-data="visitationData"
 								:overview-data="overviewData">
