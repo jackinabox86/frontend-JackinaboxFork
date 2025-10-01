@@ -76,6 +76,21 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	describe("defaultBuyItemsFromCX", async () => {
+		it("get", async () => {
+			const { defaultBuyItemsFromCX } = usePreferences();
+			expect(defaultBuyItemsFromCX.value).toBe(
+				preferenceDefaults.defaultBuyItemsFromCX
+			);
+		});
+
+		it("set", async () => {
+			const { defaultBuyItemsFromCX } = usePreferences();
+			defaultBuyItemsFromCX.value = true;
+			expect(defaultBuyItemsFromCX.value).toBe(true);
+		});
+	});
+
 	describe("burnDaysRed", async () => {
 		it("get", async () => {
 			const { burnDaysRed } = usePreferences();
@@ -142,6 +157,7 @@ describe("usePreferences", async () => {
 			userStore.setPlanPreference("moo", {
 				visitationMaterialExclusions: ["RAT", "DW"],
 			});
+			userStore.setPlanPreference("moo", { autoOptimizeHabs: false });
 
 			// prepare plan data to get name and it
 			planningStore.plans["foo"] = {
