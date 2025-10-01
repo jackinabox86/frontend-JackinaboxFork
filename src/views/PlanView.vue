@@ -450,6 +450,8 @@
 
 		if (!refAutoOptimizeHabs.value && !force) return;
 
+		trackEvent("plan_tool_optimize_habitation", { applyType: goal });
+
 		const solution = optimizeHabs(
 			goal,
 			result.value.infrastructureCosts,
@@ -696,6 +698,7 @@
 									@update:auto-optimize-habs="
 										(v: boolean, goal: HabSolverGoal) => {
 											if(planPrefs !== null) refAutoOptimizeHabs = v;
+											trackEvent('plan_tool_optimize_habitation_active', { active: v });
 											applyOptimizeHabs(goal, false);
 										}
 									"
