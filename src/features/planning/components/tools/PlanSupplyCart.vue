@@ -44,7 +44,6 @@
 		XNDataTableSummaryCell,
 	} from "@skit/x.naive-ui";
 	import {
-		CloseSharp,
 		CheckCircleOutlineSharp,
 		RemoveCircleOutlineSharp,
 	} from "@vicons/material";
@@ -170,20 +169,10 @@
 				value: e.needLeft,
 			}))
 	);
-
-	// close emit
-	const emit = defineEmits<{
-		(e: "close"): void;
-	}>();
 </script>
 
 <template>
-	<div class="pb-3 flex flex-row justify-between child:my-auto">
-		<h2 class="text-white/80 font-bold text-lg">Supply Cart</h2>
-		<PButton size="sm" type="secondary" @click="emit('close')">
-			<template #icon><CloseSharp /></template>
-		</PButton>
-	</div>
+	<h2 class="pb-3 text-white/80 font-bold text-lg">Supply Cart</h2>
 	<div class="text-white/50 pb-3">
 		The Supply Cart provides updates on your plans needs combined with
 		existing inventory sourced from FIO. You have the flexibility to opt for

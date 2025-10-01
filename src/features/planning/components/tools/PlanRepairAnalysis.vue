@@ -23,8 +23,7 @@
 	import { Options } from "highcharts";
 
 	// UI
-	import { PButton, PForm, PFormItem, PSelect } from "@/ui";
-	import { CloseSharp } from "@vicons/material";
+	import { PForm, PFormItem, PSelect } from "@/ui";
 
 	const props = defineProps({
 		data: {
@@ -42,10 +41,6 @@
 			default: undefined,
 		},
 	});
-
-	const emit = defineEmits<{
-		(e: "close"): void;
-	}>();
 
 	const DAY_MIN: number = 0;
 	const DAY_MAX: number = 180;
@@ -290,12 +285,7 @@
 </script>
 
 <template>
-	<div class="pb-3 flex flex-row justify-between child:my-auto">
-		<h2 class="text-white/80 font-bold text-lg">Repair Analysis</h2>
-		<PButton size="sm" type="secondary" @click="emit('close')">
-			<template #icon><CloseSharp /></template>
-		</PButton>
-	</div>
+	<h2 class="pb-3 text-white/80 font-bold text-lg">Repair Analysis</h2>
 	<div class="grid grid-cols-1 xl:grid-cols-[400px_auto] gap-3 gap-x-6">
 		<div>
 			<h2 class="font-bold pb-3">Plan</h2>
