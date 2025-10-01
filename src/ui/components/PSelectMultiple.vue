@@ -247,7 +247,7 @@
 					@click="clear">
 					<ClearSharp />
 				</div>
-				<div class="text-white w-[16px]" @click="() => (open = false)">
+				<div class="text-white w-[16px]" @click="toggleOpen">
 					<svg
 						viewBox="0 0 16 16"
 						fill="none"
