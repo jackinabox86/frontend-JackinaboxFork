@@ -123,6 +123,14 @@ export function usePreferences() {
 						);
 					}
 
+					if (
+						"autoOptimizeHabs" in preference &&
+						preference.autoOptimizeHabs !==
+							preferenceDefaults.planDefaults.autoOptimizeHabs
+					) {
+						planOverview.preferences.push("Auto-Optimize Inactive");
+					}
+
 					// add to overview if there is a pref set
 					if (planOverview.preferences.length > 0) {
 						overview.push(planOverview);

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 	import {
 		computed,
+		ComputedRef,
 		defineAsyncComponent,
 		nextTick,
 		PropType,
 		ref,
 		Ref,
+		watch,
 	} from "vue";
 
 	// Router
@@ -19,6 +21,11 @@
 	import { IPlan, IPlanEmpireElement } from "@/stores/planningStore.types";
 	import { IPlanet } from "@/features/api/gameData.types";
 	import { INFRASTRUCTURE_TYPE } from "@/features/planning/usePlanCalculation.types";
+	import {
+		optimizeHabs,
+		calculateAvailableArea,
+		HabSolverGoal,
+	} from "@/features/planning/calculations/habOptimization";
 
 	// Composables
 	import { usePlanetData } from "@/database/services/usePlanetData";
@@ -27,6 +34,7 @@
 	const { findEmpireCXUuid } = useCXData();
 	import { usePlanCalculation } from "@/features/planning/usePlanCalculation";
 	import { usePlan } from "@/features/planning_data/usePlan";
+	import { usePlanPreferences } from "@/features/preferences/usePlanPreferences";
 	const {
 		createNewPlan,
 		saveExistingPlan,
@@ -38,10 +46,8 @@
 
 	// Util
 	import { inertClone } from "@/util/data";
-	import { formatNumber } from "@/util/numbers";
 
 	// Components
-	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
 	import PlanBonuses from "@/features/planning/components/PlanBonuses.vue";
 	import PlanArea from "@/features/planning/components/PlanArea.vue";
 	import PlanWorkforce from "@/features/planning/components/PlanWorkforce.vue";
@@ -51,16 +57,15 @@
 	import PlanMaterialIO from "@/features/planning/components/PlanMaterialIO.vue";
 	import PlanConfiguration from "@/features/planning/components/PlanConfiguration.vue";
 	import PlanOverview from "@/features/planning/components/PlanOverview.vue";
+	import PlanStatusBar from "@/features/planning/components/PlanStatusBar.vue";
 	import HelpDrawer from "@/features/help/components/HelpDrawer.vue";
 	const ShareButton = defineAsyncComponent(
 		() => import("@/features/sharing/components/SharingButton.vue")
 	);
 
 	// UI
-	import { PButton, PButtonGroup, PTooltip, PSpin, PIcon } from "@/ui";
+	import { PButton, PButtonGroup, PTooltip, PSpin } from "@/ui";
 	import {
-		AutoAwesomeMosaicOutlined,
-		AutoAwesomeMosaicFilled,
 		ShoppingBasketSharp,
 		AttachMoneySharp,
 		DataSaverOffSharp,
@@ -137,9 +142,20 @@
 
 	const planetData: IPlanet = await getPlanet(props.planData.planet_id);
 
-	const refVisualShowConfiguration: Ref<boolean> = ref(true);
 	const refMaterialIOShowBasked: Ref<boolean> = ref(false);
 	const refMaterialIOSplitted: Ref<boolean> = ref(false);
+
+	// Plan Preferences
+	const planPrefs = computed<ReturnType<typeof usePlanPreferences> | null>(
+		() => {
+			return !props.disabled && props.planData.uuid !== undefined
+				? usePlanPreferences(props.planData.uuid)
+				: null;
+		}
+	);
+
+	const refAutoOptimizeHabs =
+		planPrefs.value === null ? ref(true) : planPrefs.value.autoOptimizeHabs;
 
 	/**
 	 * Handle initial empire uuid assignment
@@ -165,17 +181,22 @@
 	 */
 
 	type toolOptions =
+		| "configuration"
 		| "visitation-frequency"
 		| "repair-analysis"
 		| "popr"
-		| "optimize-habitation"
 		| "supply-cart"
 		| "construction-cart"
 		| null;
 	const refShowTool: Ref<toolOptions> = ref(null);
+	if (!refPlanData.value.uuid) {
+		refShowTool.value = "configuration";
+	}
 
-	function openTool(key: toolOptions): void {
+	function toggleTool(key: toolOptions): void {
+		const isVisisble = refShowTool.value === key;
 		refShowTool.value = null;
+		if (isVisisble) return;
 
 		trackEvent("plan_tool_view", { name: key });
 		nextTick(() => {
@@ -224,13 +245,6 @@
 					() =>
 						import(
 							"@/features/planning/components/tools/PlanSupplyCart.vue"
-						)
-				);
-			case "optimize-habitation":
-				return defineAsyncComponent(
-					() =>
-						import(
-							"@/features/planning/components/tools/PlanOptimizeHabitation.vue"
 						)
 				);
 			case "construction-cart":
@@ -290,23 +304,6 @@
 						productionMaterialIO: result.value.productionMaterialIO,
 					},
 					listeners: {},
-				};
-			case "optimize-habitation":
-				return {
-					props: {
-						workforceData: result.value.workforce,
-						habitationCost: result.value.infrastructureCosts,
-					},
-					listeners: {
-						"update:habitation": (d: {
-							infrastructure: INFRASTRUCTURE_TYPE;
-							value: number;
-						}) =>
-							handleUpdateInfrastructure(
-								d.infrastructure,
-								d.value
-							),
-					},
 				};
 			case "construction-cart":
 				return {
@@ -437,246 +434,314 @@
 			if (!answer) return false;
 		}
 	});
+
+	// Auto Optimize Habitation on Workforce Change
+	const availableHabArea: ComputedRef<number> = computed(() => {
+		return calculateAvailableArea(
+			result.value.area.areaTotal,
+			result.value.area.areaUsed,
+			result.value.infrastructure
+		);
+	});
+
+	function applyOptimizeHabs(goal: HabSolverGoal, force: boolean) {
+		// skip, if autooptimization is deactivated and not forced,
+		// forcing only happens from the button clicks in configuration
+
+		if (!refAutoOptimizeHabs.value && !force) return;
+
+		trackEvent("plan_tool_optimize_habitation", { applyType: goal });
+
+		const solution = optimizeHabs(
+			goal,
+			result.value.infrastructureCosts,
+			result.value.workforce,
+			availableHabArea.value
+		);
+
+		if (solution.status === "optimal") {
+			for (const [hab, count] of solution.variables) {
+				const habType = hab as INFRASTRUCTURE_TYPE;
+				// Don't update the plan if nothing changed
+				if (result.value.infrastructure[habType] === count) continue;
+				handleUpdateInfrastructure(habType, count);
+			}
+		} else {
+			console.error(`Unable to optimize habs: ${solution.status}`);
+		}
+	}
+
+	watch(
+		[
+			() => result.value.workforce.pioneer.required,
+			() => result.value.workforce.settler.required,
+			() => result.value.workforce.technician.required,
+			() => result.value.workforce.engineer.required,
+			() => result.value.workforce.scientist.required,
+			() => result.value.infrastructureCosts,
+		],
+		() => {
+			applyOptimizeHabs("auto", false);
+		}
+	);
 </script>
 
+<!--div class="border-b border-white/10 p-3 overflow-visible">-->
 <template>
-	<div
-		class="grid grid-cols-1 gap-y-6"
-		:class="refVisualShowConfiguration ? 'xl:grid-cols-[300px_auto]' : ''">
+	<div class="@container">
 		<div
-			class="border-r border-white/10"
-			:class="!refVisualShowConfiguration ? 'hidden' : 'visible'">
-			<div class="p-3">
-				<div class="pb-6">
-					<h1 class="text-2xl font-bold text-white">
-						{{ planetData.PlanetName }}
-					</h1>
-					<span
-						v-if="
-							planetData.PlanetName != planetData.PlanetNaturalId
-						"
-						class="text-white/60">
-						{{ planetData.PlanetNaturalId }}
-					</span>
-				</div>
-
-				<h2 class="text-white/80 font-bold text-lg pb-3">
-					Configuration
-				</h2>
-
-				<PlanConfiguration
-					:disabled="disabled"
-					:plan-name="planName"
-					:empire-options="refEmpireList"
-					:active-empire="computedActiveEmpire"
-					:plan-empires="planEmpires"
-					@update:active-empire="
-						(empireUuid: string) => {
-							refEmpireUuid = empireUuid;
-							refCXUuid = findEmpireCXUuid(empireUuid);
-						}
-					"
-					@update:plan-name="handleChangePlanName" />
+			class="px-3 grid grid-cols-1 grid-rows-[repeat(5,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
+			<!-- Plan Name & Selector -->
+			<div
+				class="row-1 col-1 flex flex-row flex-wrap gap-x-3 pt-3 pb-3 md:pb-0 @6xl:pb-3 items-baseline">
+				<h1 class="text-2xl font-bold text-white">
+					{{ planName }}
+				</h1>
+				<span class="text-white/60">
+					{{
+						planetData.PlanetName != planetData.PlanetNaturalId
+							? planetData.PlanetName + " - "
+							: ""
+					}}
+					{{ planetData.PlanetNaturalId }}
+				</span>
 			</div>
-
-			<div class="p-3 pt-0">
-				<h2 class="text-white/80 font-bold text-lg pb-3">Area</h2>
-				<PlanArea
-					:disabled="disabled"
+			<!-- Status Bar (sticky) -->
+			<div
+				class="row-3 md:row-2 md:col-span-full @6xl:row-1 @6xl:col-span-1 w-full md:w-auto justify-self-start md:justify-self-center my-auto p-3 sticky top-0 z-1000 bg-(--app-bg) md:rounded-b-lg">
+				<PlanStatusBar
 					:area-data="result.area"
-					:planet-natural-id="planetData.PlanetNaturalId"
-					@update:permits="handleUpdatePermits" />
-			</div>
-			<div class="p-3 pt-0">
-				<h2 class="text-white/80 font-bold text-lg pb-3">
-					Infrastructure
-				</h2>
-				<PlanInfrastructure
-					:disabled="disabled"
-					:infrastructure-data="result.infrastructure"
-					:planet-natural-id="planetData.PlanetNaturalId"
-					@update:infrastructure="handleUpdateInfrastructure" />
-			</div>
-			<div class="p-3 pt-0">
-				<h2 class="text-white/80 font-bold text-lg pb-3">Bonuses</h2>
-
-				<PlanBonuses
-					:disabled="disabled"
 					:corphq="result.corphq"
 					:cogc="result.cogc"
-					:planet-natural-id="planetData.PlanetNaturalId"
-					@update:corphq="handleUpdateCorpHQ"
-					@update:cogc="handleUpdateCOGC" />
-			</div>
-			<div class="p-3 pt-0">
-				<h2 class="text-white/80 font-bold text-lg pb-3">Experts</h2>
-				<PlanExperts
-					:disabled="disabled"
 					:expert-data="result.experts"
-					:planet-natural-id="planetData.PlanetNaturalId"
-					@update:expert="handleUpdateExpert" />
+					:overview-data="overviewData" />
 			</div>
-		</div>
-		<div class="">
-			<div class="border-b border-white/10 p-3">
-				<div class="flex flex-row">
-					<div class="child:mt-1 pr-6 child:cursor-pointer">
-						<PIcon
-							:size="24"
-							@click="
-								() => {
-									refVisualShowConfiguration =
-										!refVisualShowConfiguration;
-									trackEvent('plan_show_configuration', {
-										visible: refVisualShowConfiguration,
-									});
-								}
-							">
-							<AutoAwesomeMosaicFilled
-								v-if="!refVisualShowConfiguration" />
-							<AutoAwesomeMosaicOutlined v-else />
-						</PIcon>
+			<!-- Plan Actions -->
+			<div class="row-2 md:row-1 md:col-3 py-3 flex flex-row flex-wrap">
+				<PButtonGroup v-if="userStore.isLoggedIn">
+					<PButton
+						v-if="disabled"
+						:disabled="sharedWasCloned"
+						:type="!sharedWasCloned ? 'primary' : 'success'"
+						@click="cloneShared">
+						<template #icon>
+							<ContentCopySharp />
+						</template>
+						<span v-if="!sharedWasCloned"> Clone Plan </span>
+						<span v-else> Cloning Complete </span>
+					</PButton>
+					<PButton
+						v-if="saveable"
+						:loading="refIsSaving"
+						:type="modified ? 'error' : 'success'"
+						:disabled="disabled"
+						@click="save">
+						<template #icon>
+							<SaveSharp />
+						</template>
+						{{ existing ? "Save" : "Create" }}
+					</PButton>
+					<PButton
+						v-if="existing"
+						:disabled="disabled"
+						:loading="refIsReloading"
+						@click="reloadPlan">
+						<template #icon>
+							<ChangeCircleOutlined />
+						</template>
+						Reload
+					</PButton>
+
+					<ShareButton
+						v-if="!disabled && refPlanData.uuid"
+						:plan-uuid="refPlanData.uuid" />
+
+					<HelpDrawer file-name="plan" />
+				</PButtonGroup>
+			</div>
+			<!-- Tools Container -->
+			<div class="row-4 md:col-span-3">
+				<!-- Toolbar -->
+				<div
+					class="flex flex-wrap grow @3xl:justify-between border-y border-white/10 gap-3 py-3 child:my-auto">
+					<PButton
+						:type="
+							refShowTool === 'configuration'
+								? 'primary'
+								: 'secondary'
+						"
+						class="hidden @3xl:inline-block"
+						@click="toggleTool('configuration')">
+						Configuration
+					</PButton>
+					<div class="flex flex-wrap grow @3xl:justify-end gap-3">
+						<PButton
+							:type="
+								refShowTool === 'configuration'
+									? 'primary'
+									: 'secondary'
+							"
+							class="@3xl:hidden"
+							@click="toggleTool('configuration')">
+							Configuration
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'popr' ? 'primary' : 'secondary'
+							"
+							@click="toggleTool('popr')">
+							POPR
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'visitation-frequency'
+									? 'primary'
+									: 'secondary'
+							"
+							@click="toggleTool('visitation-frequency')">
+							Visitation Frequency
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'construction-cart'
+									? 'primary'
+									: 'secondary'
+							"
+							@click="toggleTool('construction-cart')">
+							Construction Cart
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'supply-cart'
+									? 'primary'
+									: 'secondary'
+							"
+							@click="toggleTool('supply-cart')">
+							Supply Cart
+						</PButton>
+						<PButton
+							:type="
+								refShowTool === 'repair-analysis'
+									? 'primary'
+									: 'secondary'
+							"
+							@click="toggleTool('repair-analysis')">
+							Repair Analysis
+						</PButton>
 					</div>
-					<div class="flex flex-grow flex-wrap gap-3 justify-between">
-						<div class="flex flex-row flex-wrap gap-1">
-							<div class="my-auto pr-3 font-bold">Resources</div>
+				</div>
+				<!-- Tool View -->
+				<div
+					class="transition-discrete transition-opacity duration-500"
+					:class="
+						!refShowTool
+							? 'opacity-0 overflow-hidden !h-0'
+							: 'px-6 py-3 opacity-100 border-b border-white/10'
+					">
+					<div
+						v-if="refShowTool === 'configuration'"
+						class="flex flex-wrap sm:justify-center-safe gap-6">
+						<div class="flex flex-col min-w-[300px]">
+							<h2 class="text-white/80 font-bold text-lg pb-3">
+								Configuration
+							</h2>
+
 							<div
-								class="my-auto pr-3 flex flex-row flex-wrap gap-1">
-								<PTooltip
-									v-for="resource in planetData.Resources"
-									:key="`PLANET#RESOURCE#${resource.MaterialTicker}`">
-									<template #trigger>
-										<div class="hover:cursor-help">
-											<MaterialTile
-												:key="resource.MaterialTicker"
-												:ticker="
-													resource.MaterialTicker
-												"
-												:amount="
-													parseFloat(
-														formatNumber(
-															resource.DailyExtraction
-														)
-													)
-												"
-												disable-drawer
-												:enable-popover="false" />
-										</div>
-									</template>
-									{{ resource.ResourceType }} ({{
-										resource.ResourceType === "MINERAL"
-											? "EXT"
-											: resource.ResourceType ===
-											  "GASEOUS"
-											? "COL"
-											: "RIG"
-									}})
-								</PTooltip>
+								class="flex flex-col gap-y-3 sm:border sm:border-white/10 sm:rounded sm:p-3">
+								<PlanConfiguration
+									:disabled="disabled"
+									:plan-name="planName"
+									:empire-options="refEmpireList"
+									:active-empire="computedActiveEmpire"
+									:plan-empires="planEmpires"
+									@update:active-empire="
+										(empireUuid: string) => {
+											refEmpireUuid = empireUuid;
+											refCXUuid = findEmpireCXUuid(empireUuid);
+										}
+									"
+									@update:plan-name="handleChangePlanName" />
+								<PlanArea
+									:disabled="disabled"
+									:area-data="result.area"
+									:planet-natural-id="
+										planetData.PlanetNaturalId
+									"
+									@update:permits="handleUpdatePermits" />
+								<PlanBonuses
+									:disabled="disabled"
+									:corphq="result.corphq"
+									:cogc="result.cogc"
+									:planet-natural-id="
+										planetData.PlanetNaturalId
+									"
+									@update:corphq="handleUpdateCorpHQ"
+									@update:cogc="handleUpdateCOGC" />
 							</div>
 						</div>
-						<div class="flex flex-row flex-wrap gap-1">
-							<PButtonGroup v-if="userStore.isLoggedIn">
-								<PButton
-									v-if="disabled"
-									:disabled="sharedWasCloned"
-									:type="
-										!sharedWasCloned ? 'primary' : 'success'
+						<div>
+							<h2 class="text-white/80 font-bold text-lg pb-3">
+								Infrastructure
+							</h2>
+							<div
+								class="sm:border sm:border-white/10 sm:rounded sm:p-3">
+								<PlanInfrastructure
+									:disabled="disabled"
+									:infrastructure-data="result.infrastructure"
+									:auto-optimize-habs="refAutoOptimizeHabs"
+									:planet-natural-id="
+										planetData.PlanetNaturalId
 									"
-									@click="cloneShared">
-									<template #icon>
-										<ContentCopySharp />
-									</template>
-									<span v-if="!sharedWasCloned">
-										Clone Plan
-									</span>
-									<span v-else> Cloning Complete </span>
-								</PButton>
-								<PButton
-									v-if="saveable"
-									:loading="refIsSaving"
-									:type="modified ? 'error' : 'success'"
+									@update:infrastructure="
+										handleUpdateInfrastructure
+									"
+									@update:auto-optimize-habs="
+										(v: boolean, goal: HabSolverGoal) => {
+											if(planPrefs !== null) refAutoOptimizeHabs = v;
+											trackEvent('plan_tool_optimize_habitation_active', { active: v });
+											applyOptimizeHabs(goal, false);
+										}
+									"
+									@optimize-habs="(goal: HabSolverGoal) => applyOptimizeHabs(goal, true)" />
+							</div>
+						</div>
+						<div>
+							<h2 class="text-white/80 font-bold text-lg pb-3">
+								Experts
+							</h2>
+							<div
+								class="sm:border sm:border-white/10 sm:rounded sm:p-3">
+								<PlanExperts
 									:disabled="disabled"
-									@click="save">
-									<template #icon><SaveSharp /></template>
-									{{ existing ? "Save" : "Create" }}
-								</PButton>
-								<PButton
-									v-if="existing"
-									:disabled="disabled"
-									:loading="refIsReloading"
-									@click="reloadPlan">
-									<template #icon>
-										<ChangeCircleOutlined />
-									</template>
-									Reload
-								</PButton>
-
-								<ShareButton
-									v-if="!disabled && refPlanData.uuid"
-									:plan-uuid="refPlanData.uuid" />
-
-								<HelpDrawer file-name="plan" />
-							</PButtonGroup>
+									:expert-data="result.experts"
+									:planet-natural-id="
+										planetData.PlanetNaturalId
+									"
+									@update:expert="handleUpdateExpert" />
+							</div>
 						</div>
 					</div>
+					<Suspense v-else-if="refShowTool && compViewToolMeta">
+						<template #default>
+							<component
+								:is="compViewToolComponent"
+								v-bind="compViewToolMeta.props"
+								v-on="compViewToolMeta.listeners" />
+						</template>
+						<template #fallback>
+							<div class="w-full text-center py-5">
+								<PSpin />
+							</div>
+						</template>
+					</Suspense>
 				</div>
 			</div>
-			<div class="border-b border-white/10 p-3">
-				<div class="flex grow justify-end gap-x-3 my-auto">
-					<PButton type="secondary" @click="openTool('popr')">
-						POPR
-					</PButton>
-					<PButton
-						type="secondary"
-						@click="openTool('visitation-frequency')">
-						Visitation Frequency
-					</PButton>
-					<PButton
-						type="secondary"
-						@click="openTool('construction-cart')">
-						Construction Cart
-					</PButton>
-					<PButton type="secondary" @click="openTool('supply-cart')">
-						Supply Cart
-					</PButton>
-					<PButton
-						type="secondary"
-						@click="openTool('repair-analysis')">
-						Repair Analysis
-					</PButton>
-					<PButton
-						type="secondary"
-						@click="openTool('optimize-habitation')">
-						Habitation Optimization
-					</PButton>
-				</div>
-			</div>
+			<!-- Main Plan View -->
 			<div
-				:class="
-					!refShowTool
-						? 'opacity-0 overflow-hidden !h-0'
-						: 'px-6 py-3 opacity-100 border-b border-white/10'
-				"
-				class="transition-discrete transition-opacity duration-500">
-				<Suspense v-if="refShowTool && compViewToolMeta">
-					<template #default>
-						<component
-							:is="compViewToolComponent"
-							v-bind="compViewToolMeta.props"
-							v-on="compViewToolMeta.listeners"
-							@close="() => (refShowTool = null)" />
-					</template>
-					<template #fallback>
-						<div class="w-full text-center py-5">
-							<PSpin />
-						</div>
-					</template>
-				</Suspense>
-			</div>
-			<div class="p-3 grid grid-cols-1 2xl:grid-cols-[auto_450px] gap-3">
+				class="row-5 col-span-full grid grid-cols-1 @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
 				<div>
 					<div
-						class="grid grid-cols-1 2xl:grid-cols-[auto_250px] gap-6">
+						class="flex flex-row flex-wrap sm:justify-center-safe gap-6">
 						<div>
 							<h2 class="text-white/80 font-bold text-lg pb-3">
 								Workforce
@@ -688,18 +753,23 @@
 								@update:lux="handleUpdateWorkforceLux" />
 						</div>
 						<div>
-							<h2 class="text-white/80 font-bold text-lg pb-3">
-								Overview
-							</h2>
 							<PlanOverview
 								:visitation-data="visitationData"
-								:overview-data="overviewData" />
+								:overview-data="overviewData">
+								<template #heading="{ text }">
+									<h2
+										class="text-white/80 font-bold text-lg pb-3">
+										{{ text }}
+									</h2>
+								</template>
+							</PlanOverview>
 						</div>
 					</div>
 					<div class="pt-6">
 						<PlanProduction
 							:disabled="disabled"
 							:production-data="result.production"
+							:planet-resources="planetData.Resources"
 							:cogc="result.cogc"
 							:cx-uuid="refCXUuid"
 							:planet-id="planetData.PlanetNaturalId"
@@ -717,7 +787,7 @@
 					</div>
 				</div>
 				<div>
-					<div class="sticky top-3">
+					<div class="sticky top-12">
 						<h2
 							class="text-white/80 font-bold text-lg pb-3 flex justify-between child:my-auto">
 							<div>Material I/O</div>

@@ -26,8 +26,7 @@
 	}
 
 	// UI
-	import { PButton, PSelectMultiple, PTable } from "@/ui";
-	import { CloseSharp } from "@vicons/material";
+	import { PSelectMultiple, PTable } from "@/ui";
 
 	const props = defineProps({
 		stoAmount: {
@@ -48,10 +47,6 @@
 			default: undefined,
 		},
 	});
-
-	const emit = defineEmits<{
-		(e: "close"): void;
-	}>();
 
 	// plan preference patch-in
 	const planPrefs = computed<ReturnType<typeof usePlanPreferences> | null>(
@@ -207,12 +202,7 @@
 </script>
 
 <template>
-	<div class="pb-3 flex flex-row justify-between child:my-auto">
-		<h2 class="text-white/80 font-bold text-lg">Visitation Frequency</h2>
-		<PButton size="sm" type="secondary" @click="emit('close')">
-			<template #icon><CloseSharp /></template>
-		</PButton>
-	</div>
+	<h2 class="pb-3 text-white/80 font-bold text-lg">Visitation Frequency</h2>
 
 	<div class="grid grid-cols-1 lg:grid-cols-[40%_auto] gap-3">
 		<div>

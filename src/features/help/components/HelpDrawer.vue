@@ -62,14 +62,13 @@
 </script>
 
 <template>
-	<div :class="buttonClass">
-		<PButton
-			:size="buttonSize"
-			type="secondary"
-			@click="() => (showDrawer = !showDrawer)">
-			{{ buttonTitle }}
-		</PButton>
-	</div>
+	<PButton
+		:size="buttonSize"
+		:class="buttonClass"
+		type="secondary"
+		@click="() => (showDrawer = !showDrawer)">
+		{{ buttonTitle }}
+	</PButton>
 	<n-drawer v-model:show="showDrawer" :width="drawerWidth" placement="right">
 		<n-drawer-content closable>
 			<template #header>

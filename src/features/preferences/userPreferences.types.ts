@@ -1,6 +1,7 @@
 export interface IPreferencePerPlan {
 	includeCM: boolean;
 	visitationMaterialExclusions: string[];
+	autoOptimizeHabs: boolean;
 }
 
 export interface IPreference {

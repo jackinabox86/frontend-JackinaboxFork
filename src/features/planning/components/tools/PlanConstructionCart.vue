@@ -30,8 +30,7 @@
 	import { IXITTransferMaterial } from "@/features/xit/xitAction.types";
 
 	// UI
-	import { PButton, PInputNumber, PSelect, PTable } from "@/ui";
-	import { CloseSharp } from "@vicons/material";
+	import { PInputNumber, PSelect, PTable } from "@/ui";
 
 	const props = defineProps({
 		planetNaturalId: {
@@ -56,10 +55,6 @@
 			required: true,
 		},
 	});
-
-	const emit = defineEmits<{
-		(e: "close"): void;
-	}>();
 
 	const { materialsMap } = useMaterialData();
 	const { getPrice } = await usePrice(
@@ -241,9 +236,6 @@
 				:elements="xitTransferElements"
 				transfer-name="Construct"
 				:drawer-width="400" />
-			<PButton size="sm" type="secondary" @click="emit('close')">
-				<template #icon><CloseSharp /></template>
-			</PButton>
 		</div>
 	</div>
 	<div class="overflow-auto">

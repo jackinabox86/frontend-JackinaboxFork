@@ -96,6 +96,10 @@
 	const toggleOpen = async () => {
 		if (disabled) return;
 
+		if (searchable) {
+			useSearch.value = true;
+		}
+
 		if (currentlyOpenId.value && currentlyOpenId.value !== componentId) {
 			currentlyOpenId.value = componentId;
 			open.value = true;
@@ -200,12 +204,7 @@
 			<div
 				class="flex flex-row items-center cursor-pointer bg-white/5 text-white/80 rounded-sm pr-2 min-h-[28px]"
 				:class="!useSearch ? 'py-1 ' : ''"
-				@click="
-					() => {
-						toggleOpen();
-						searchable ? (useSearch = true) : {};
-					}
-				">
+				@click="toggleOpen">
 				<div v-if="!useSearch" class="flex-grow px-2">
 					{{ displayValue }}
 				</div>
@@ -220,7 +219,7 @@
 					@click="clear">
 					<ClearSharp />
 				</div>
-				<div class="text-white w-[16px]">
+				<div class="text-white w-[16px]" @click="toggleOpen">
 					<svg
 						viewBox="0 0 16 16"
 						fill="none"

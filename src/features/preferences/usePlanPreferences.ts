@@ -67,11 +67,17 @@ export function usePlanPreferences(planUuid: string) {
 		set: (v) => setPlanPreference("visitationMaterialExclusions", v),
 	});
 
+	const autoOptimizeHabs: WritableComputedRef<boolean, boolean> = computed({
+		get: () => fullPreferences.value.autoOptimizeHabs,
+		set: (v) => setPlanPreference("autoOptimizeHabs", v),
+	});
+
 	return {
 		fullPreferences,
 		setPlanPreference,
 		// preferences
 		includeCM,
 		visitationMaterialExclusions,
+		autoOptimizeHabs,
 	};
 }

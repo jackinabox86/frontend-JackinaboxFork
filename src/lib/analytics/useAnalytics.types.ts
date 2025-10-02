@@ -35,6 +35,7 @@ export type ANALYTICS_EVENT_TYPE =
 	| "plan_shared_cloned"
 	| "plan_show_configuration"
 	| "plan_tool_optimize_habitation"
+	| "plan_tool_optimize_habitation_active"
 	| "plan_tool_view"
 	| "plan_tool_cogm"
 	| "plan_update_building_add_recipe"
@@ -204,7 +205,10 @@ export interface IAnalyticsEventProperties {
 		value: boolean;
 	};
 	plan_tool_optimize_habitation: {
-		applyType: "area" | "cost";
+		applyType: "auto" | "area" | "cost";
+	};
+	plan_tool_optimize_habitation_active: {
+		active: boolean;
 	};
 	plan_show_configuration: {
 		visible: boolean;

@@ -8,6 +8,7 @@
 	import PlanProductionRecipe from "@/features/planning/components/PlanProductionRecipe.vue";
 
 	// Util
+	import { capitalizeString } from "@/util/text";
 	import { formatNumber } from "@/util/numbers";
 
 	// UI
@@ -65,16 +66,38 @@
 	const localBuildingData: ComputedRef<IProductionBuilding> = computed(
 		() => props.buildingData
 	);
+
+	const expertiseString = computed(() => {
+		if (localBuildingData.value.expertise) {
+			return localBuildingData.value.expertise
+				.replaceAll("_", " ")
+				.toLowerCase();
+		}
+		return "";
+	});
+
+	const isPlanetCogc = computed(() => {
+		return localBuildingData.value.efficiencyElements.some(
+			(element) => element.efficiencyType === "COGC"
+		);
+	});
 </script>
 
 <template>
 	<div class="mb-6">
 		<div
-			class="p-3 rounded-tl rounded-tr border-pp-border border-l border-t border-r flex gap-x-3 justify-between">
-			<h3 class="text-2xl font-bold text-white">
-				{{ localBuildingData.name }}
-			</h3>
-			<div class="flex flex-row flex-wrap gap-x-1">
+			class="p-3 rounded-tl rounded-tr border-pp-border border-l border-t border-r grid gap-3 grid-cols-1 grid-rows-[auto_auto] @lg:grid-cols-[1fr_1fr] @lg:grid-rows-1">
+			<div class="flex flex-row gap-x-3 items-baseline">
+				<h3 class="text-2xl font-bold text-white">
+					{{ localBuildingData.name }} -
+					{{ localBuildingData.amount }}
+				</h3>
+				<span :class="isPlanetCogc ? 'text-positive' : ''">{{
+					capitalizeString(expertiseString)
+				}}</span>
+			</div>
+			<div
+				class="col-1 row-2 @lg:row-1 @lg:col-2 @lg:justify-self-end-safe flex flex-row flex-wrap gap-x-1">
 				<PInputNumber
 					v-model:value="localBuildingData.amount"
 					:disabled="disabled"
@@ -156,42 +179,54 @@
 			</div>
 		</div>
 		<div
-			class="p-3 border-pp-border border rounded-bl rounded-br bg-white/5 flex flex-row gap-x-3 justify-between">
-			<div>
-				<PTooltip>
-					<template #trigger>
-						<div class="flex gap-x-3 hover:cursor-help">
-							<span>Efficiency</span>
-							<span class="font-bold">
-								{{
-									formatNumber(
-										localBuildingData.totalEfficiency * 100
-									)
-								}}
-								%
-							</span>
-						</div>
-					</template>
-
-					<div
-						v-for="element in localBuildingData.efficiencyElements"
-						:key="`${localBuildingData.name}#EFFICIENCY#${element.efficiencyType}`"
-						class="flex flex-row justify-between align-center gap-x-3 child:p-1">
-						<div>{{ element.efficiencyType }}</div>
-						<div>{{ formatNumber(element.value * 100) }} %</div>
+			class="p-3 border-pp-border border rounded-bl rounded-br bg-white/5 text-nowrap flex flex-row flex-wrap gap-x-3 justify-between">
+			<PTooltip>
+				<template #trigger>
+					<div class="flex gap-x-3 hover:cursor-help">
+						<span>Efficiency</span>
+						<span class="font-bold">
+							{{
+								formatNumber(
+									localBuildingData.totalEfficiency * 100
+								)
+							}}
+							%
+						</span>
 					</div>
-				</PTooltip>
-			</div>
-			<div class="flex gap-x-3">
-				<span>Revenue</span>
-				<span class="font-bold">
-					{{ formatNumber(localBuildingData.dailyRevenue) }} $
-				</span>
-				<span>Construction Cost</span>
-				<span class="font-bold">
-					{{ formatNumber(localBuildingData.constructionCost * -1) }}
-					$
-				</span>
+				</template>
+
+				<div
+					v-for="element in localBuildingData.efficiencyElements"
+					:key="`${localBuildingData.name}#EFFICIENCY#${element.efficiencyType}`"
+					class="flex flex-row justify-between align-center gap-x-3 child:p-1">
+					<div>{{ element.efficiencyType }}</div>
+					<div>{{ formatNumber(element.value * 100) }} %</div>
+				</div>
+			</PTooltip>
+			<div class="flex flex-wrap gap-x-3">
+				<div class="flex gap-x-3">
+					<span>Revenue</span>
+					<span
+						class="font-bold"
+						:class="
+							localBuildingData.dailyRevenue >= 0
+								? '!text-positive'
+								: '!text-negative'
+						">
+						{{ formatNumber(localBuildingData.dailyRevenue) }} $
+					</span>
+				</div>
+				<div class="flex gap-x-3">
+					<span>Construction Cost</span>
+					<span class="font-bold">
+						{{
+							formatNumber(
+								localBuildingData.constructionCost * -1
+							)
+						}}
+						$
+					</span>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -7,11 +7,12 @@
 @theme {
 	--text-md: 14px;
 	--text-lg: 16px;
+	--app-bg: #030707;
 }
 
 body {
 	font-size: 14px;
-	background-color: #030707;
+	background-color: var(--app-bg);
 }
 
 html {

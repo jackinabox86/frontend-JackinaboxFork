@@ -12,8 +12,7 @@
 	import { IPopulationReport } from "@/features/api/gameData.types";
 
 	// UI
-	import { PButton, PSpin } from "@/ui";
-	import { CloseSharp } from "@vicons/material";
+	import { PSpin } from "@/ui";
 
 	const props = defineProps({
 		planetNaturalId: {
@@ -44,22 +43,13 @@
 		}
 	}
 
-	const emit = defineEmits<{
-		(e: "close"): void;
-	}>();
-
 	onMounted(() => fetchPOPR(props.planetNaturalId));
 </script>
 
 <template>
-	<div class="pb-3 flex flex-row justify-between child:my-auto">
-		<h2 class="text-white/80 font-bold text-lg">
-			Latest Population Report
-		</h2>
-		<PButton size="sm" type="secondary" @click="emit('close')">
-			<template #icon><CloseSharp /></template>
-		</PButton>
-	</div>
+	<h2 class="pb-3 text-white/80 font-bold text-lg">
+		Latest Population Report
+	</h2>
 	<div v-if="hasError">
 		Error loading latest population report. The planet might not have
 		population.

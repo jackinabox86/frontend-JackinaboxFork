@@ -64,6 +64,22 @@ describe("usePreferences", async () => {
 		});
 	});
 
+	describe("autoOptimizeHabs", async () => {
+		it("get", async () => {
+			const { autoOptimizeHabs } = usePlanPreferences("meow");
+
+			expect(autoOptimizeHabs.value).toBe(
+				preferenceDefaults.planDefaults.autoOptimizeHabs
+			);
+		});
+
+		it("set", async () => {
+			const { autoOptimizeHabs } = usePlanPreferences("meow");
+			autoOptimizeHabs.value = true;
+			expect(autoOptimizeHabs.value).toBe(true);
+		});
+	});
+
 	describe("visitationMaterialExclusions", async () => {
 		it("get", async () => {
 			const { visitationMaterialExclusions } = usePlanPreferences("meow");

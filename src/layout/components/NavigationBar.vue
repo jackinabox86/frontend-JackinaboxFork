@@ -311,8 +311,9 @@
 	<input id="menu-toggle" type="checkbox" class="hidden peer" />
 	<!-- Sidebar -->
 	<div
-		class="hidden peer-checked:flex md:flex border-r border-white/5 flex-col bg-gray-dark transition-all duration-300 ease-in-out"
-		:class="containerClass">
+		class="hidden peer-checked:flex md:h-screen md:sticky md:top-0 md:flex border-r border-white/5 flex-col bg-gray-dark transition-all duration-300 ease-in-out"
+		:class="containerClass"
+		style="scrollbar-width: none">
 		<div class="items-center justify-between sm:hidden md:flex">
 			<div class="w-full flex flex-row items-baseline pt-4">
 				<div
