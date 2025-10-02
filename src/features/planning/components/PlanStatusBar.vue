@@ -73,7 +73,7 @@
 
 <template>
 	<div class="flex flex-row font-bold child:mr-3">
-		<div :class="corphq ? 'visible' : 'collapse sm:invisible'">
+		<div :class="corphq ? 'visible' : 'collapse md:invisible'">
 			<span class="text-positive">HQ</span>
 		</div>
 		<div>
