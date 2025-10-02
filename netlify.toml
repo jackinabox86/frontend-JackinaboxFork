@@ -8,3 +8,7 @@
   for = "/index.html"
   [headers.values]
     Cache-Control = "no-cache"
+
+[build]
+  command = "pnpm run build && echo \"window.__APP_CONFIG__ = { POSTHOG_KEY: '${POSTHOG_KEY}' };\" > dist/env.js"
+  publish = "dist"
