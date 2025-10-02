@@ -11,6 +11,7 @@
 	// Types & Interfaces
 	import { IEmpirePlanListData } from "@/features/empire/empire.types";
 	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+	import { cogcTextMapping } from "@/features/planning_data/usePlan";
 
 	// UI
 	import {
@@ -26,24 +27,6 @@
 			required: true,
 		},
 	});
-
-	const SHORTPROGRAMTYPES: { [key in PLAN_COGCPROGRAM_TYPE]: string } = {
-		"---": "",
-		AGRICULTURE: "AGRI",
-		CHEMISTRY: "CHEM",
-		CONSTRUCTION: "CONST",
-		ELECTRONICS: "ELEC",
-		FOOD_INDUSTRIES: "FOOD",
-		FUEL_REFINING: "FUEL",
-		MANUFACTURING: "MFG",
-		METALLURGY: "METAL",
-		RESOURCE_EXTRACTION: "RES",
-		PIONEERS: "PIO",
-		SETTLERS: "SET",
-		TECHNICIANS: "TECH",
-		ENGINEERS: "ENG",
-		SCIENTISTS: "SCI",
-	};
 
 	watch(
 		() => props.planListData,
@@ -75,9 +58,7 @@
 		<XNDataTableColumn key="cogc" title="COGC" sorter="default">
 			<template #render-cell="{ rowData }">
 				<div class="text-nowrap">
-					{{
-						SHORTPROGRAMTYPES[rowData.cogc as PLAN_COGCPROGRAM_TYPE]
-					}}
+					{{ cogcTextMapping[rowData.cogc as PLAN_COGCPROGRAM_TYPE] }}
 				</div>
 			</template>
 		</XNDataTableColumn>
