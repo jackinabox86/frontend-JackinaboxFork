@@ -66,8 +66,8 @@
 		<thead>
 			<tr>
 				<th>Type</th>
-				<th>Required</th>
-				<th>Capacity</th>
+				<th>Req.</th>
+				<th>Capa.</th>
 				<th>Open</th>
 				<th class="!text-center">L1</th>
 				<th class="!text-center">L2</th>
