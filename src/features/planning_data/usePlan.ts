@@ -31,6 +31,24 @@ const cogcValues: string[] = [
 	"SCIENTISTS",
 ];
 
+export const cogcTextMapping: Record<PLAN_COGCPROGRAM_TYPE, string> = {
+	"---": "None",
+	AGRICULTURE: "AGRI",
+	CHEMISTRY: "CHEM",
+	CONSTRUCTION: "CONST",
+	ELECTRONICS: "ELEC",
+	FOOD_INDUSTRIES: "FOOD",
+	FUEL_REFINING: "FUEL",
+	MANUFACTURING: "MFG",
+	METALLURGY: "METAL",
+	RESOURCE_EXTRACTION: "RES",
+	PIONEERS: "PIO",
+	SETTLERS: "SET",
+	TECHNICIANS: "TECH",
+	ENGINEERS: "ENG",
+	SCIENTISTS: "SCI",
+};
+
 export function usePlan() {
 	const planningStore = usePlanningStore();
 

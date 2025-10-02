@@ -8,6 +8,7 @@
 		IOverviewData,
 	} from "@/features/planning/usePlanCalculation.types";
 	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
+	import { cogcTextMapping } from "@/features/planning_data/usePlan";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -37,24 +38,6 @@
 			required: true,
 		},
 	});
-
-	const cogcTextMapping: Record<PLAN_COGCPROGRAM_TYPE, string> = {
-		"---": "None",
-		AGRICULTURE: "Agri",
-		CHEMISTRY: "Chem",
-		CONSTRUCTION: "Cons",
-		ELECTRONICS: "Elec",
-		FOOD_INDUSTRIES: "Food",
-		FUEL_REFINING: "Fuel",
-		MANUFACTURING: "Manu",
-		METALLURGY: "Metal",
-		RESOURCE_EXTRACTION: "Res Ext",
-		PIONEERS: "Pio",
-		SETTLERS: "Sett",
-		TECHNICIANS: "Tech",
-		ENGINEERS: "Engi",
-		SCIENTISTS: "Sci",
-	};
 
 	const expertsString = computed(() => {
 		let experts = "";
