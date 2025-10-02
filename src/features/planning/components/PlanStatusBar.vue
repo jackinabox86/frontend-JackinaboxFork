@@ -40,20 +40,20 @@
 
 	const cogcTextMapping: Record<PLAN_COGCPROGRAM_TYPE, string> = {
 		"---": "None",
-		AGRICULTURE: "Agriculture",
-		CHEMISTRY: "Chemistry",
-		CONSTRUCTION: "Construction",
-		ELECTRONICS: "Electronics",
-		FOOD_INDUSTRIES: "Food Industries",
-		FUEL_REFINING: "Fuel Refining",
-		MANUFACTURING: "Manufacturing",
-		METALLURGY: "Metallurgy",
-		RESOURCE_EXTRACTION: "Resource Extraction",
-		PIONEERS: "Pioneers",
-		SETTLERS: "Settlers",
-		TECHNICIANS: "Technicians",
-		ENGINEERS: "Engineers",
-		SCIENTISTS: "Scientists",
+		AGRICULTURE: "Agri",
+		CHEMISTRY: "Chem",
+		CONSTRUCTION: "Cons",
+		ELECTRONICS: "Elec",
+		FOOD_INDUSTRIES: "Food",
+		FUEL_REFINING: "Fuel",
+		MANUFACTURING: "Manu",
+		METALLURGY: "Metal",
+		RESOURCE_EXTRACTION: "Res Ext",
+		PIONEERS: "Pio",
+		SETTLERS: "Sett",
+		TECHNICIANS: "Tech",
+		ENGINEERS: "Engi",
+		SCIENTISTS: "Sci",
 	};
 
 	const expertsString = computed(() => {
@@ -73,7 +73,7 @@
 
 <template>
 	<div class="flex flex-row font-bold child:mr-3">
-		<div :class="corphq ? 'visible' : 'collapse md:invisible'">
+		<div :class="corphq ? 'visible' : 'collapse sm:invisible'">
 			<span class="text-positive">HQ</span>
 		</div>
 		<div>

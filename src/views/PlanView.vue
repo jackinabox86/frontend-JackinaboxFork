@@ -490,10 +490,10 @@
 <template>
 	<div class="@container">
 		<div
-			class="px-3 grid grid-cols-1 grid-rows-[repeat(6,auto)] md:grid-cols-[auto_1fr_auto] gap-x-3">
+			class="px-3 grid grid-cols-1 grid-rows-[repeat(5,auto)] md:grid-cols-[auto_1fr_auto] @[1290px]:grid-cols-[auto_1fr_450px] gap-x-3">
 			<!-- Plan Name & Selector -->
 			<div
-				class="row-1 col-1 flex flex-row flex-wrap gap-x-3 py-3 items-baseline">
+				class="row-1 col-1 flex flex-row flex-wrap gap-x-3 pt-3 pb-3 md:pb-0 @6xl:pb-3 items-baseline">
 				<h1 class="text-2xl font-bold text-white">
 					{{ planName }}
 				</h1>
@@ -508,8 +508,9 @@
 			</div>
 			<!-- Status Bar (sticky) -->
 			<div
-				class="row-3 md:row-2 md:col-span-full xl:row-1 w-full md:w-auto justify-self-start md:justify-self-center my-auto p-3 sticky top-0 z-1000 bg-(--app-bg) md:rounded-b-lg">
+				class="row-3 md:row-2 @6xl:row-1 md:col-span-full @6xl:col-span-1 w-full md:w-auto md:justify-self-center my-auto py-3 sticky top-0 z-1000 bg-(--app-bg) md:rounded-b">
 				<PlanStatusBar
+					class="sm:justify-center"
 					:area-data="result.area"
 					:corphq="result.corphq"
 					:cogc="result.cogc"
@@ -517,7 +518,8 @@
 					:overview-data="overviewData" />
 			</div>
 			<!-- Plan Actions -->
-			<div class="row-2 md:row-1 md:col-3 py-3 flex flex-row flex-wrap">
+			<div
+				class="row-2 md:row-1 md:col-3 md:py-3 md:justify-end flex flex-row flex-wrap">
 				<PButtonGroup v-if="userStore.isLoggedIn">
 					<PButton
 						v-if="disabled"
@@ -737,9 +739,8 @@
 				</div>
 			</div>
 			<!-- Main Plan View -->
-			<div
-				class="row-6 col-span-full grid grid-cols-1 @[1290px]:grid-cols-[auto_450px] pt-3 gap-3">
-				<div>
+			<div class="row-5 col-span-full grid grid-cols-subgrid pt-3 gap-3">
+				<div class="col-1 col-span-full @[1290px]:col-span-2">
 					<div
 						class="flex flex-row flex-wrap sm:justify-center-safe gap-6">
 						<div>
@@ -786,7 +787,8 @@
 							" />
 					</div>
 				</div>
-				<div>
+				<div
+					class="col-1 col-span-full @[1290px]:col-3 @[1290px]:col-span-1">
 					<div class="sticky top-3">
 						<h2
 							class="text-white/80 font-bold text-lg pb-3 flex justify-between child:my-auto">
