@@ -28,6 +28,9 @@ import {
 import { usePlanCalculationHandlers } from "@/features/planning/usePlanCalculationHandlers";
 import { usePlanCalculationPreComputes } from "@/features/planning/usePlanCalculationPreComputes";
 
+// Static data
+import { optimalProduction } from "@/features/roi_overview/assets/optimalProduction";
+
 // Types & Interfaces
 import { IBuilding, IPlanet, IRecipe } from "@/features/api/gameData.types";
 import {
@@ -398,7 +401,7 @@ export async function usePlanCalculation(
 						dailyShare: 1,
 						// time adjusted to efficiency and amount
 						time: (recipeInfo.TimeMs * r.amount) / totalEfficiency,
-						recipe: { ...recipeInfo, dailyRevenue: 0, roi: 0 },
+						recipe: { ...recipeInfo, dailyRevenue: 0, roi: 0, profitPerArea: 0 },
 						cogm: undefined,
 					});
 				}
@@ -469,6 +472,14 @@ export async function usePlanCalculation(
 					// Recipe option ROI
 					const roi: number = (constructionCost * -1) / dailyRevenue;
 
+					// Recipe option Profit per Area
+					// Use Area_Per_Prod_Build from optimalProduction if available, otherwise fall back to AreaCost
+					const optimalProductionData = optimalProduction.find(
+						(op) => op.ticker === br.BuildingTicker
+					);
+					const areaPerBuilding = optimalProductionData?.Area_Per_Prod_Build ?? buildingData.AreaCost;
+					const profitPerArea: number = dailyRevenue / areaPerBuilding;
+
 					return {
 						RecipeId: br.RecipeId,
 						BuildingTicker: br.BuildingTicker,
@@ -478,6 +489,7 @@ export async function usePlanCalculation(
 						Outputs: br.Outputs,
 						dailyRevenue,
 						roi,
+						profitPerArea,
 					};
 				})
 			);

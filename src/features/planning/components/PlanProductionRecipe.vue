@@ -174,6 +174,7 @@
 						<th>Time</th>
 						<th>Output</th>
 						<th>$ / Day</th>
+						<th>$ / Area</th>
 						<th>ROI</th>
 					</tr>
 				</thead>
@@ -225,6 +226,14 @@
 						</td>
 						<td
 							:class="
+								recipe.profitPerArea >= 0
+									? '!text-positive'
+									: '!text-negative'
+							">
+							{{ formatNumber(recipe.profitPerArea) }} $
+						</td>
+						<td
+							:class="
 								recipe.roi >= 0
 									? '!text-positive'
 									: '!text-negative'
@@ -236,7 +245,7 @@
 				<tbody>
 					<tr>
 						<td
-							colspan="5"
+							colspan="6"
 							class="text-xs !p-2 !text-white/60 !border-t-1">
 							<strong>Revenue / Day</strong> is calculated by
 							taking the daily income generated from a recipe and
@@ -245,7 +254,11 @@
 							degradation cost (1/180th of the construction cost).
 							The income from the recipe is based on the
 							difference between the input material costs and the
-							output material values.
+							output material values. <strong>$ / Area</strong> is
+							the daily revenue divided by the area for one
+							production building and its proportionate share of
+							the area for a CM and habs required for an
+							optimal base of such buildings in Recipe ROI.
 							<strong>ROI (Payback)</strong> is the time required
 							for a continuously operating recipe to generate
 							enough revenue to offset the building's construction
