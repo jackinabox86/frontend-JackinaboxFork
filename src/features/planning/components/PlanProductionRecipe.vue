@@ -175,6 +175,7 @@
 						<th>Output</th>
 						<th>$ / Day</th>
 						<th>ROI</th>
+						<th>Prof/Area</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -231,12 +232,20 @@
 							">
 							{{ formatNumber(recipe.roi) }} d
 						</td>
+						<td
+							:class="
+								recipe.profitPerArea >= 0
+									? '!text-positive'
+									: '!text-negative'
+							">
+							{{ formatNumber(recipe.profitPerArea) }} $
+						</td>
 					</tr>
 				</tbody>
 				<tbody>
 					<tr>
 						<td
-							colspan="5"
+							colspan="6"
 							class="text-xs !p-2 !text-white/60 !border-t-1">
 							<strong>Revenue / Day</strong> is calculated by
 							taking the daily income generated from a recipe and
