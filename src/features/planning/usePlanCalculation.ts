@@ -473,12 +473,10 @@ export async function usePlanCalculation(
 					const roi: number = (constructionCost * -1) / dailyRevenue;
 
 					// Recipe option Profit per Area
-					// Use Area_Per_Prod_Build from optimalProduction if available, otherwise fall back to AreaCost
-					const optimalProductionData = optimalProduction.find(
-						(op) => op.ticker === br.BuildingTicker
-					);
-					const areaPerBuilding = optimalProductionData?.Area_Per_Prod_Build ?? buildingData.AreaCost;
-					const profitPerArea: number = dailyRevenue / areaPerBuilding;
+					const optimalProductionData = optimalProduction.find((op) => op.ticker === br.BuildingTicker);
+					const areaPerBuilding: number = optimalProductionData ? optimalProductionData.total_area / optimalProductionData.amount : buildingData.AreaCost;
+
+					const profitPerArea = dailyRevenue / areaPerBuilding; 
 
 					return {
 						RecipeId: br.RecipeId,

@@ -16,7 +16,6 @@ export type IStaticOptimalProduction = {
 	HBC: number;
 	HBM: number;
 	HBL: number;
-	Area_Per_Prod_Build: number;
 };
 
 export interface IROIResult {
