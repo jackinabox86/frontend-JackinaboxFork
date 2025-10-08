@@ -1,11 +1,12 @@
 <script setup lang="ts">
-	import { PropType } from "vue";
+	import { PropType, computed } from "vue";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
 
 	// Types & Interfaces
 	import {
+		IAreaResult,
 		IOverviewData,
 		IVisitationData,
 	} from "@/features/planning/usePlanCalculation.types";
@@ -13,7 +14,7 @@
 	// UI
 	import { PTable } from "@/ui";
 
-	defineProps({
+	const props = defineProps({
 		visitationData: {
 			type: Object as PropType<IVisitationData>,
 			required: true,
@@ -22,6 +23,16 @@
 			type: Object as PropType<IOverviewData>,
 			required: true,
 		},
+		areaData: {
+			type: Object as PropType<IAreaResult>,
+			required: true,
+		},
+	});
+
+	const profitPerArea = computed(() => {
+		return props.areaData.areaUsed > 0
+			? props.overviewData.profit / props.areaData.areaUsed
+			: 0;
 	});
 </script>
 
@@ -79,6 +90,18 @@
 							">
 							{{ formatNumber(overviewData.roi) }}
 							<span class="font-light text-white/50"> d </span>
+						</td>
+					</tr>
+					<tr>
+						<td>Profit / Area</td>
+						<td
+							:class="
+								profitPerArea >= 0
+									? '!text-positive'
+									: '!text-negative'
+							">
+							{{ formatNumber(profitPerArea) }}
+							<span class="font-light text-white/50"> $ </span>
 						</td>
 					</tr>
 				</tbody>
