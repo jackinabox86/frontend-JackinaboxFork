@@ -18,6 +18,7 @@ export const PLANETSEARCHOPTIONMATERIALS: { label: string; value: string }[] = [
 	{ label: "HE", value: "HE" },
 	{ label: "HE3", value: "HE3" },
 	{ label: "HEX", value: "HEX" },
+	{ label: "KR", value: "KR" },
 	{ label: "LES", value: "LES" },
 	{ label: "LIO", value: "LIO" },
 	{ label: "LST", value: "LST" },
@@ -26,6 +27,7 @@ export const PLANETSEARCHOPTIONMATERIALS: { label: string; value: string }[] = [
 	{ label: "N", value: "N" },
 	{ label: "NE", value: "NE" },
 	{ label: "O", value: "O" },
+	{ label: "REO", value: "REO" },
 	{ label: "SCR", value: "SCR" },
 	{ label: "SIO", value: "SIO" },
 	{ label: "TAI", value: "TAI" },
@@ -246,6 +248,38 @@ export const PLANETSEARCHSYSTEMS: { label: string; value: string }[] = [
 		value: "174e00c6214c142caa19ab041b21ed8c",
 	},
 	{
+		label: "BN-299",
+		value: "6de358d25c6d87856e46ba918d3f0e7b",
+	},
+	{
+		label: "BN-386",
+		value: "ea0c022767f917908cb3a8b4bb9f0e59",
+	},
+	{
+		label: "BN-436",
+		value: "f925098a491ec3a5c12614f04fc26f3d",
+	},
+	{
+		label: "BN-516",
+		value: "2bc5097ea2f35b6fd0fc35764a712d80",
+	},
+	{
+		label: "BN-805",
+		value: "35f27ac53565e7fb43121dbd97abdb9d",
+	},
+	{
+		label: "BN-886",
+		value: "c52e1d73fda988b04bd85a5475a70d23",
+	},
+	{
+		label: "BN-901",
+		value: "1f53bbc50b65e3d8bde5f5e278291f4b",
+	},
+	{
+		label: "BN-908",
+		value: "a0b5e66cbaab42414b64379c4314b361",
+	},
+	{
 		label: "BS-257",
 		value: "3d1b1e2957629c94875f17f855e8ff19",
 	},
@@ -404,6 +438,26 @@ export const PLANETSEARCHSYSTEMS: { label: string; value: string }[] = [
 	{
 		label: "DX-916",
 		value: "c24bdf7dd73dd00cc674d62ed68da657",
+	},
+	{
+		label: "EE-154",
+		value: "d11f0a4c52e8ba710ba83ce6ee824ea6",
+	},
+	{
+		label: "EE-223",
+		value: "dcd7a2f10aa4f825c86c26d9c9482a34",
+	},
+	{
+		label: "EE-233",
+		value: "6890a29aed0c9fe78d8a681829faacc9",
+	},
+	{
+		label: "EE-860",
+		value: "6f52c76e33f300cd494038dff0e945e1",
+	},
+	{
+		label: "EE-981",
+		value: "6ac61e1da4e04af903b59dbefa0e8ded",
 	},
 	{
 		label: "EL-179",
@@ -646,6 +700,34 @@ export const PLANETSEARCHSYSTEMS: { label: string; value: string }[] = [
 		value: "57e2dbb7588c3cf2ecdbd531bc1ec0c6",
 	},
 	{
+		label: "GH-082",
+		value: "7efee871649906482b5b7950d8f373e5",
+	},
+	{
+		label: "GH-209",
+		value: "e7fa721aba688f3e7a72624fed9fc328",
+	},
+	{
+		label: "GH-384",
+		value: "78853fd412ed241c69ab13b9aa283bab",
+	},
+	{
+		label: "GH-459",
+		value: "81a1b2d407f337030bb3e501e60c0e81",
+	},
+	{
+		label: "GH-527",
+		value: "90b7f1514fada0e650e3025771797a35",
+	},
+	{
+		label: "GH-780",
+		value: "64f5a339251b74fb1570fc43be63bd66",
+	},
+	{
+		label: "GH-827",
+		value: "2b4a0c567dc18ef182487ad469101b3e",
+	},
+	{
 		label: "GK-115",
 		value: "e3dbe21629628363d05b04e3be16a327",
 	},
@@ -800,6 +882,34 @@ export const PLANETSEARCHSYSTEMS: { label: string; value: string }[] = [
 	{
 		label: "HV-813",
 		value: "ab786967ea05e2d33e3d3e6992628b0f",
+	},
+	{
+		label: "HY-239",
+		value: "a20a6ee7be479bed5b43ca82042c4486",
+	},
+	{
+		label: "HY-393",
+		value: "b2227ed2c544352c0519eb2667ce80c4",
+	},
+	{
+		label: "HY-456",
+		value: "74db11111a31fd0c2121449aebcff1e4",
+	},
+	{
+		label: "HY-608",
+		value: "68c602b39fa76ac9c4c64523d4aac990",
+	},
+	{
+		label: "HY-784",
+		value: "35abdfb35999c31edaa20ee450c278ed",
+	},
+	{
+		label: "HY-865",
+		value: "3af1296a71aebe969b5a48c169d3aa58",
+	},
+	{
+		label: "HY-976",
+		value: "f56545080c59d5a68825ccb782bccf06",
 	},
 	{
 		label: "IA-093",
@@ -1032,6 +1142,30 @@ export const PLANETSEARCHSYSTEMS: { label: string; value: string }[] = [
 	{
 		label: "JS-952",
 		value: "9e0f4a18381e14dcf7f525c027b62314",
+	},
+	{
+		label: "JY-136",
+		value: "e723fe9ff63dc79a8de51210a8bc5043",
+	},
+	{
+		label: "JY-143",
+		value: "b196b34f7eaba296ddd89262c8338db9",
+	},
+	{
+		label: "JY-313",
+		value: "2d853ce9ad6d017959484eb14b8bebea",
+	},
+	{
+		label: "JY-327",
+		value: "ffcf6068a4a5acc1bf7aa903e4eb7b49",
+	},
+	{
+		label: "JY-427",
+		value: "aba106bc2ce1454d783c431c647b1655",
+	},
+	{
+		label: "JY-457",
+		value: "6fef3ca3d1e1085309ea4e2a3c79a4c7",
 	},
 	{
 		label: "KC-051",
@@ -1280,6 +1414,26 @@ export const PLANETSEARCHSYSTEMS: { label: string; value: string }[] = [
 	{
 		label: "LS-934",
 		value: "66a9e561febf0198334ee2fa29299440",
+	},
+	{
+		label: "LZ-088",
+		value: "586d7b0b307c264bf724c01118b3b0e5",
+	},
+	{
+		label: "LZ-189",
+		value: "0b7495a6db553b683fee278592a7ac05",
+	},
+	{
+		label: "LZ-259",
+		value: "eea10d9cb4d9f3e9db6ca10fcfeeae64",
+	},
+	{
+		label: "LZ-270",
+		value: "f9ba12b1141c8dabb907134f42662a90",
+	},
+	{
+		label: "LZ-813",
+		value: "656d08480e0645124c9d31ec9ed39b91",
 	},
 	{
 		label: "MG-197",
@@ -2022,6 +2176,34 @@ export const PLANETSEARCHSYSTEMS: { label: string; value: string }[] = [
 		value: "2e32d596e6e583f24f9969a1bb2ed1a8",
 	},
 	{
+		label: "UI-199",
+		value: "93d9d535eeef0566ca2257a3feecf51a",
+	},
+	{
+		label: "UI-206",
+		value: "868e167cacd8d77692073e6957bd4d74",
+	},
+	{
+		label: "UI-491",
+		value: "5937998d5afd70ce6235defdfc24f232",
+	},
+	{
+		label: "UI-550",
+		value: "a2e2238a34d0ef948edf605ba9a40e43",
+	},
+	{
+		label: "UI-938",
+		value: "aa7808405f099bd9a89cd20f2e67e9de",
+	},
+	{
+		label: "UI-973",
+		value: "14823d09127d96567adf6cb01b5c6455",
+	},
+	{
+		label: "UI-986",
+		value: "785908c6f34db36ef5a516263227d96b",
+	},
+	{
 		label: "UP-102",
 		value: "131fa736031851cb7cf392c40e7c9620",
 	},
@@ -2222,6 +2404,38 @@ export const PLANETSEARCHSYSTEMS: { label: string; value: string }[] = [
 		value: "bba0a644ebf36b7aaee3fe0d1b180a07",
 	},
 	{
+		label: "WO-052",
+		value: "bcb215f3d6c719fa05ba7401ced1f9fa",
+	},
+	{
+		label: "WO-099",
+		value: "0d18d15716f5e8427f1c6bc0749a2405",
+	},
+	{
+		label: "WO-404",
+		value: "4d267ce73c8180618f65eb30fef9f854",
+	},
+	{
+		label: "WO-452",
+		value: "e657a2292d1ba8d755491b98421d7c77",
+	},
+	{
+		label: "WO-491",
+		value: "d25a4f3997cfe9de7bfc76d5cd2c4ddf",
+	},
+	{
+		label: "WO-617",
+		value: "87ba3f9109e14620695c0417168b8749",
+	},
+	{
+		label: "WO-740",
+		value: "203bf9f67406b0e010e294a95ba02bc5",
+	},
+	{
+		label: "WO-907",
+		value: "363311f193e26851eab3427142a0ad93",
+	},
+	{
 		label: "WR-186",
 		value: "33314e7bd0bb0a3baccf818496fbfd9b",
 	},
@@ -2268,6 +2482,38 @@ export const PLANETSEARCHSYSTEMS: { label: string; value: string }[] = [
 	{
 		label: "WU-974",
 		value: "2de9c434fd808ee23ee5c9fe2f656e98",
+	},
+	{
+		label: "WX-031",
+		value: "427b79690607db30b9300db076a85fcd",
+	},
+	{
+		label: "WX-150",
+		value: "34953b7124cc177aea853b098f3a2c75",
+	},
+	{
+		label: "WX-285",
+		value: "da914a6ec766dd908d0b995e027076dc",
+	},
+	{
+		label: "WX-318",
+		value: "5d7c47dea690fd7aba211765e19a5abc",
+	},
+	{
+		label: "WX-556",
+		value: "1d2429d536c7907149af81850b26fbba",
+	},
+	{
+		label: "WX-691",
+		value: "c73a22e8b836f7fe18e70306bd8ba7bc",
+	},
+	{
+		label: "WX-827",
+		value: "a035823bc80e5e002a2cf5cc1d1e8e55",
+	},
+	{
+		label: "WX-918",
+		value: "dde07fb5f48199e8a6bb5a5778383bfd",
 	},
 	{
 		label: "XD-005",
