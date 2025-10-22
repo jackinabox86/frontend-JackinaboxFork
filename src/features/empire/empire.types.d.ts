@@ -54,4 +54,5 @@ interface IEmpireCostOverview {
 	totalProfit: number;
 	totalRevenue: number;
 	totalCost: number;
+	totalAreaUsed: number;
 }

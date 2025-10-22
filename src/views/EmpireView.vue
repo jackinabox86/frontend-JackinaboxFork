@@ -175,11 +175,16 @@
 			(sum, element) => sum + element.cost,
 			0
 		);
+		const totalAreaUsed: number = Object.values(calculatedPlans.value).reduce(
+			(sum, element) => sum + element.area.areaUsed,
+			0
+		);
 
 		return {
 			totalProfit,
 			totalRevenue,
 			totalCost,
+			totalAreaUsed,
 		};
 	});
 

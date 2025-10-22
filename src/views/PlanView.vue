@@ -755,7 +755,8 @@
 						<div>
 							<PlanOverview
 								:visitation-data="visitationData"
-								:overview-data="overviewData">
+								:overview-data="overviewData"
+								:area-data="result.area">
 								<template #heading="{ text }">
 									<h2
 										class="text-white/80 font-bold text-lg pb-3">

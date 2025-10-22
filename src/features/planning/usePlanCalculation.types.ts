@@ -69,6 +69,7 @@ export type IExpertRecord = Required<Record<EXPERT_TYPE, IExpertElement>>;
 export interface IRecipeBuildingOption extends IRecipe {
 	dailyRevenue: number;
 	roi: number;
+	profitPerArea: number;
 }
 
 export interface ICOGMMaterialCost {
