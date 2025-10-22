@@ -9,7 +9,7 @@ import {
 
 describe("searchConstants", async () => {
 	it("PLANETSEARCHOPTIONMATERIALS", async () => {
-		expect(PLANETSEARCHOPTIONMATERIALS.length).toBe(34);
+		expect(PLANETSEARCHOPTIONMATERIALS.length).toBe(36);
 	});
 
 	it("PLANETSEARCHINFRASTRUCTURE", async () => {
@@ -21,6 +21,6 @@ describe("searchConstants", async () => {
 	});
 
 	it("PLANETSEARCHSYSTEMS", async () => {
-		expect(PLANETSEARCHSYSTEMS.length).toBe(637);
+		expect(PLANETSEARCHSYSTEMS.length).toBe(698);
 	});
 });
