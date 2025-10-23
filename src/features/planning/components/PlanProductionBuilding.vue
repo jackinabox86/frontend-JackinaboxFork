@@ -180,32 +180,40 @@
 		</div>
 		<div
 			class="p-3 border-pp-border border rounded-bl rounded-br bg-white/5 text-nowrap flex flex-row flex-wrap gap-x-3 justify-between">
-			<PTooltip>
-				<template #trigger>
-					<div class="flex gap-x-3 hover:cursor-help">
-						<span>Efficiency</span>
-						<span class="font-bold">
-							{{
-								formatNumber(
-									localBuildingData.totalEfficiency * 100
-								)
-							}}
-							%
-						</span>
-					</div>
-				</template>
-
-				<div
-					v-for="element in localBuildingData.efficiencyElements"
-					:key="`${localBuildingData.name}#EFFICIENCY#${element.efficiencyType}`"
-					class="flex flex-row justify-between align-center gap-x-3 child:p-1">
-					<div>{{ element.efficiencyType }}</div>
-					<div>{{ formatNumber(element.value * 100) }} %</div>
-				</div>
-			</PTooltip>
 			<div class="flex flex-wrap gap-x-3">
-				<div class="flex gap-x-3">
-					<span>Revenue</span>
+				<PTooltip>
+					<template #trigger>
+						<div class="flex gap-x-1 hover:cursor-help">
+							<span>Efficiency:</span>
+							<span class="font-bold">
+								{{
+									formatNumber(
+										localBuildingData.totalEfficiency * 100
+									)
+								}}
+								%
+							</span>
+						</div>
+					</template>
+
+					<div
+						v-for="element in localBuildingData.efficiencyElements"
+						:key="`${localBuildingData.name}#EFFICIENCY#${element.efficiencyType}`"
+						class="flex flex-row justify-between align-center gap-x-3 child:p-1">
+						<div>{{ element.efficiencyType }}</div>
+						<div>{{ formatNumber(element.value * 100) }} %</div>
+					</div>
+				</PTooltip>
+				<div class="flex gap-x-1">
+					<span>Area:</span>
+					<span class="font-bold">
+						{{ localBuildingData.areaUsed }}
+					</span>
+				</div>
+			</div>
+			<div class="flex flex-wrap gap-x-3">
+				<div class="flex gap-x-1">
+					<span>Revenue:</span>
 					<span
 						class="font-bold"
 						:class="
@@ -216,8 +224,8 @@
 						{{ formatNumber(localBuildingData.dailyRevenue) }} $
 					</span>
 				</div>
-				<div class="flex gap-x-3">
-					<span>Construction Cost</span>
+				<div class="flex gap-x-1">
+					<span>Construction Cost:</span>
 					<span class="font-bold">
 						{{
 							formatNumber(
