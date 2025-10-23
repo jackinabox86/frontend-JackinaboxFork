@@ -2,6 +2,7 @@
 
 - Add Profit/Area calculation for all recipes in selector dropdown based on an optimal setup, also adds metric to plans overview [[PR-290]](https://github.com/PRUNplanner/frontend/pull/290)
 - Updated materials and system lists to latest ingame version [[PR-292]](https://github.com/PRUNplanner/frontend/pull/292)
+- Improvements to Plan layout, configuration section, save-button and building area [[PR-295]](https://github.com/PRUNplanner/frontend/pull/295)
 - Small UI / responsiveness improvements
 
 # 2025-09-25 - v. 0.20.3
