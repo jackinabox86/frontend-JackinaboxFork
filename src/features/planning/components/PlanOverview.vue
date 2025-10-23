@@ -43,6 +43,8 @@
 			<PTable striped>
 				<tbody
 					class="child:child:first:font-bold child:child:last:text-end">
+					<!-- empty row to make the background colors match the other tables-->
+					<tr />
 					<tr>
 						<td>Daily Cost</td>
 						<td>
