@@ -73,6 +73,7 @@
 		SaveSharp,
 		ChangeCircleOutlined,
 		ContentCopySharp,
+		SettingsSharp,
 	} from "@vicons/material";
 	import { onBeforeRouteLeave } from "vue-router";
 
@@ -530,17 +531,26 @@
 						<span v-if="!sharedWasCloned"> Clone Plan </span>
 						<span v-else> Cloning Complete </span>
 					</PButton>
-					<PButton
-						v-if="saveable"
-						:loading="refIsSaving"
-						:type="modified ? 'error' : 'success'"
-						:disabled="disabled"
-						@click="save">
-						<template #icon>
-							<SaveSharp />
+					<PTooltip :disabled="saveable">
+						<template #trigger>
+							<!-- ButtonGroup styling doesn't work quite right with this
+							 being wrapped in a tooltip, explicitly set rounded on it -->
+							<PButton
+								:loading="refIsSaving"
+								:type="
+									modified || !saveable ? 'error' : 'success'
+								"
+								:disabled="disabled || !saveable"
+								class="!rounded-none !rounded-l-sm"
+								@click="save">
+								<template #icon>
+									<SaveSharp />
+								</template>
+								{{ existing ? "Save" : "Create" }}
+							</PButton>
 						</template>
-						{{ existing ? "Save" : "Create" }}
-					</PButton>
+						Must set a plan name in Configuration to save
+					</PTooltip>
 					<PButton
 						v-if="existing"
 						:disabled="disabled"
@@ -563,72 +573,60 @@
 			<div class="row-4 md:col-span-3">
 				<!-- Toolbar -->
 				<div
-					class="flex flex-wrap grow @3xl:justify-between border-y border-white/10 gap-3 py-3 child:my-auto">
+					class="flex flex-wrap grow @3xl:justify-end border-y border-white/10 gap-3 py-3 child:my-auto">
 					<PButton
 						:type="
 							refShowTool === 'configuration'
 								? 'primary'
 								: 'secondary'
 						"
-						class="hidden @3xl:inline-block"
 						@click="toggleTool('configuration')">
+						<template #icon>
+							<SettingsSharp />
+						</template>
 						Configuration
 					</PButton>
-					<div class="flex flex-wrap grow @3xl:justify-end gap-3">
-						<PButton
-							:type="
-								refShowTool === 'configuration'
-									? 'primary'
-									: 'secondary'
-							"
-							class="@3xl:hidden"
-							@click="toggleTool('configuration')">
-							Configuration
-						</PButton>
-						<PButton
-							:type="
-								refShowTool === 'popr' ? 'primary' : 'secondary'
-							"
-							@click="toggleTool('popr')">
-							POPR
-						</PButton>
-						<PButton
-							:type="
-								refShowTool === 'visitation-frequency'
-									? 'primary'
-									: 'secondary'
-							"
-							@click="toggleTool('visitation-frequency')">
-							Visitation Frequency
-						</PButton>
-						<PButton
-							:type="
-								refShowTool === 'construction-cart'
-									? 'primary'
-									: 'secondary'
-							"
-							@click="toggleTool('construction-cart')">
-							Construction Cart
-						</PButton>
-						<PButton
-							:type="
-								refShowTool === 'supply-cart'
-									? 'primary'
-									: 'secondary'
-							"
-							@click="toggleTool('supply-cart')">
-							Supply Cart
-						</PButton>
-						<PButton
-							:type="
-								refShowTool === 'repair-analysis'
-									? 'primary'
-									: 'secondary'
-							"
-							@click="toggleTool('repair-analysis')">
-							Repair Analysis
-						</PButton>
-					</div>
+					<PButton
+						:type="refShowTool === 'popr' ? 'primary' : 'secondary'"
+						@click="toggleTool('popr')">
+						POPR
+					</PButton>
+					<PButton
+						:type="
+							refShowTool === 'visitation-frequency'
+								? 'primary'
+								: 'secondary'
+						"
+						@click="toggleTool('visitation-frequency')">
+						Visitation Frequency
+					</PButton>
+					<PButton
+						:type="
+							refShowTool === 'construction-cart'
+								? 'primary'
+								: 'secondary'
+						"
+						@click="toggleTool('construction-cart')">
+						Construction Cart
+					</PButton>
+					<PButton
+						:type="
+							refShowTool === 'supply-cart'
+								? 'primary'
+								: 'secondary'
+						"
+						@click="toggleTool('supply-cart')">
+						Supply Cart
+					</PButton>
+					<PButton
+						:type="
+							refShowTool === 'repair-analysis'
+								? 'primary'
+								: 'secondary'
+						"
+						@click="toggleTool('repair-analysis')">
+						Repair Analysis
+					</PButton>
 				</div>
 				<!-- Tool View -->
 				<div
