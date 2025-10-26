@@ -1,4 +1,10 @@
-# 2025-10-22 - v 0.20.4
+# 2025-10-26 - v. 0.20.5
+
+- Allow automatic hab-optimization to be turned off before the plan is saved [[PR-298]](https://github.com/PRUNplanner/frontend/pull/298)
+- Fix: Password Reset Endpoint URL, injects reset code from email to frontend properly [[#301]](https://github.com/PRUNplanner/frontend/issues/301)
+- Removes sending of tracking events to analytics if habs are auto-optimized [[#297]](https://github.com/PRUNplanner/frontend/issues/297)
+
+# 2025-10-22 - v. 0.20.4
 
 - Add Profit/Area calculation for all recipes in selector dropdown based on an optimal setup, also adds metric to plans overview [[PR-290]](https://github.com/PRUNplanner/frontend/pull/290)
 - Updated materials and system lists to latest ingame version [[PR-292]](https://github.com/PRUNplanner/frontend/pull/292)
