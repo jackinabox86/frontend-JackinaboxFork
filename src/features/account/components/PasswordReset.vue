@@ -11,7 +11,15 @@
 	import { PForm, PFormItem, PInput, PButton } from "@/ui";
 	import { IUserPasswordResetResponse } from "@/features/api/userData.types";
 
-	const inputCode: Ref<string | null> = ref(null);
+	const props = defineProps({
+		resetCode: {
+			type: String,
+			required: false,
+			default: null,
+		},
+	});
+
+	const inputCode: Ref<string | null> = ref(props.resetCode);
 	const inputPassword: Ref<string | null> = ref(null);
 	const isLoading: Ref<boolean> = ref(false);
 
