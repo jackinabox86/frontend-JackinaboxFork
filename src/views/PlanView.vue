@@ -580,6 +580,8 @@
 
 					<HelpDrawer file-name="plan" />
 				</PButtonGroup>
+				<!-- empty div to maintain layout -->
+				<div v-else class="@[1290px]:w-[450px]" />
 			</div>
 			<!-- Tools Container -->
 			<div class="row-4 md:col-span-3">
