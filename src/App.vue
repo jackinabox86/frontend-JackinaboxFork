@@ -32,9 +32,7 @@
 	const showUpdateNotification = computed(
 		() => isLoggedIn.value && updateAvailable.value
 	);
-	const mainContentClasses = computed(() => [
-		"flex-1 flex flex-col",
-	]);
+	const mainContentClasses = computed(() => ["flex-1 flex flex-col"]);
 
 	onMounted(() => {
 		startWatch();
@@ -60,12 +58,7 @@
 				<MobileToggle v-if="isLoggedIn" />
 
 				<Suspense>
-					<RouterView v-if="isLoggedIn" />
-					<div v-else class="h-full w-full flex">
-						<div class="w-max mx-auto">
-							<RouterView />
-						</div>
-					</div>
+					<RouterView />
 				</Suspense>
 
 				<AppFooter />

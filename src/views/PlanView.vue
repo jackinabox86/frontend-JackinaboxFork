@@ -435,7 +435,7 @@
 
 	// Route Guard
 	onBeforeRouteLeave(() => {
-		if (modified.value) {
+		if (modified.value && !props.sharedPlanUuid) {
 			trackEvent("plan_leave_changed", {
 				planetNaturalId: planetData.PlanetNaturalId,
 			});
@@ -580,6 +580,8 @@
 
 					<HelpDrawer file-name="plan" />
 				</PButtonGroup>
+				<!-- empty div to maintain layout -->
+				<div v-else class="@[1290px]:w-[450px]" />
 			</div>
 			<!-- Tools Container -->
 			<div class="row-4 md:col-span-3">
@@ -599,6 +601,7 @@
 						Configuration
 					</PButton>
 					<PButton
+						v-if="userStore.isLoggedIn"
 						:type="refShowTool === 'popr' ? 'primary' : 'secondary'"
 						@click="toggleTool('popr')">
 						POPR

@@ -28,7 +28,7 @@
 
 <template>
 	<div
-		class="mx-auto w-full max-w-7xl mt-10 px-5 md:px-10 lg:px-0 flex flex-row justify-between">
+		class="mx-auto w-full max-w-7xl mt-10 px-3 flex flex-row justify-between">
 		<div>
 			<h2 class="text-3xl text-prunplanner font-light">
 				<span class="font-bold">PRUN</span>planner
