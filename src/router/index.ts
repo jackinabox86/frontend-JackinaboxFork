@@ -143,8 +143,9 @@ const router = createRouter({
 		},
 		{
 			name: "password-reset",
-			path: "/password-reset",
+			path: "/password-reset/:resetCode?",
 			meta: { showHeader: false },
+			props: true,
 			component: () => import("@/views/PasswordResetView.vue"),
 		},
 		{

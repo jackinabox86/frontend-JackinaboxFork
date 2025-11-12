@@ -476,7 +476,7 @@ export async function usePlanCalculation(
 					const optimalProductionData = optimalProduction.find((op) => op.ticker === br.BuildingTicker);
 					const areaPerBuilding: number = optimalProductionData ? (optimalProductionData.total_area + 25) / optimalProductionData.amount : buildingData.AreaCost + 25;
 
-					const profitPerArea = dailyRevenue / areaPerBuilding; 
+					const profitPerArea = dailyRevenue / areaPerBuilding;
 
 					return {
 						RecipeId: br.RecipeId,
@@ -587,6 +587,7 @@ export async function usePlanCalculation(
 			const building: IProductionBuilding = {
 				name: b.name,
 				amount: b.amount,
+				areaUsed: buildingData.AreaCost * b.amount,
 				activeRecipes: activeRecipes,
 				recipeOptions: recipeOptions,
 				totalEfficiency: totalEfficiency,

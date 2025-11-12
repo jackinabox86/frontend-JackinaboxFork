@@ -264,7 +264,7 @@ export async function callPasswordReset(
 		UserPasswordResetPayloadType,
 		UserPasswordResetResponseType
 	>(
-		"/user/password_rest",
+		"/user/password_reset",
 		{ code, password },
 		UserPasswordResetPayloadSchema,
 		UserPasswordResetResponseSchema

@@ -75,9 +75,9 @@ export const checkboxConfig: PCheckboxConfig = {
 
 export const buttonGroupConfig: PButtonGroupConfig = {
 	horizontal:
-		"inline-flex child:rounded-none [&_button]:first:!rounded-l-sm [&_button]:last:!rounded-r-sm",
+		"inline-flex child:rounded-none [&_button]:first:rounded-l-sm [&_button]:last:rounded-r-sm",
 	vertical:
-		"inline-flex flex-col child:rounded-none [&_button]:first:!rounded-t-sm [&_button]:last:!rounded-b-sm",
+		"inline-flex flex-col child:rounded-none [&_button]:first:rounded-t-sm [&_button]:last:rounded-b-sm",
 };
 
 export const tooltipConfig: PTooltipConfig = {

@@ -13,6 +13,13 @@ export function trackEvent<E extends ANALYTICS_EVENT_TYPE>(
 	event: E,
 	props?: IAnalyticsEventProperties[E]
 ): void {
+	if (
+		event === "plan_tool_optimize_habitation" &&
+		(props as IAnalyticsEventProperties["plan_tool_optimize_habitation"])
+			?.applyType === "auto"
+	)
+		return;
+
 	capture(event, props);
 }
 

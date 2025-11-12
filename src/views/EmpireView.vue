@@ -175,10 +175,9 @@
 			(sum, element) => sum + element.cost,
 			0
 		);
-		const totalAreaUsed: number = Object.values(calculatedPlans.value).reduce(
-			(sum, element) => sum + element.area.areaUsed,
-			0
-		);
+		const totalAreaUsed: number = Object.values(
+			calculatedPlans.value
+		).reduce((sum, element) => sum + element.area.areaUsed, 0);
 
 		return {
 			totalProfit,
@@ -330,10 +329,10 @@
 						</div>
 
 						<div
-							class="flex-grow grid grid-cols-1 xl:grid-cols-[1fr_auto]">
-							<div>
-								<div
-									class="px-3 md:px-6 pb-3 pt-6 my-auto md:pr-0">
+							class="flex-grow grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6 m-3 sm:m-6">
+							<div
+								class="flex flex-col gap-6 justify-items-start">
+								<div>
 									<PForm>
 										<PFormItem label="Switch Empire">
 											<PSelect
@@ -353,12 +352,11 @@
 										</PFormItem>
 									</PForm>
 								</div>
-								<div class="px-3 md:px-6 pt-3 md:pr-0">
+								<div>
 									<AsyncEmpireCostOverview
 										:cost-overview="costOverview" />
 								</div>
-								<div
-									class="flex flex-col child:p-3 child:md:px-6 child:md:pr-0">
+								<div class="flex flex-col gap-6">
 									<div class="overflow-x-auto">
 										<Suspense>
 											<AsyncEmpirePlanList
@@ -386,7 +384,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="p-3 md:p-6 overflow-x-auto">
+							<div class="overflow-x-auto">
 								<EmpireMaterialIOFiltered
 									:content="mainContent"
 									:empire-material-i-o="

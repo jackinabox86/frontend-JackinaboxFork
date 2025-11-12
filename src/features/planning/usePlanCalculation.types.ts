@@ -115,6 +115,7 @@ export interface IProductionBuildingRecipe {
 export interface IProductionBuilding {
 	name: string;
 	amount: number;
+	areaUsed: number;
 	activeRecipes: IProductionBuildingRecipe[];
 	recipeOptions: IRecipeBuildingOption[];
 	totalEfficiency: number;
