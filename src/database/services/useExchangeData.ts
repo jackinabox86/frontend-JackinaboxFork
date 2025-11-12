@@ -124,7 +124,7 @@ export async function useExchangeData() {
 						0
 					);
 					tradedData.Traded7Days[type] = sum;
-				} catch (error) {
+				} catch (_error) {
 					// If data fetch fails, default to 0
 					tradedData.Traded1Day[type] = 0;
 					tradedData.Traded7Days[type] = 0;
