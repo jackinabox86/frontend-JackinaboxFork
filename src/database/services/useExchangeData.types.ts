@@ -8,6 +8,8 @@ export interface IMaterialExchangeOverview {
 	PP30D: Required<Record<EXCHANGES_TYPE, number>>;
 	Supply: Required<Record<EXCHANGES_TYPE, number>>;
 	Demand: Required<Record<EXCHANGES_TYPE, number>>;
+	Traded1Day: Required<Record<EXCHANGES_TYPE, number>>;
+	Traded7Days: Required<Record<EXCHANGES_TYPE, number>>;
 	Universe7D: number;
 	Universe30D: number;
 }
