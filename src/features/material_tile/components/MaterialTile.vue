@@ -63,11 +63,13 @@
 	});
 
 	const { getMaterial, getMaterialClass } = useMaterialData();
-	const { getMaterialExchangeOverview } = await useExchangeData();
+	const { getMaterialExchangeOverview, getMaterialTradedVolume } =
+		await useExchangeData();
 
 	const refShowDrawer: Ref<boolean> = ref(false);
 	const refExchangeOverview: Ref<IMaterialExchangeOverview | undefined> =
 		ref(undefined);
+	const refTradedVolumeLoaded: Ref<boolean> = ref(false);
 
 	const refChartValue: Ref<string> = ref("volume_max");
 	const refChartValueOptions: Ref<PSelectOption[]> = ref([
@@ -133,6 +135,28 @@
 		}
 	}
 
+	async function loadTradedVolumeData(): Promise<void> {
+		if (
+			!refTradedVolumeLoaded.value &&
+			refExchangeOverview.value &&
+			props.enablePopover
+		) {
+			try {
+				refTradedVolumeLoaded.value = true;
+				const tradedData = await getMaterialTradedVolume(props.ticker);
+
+				// Merge traded volume data into existing overview
+				if (refExchangeOverview.value) {
+					refExchangeOverview.value.Traded1Day = tradedData.Traded1Day;
+					refExchangeOverview.value.Traded7Days =
+						tradedData.Traded7Days;
+				}
+			} catch (error) {
+				console.error("Failed to fetch traded volume data:", error);
+			}
+		}
+	}
+
 	const instance = getCurrentInstance();
 
 	onMounted(async () => {
@@ -182,7 +206,8 @@
 				<template #trigger>
 					<div
 						class="flex justify-center items-center"
-						:class="{ 'px-2': !!amount }">
+						:class="{ 'px-2': !!amount }"
+						@mouseenter="loadTradedVolumeData">
 						<div v-if="amount" class="pr-1">
 							{{ formatNumber(amount, 2, true) }}x
 						</div>

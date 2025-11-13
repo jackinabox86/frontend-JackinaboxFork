@@ -92,6 +92,18 @@
 					{{ formatNumber(overviewData.Demand[cx], 2, true) }}
 				</td>
 			</tr>
+			<tr>
+				<td>Traded 1Day</td>
+				<td v-for="cx in exchangeTypesArray" :key="`Traded1Day#${cx}`">
+					{{ formatNumber(overviewData.Traded1Day[cx], 2, true) }}
+				</td>
+			</tr>
+			<tr>
+				<td>Traded 7Days</td>
+				<td v-for="cx in exchangeTypesArray" :key="`Traded7Days#${cx}`">
+					{{ formatNumber(overviewData.Traded7Days[cx], 2, true) }}
+				</td>
+			</tr>
 		</tbody>
 	</PTable>
 </template>
