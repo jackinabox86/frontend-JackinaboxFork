@@ -1,3 +1,10 @@
+# 2025-11-13 - v. 0.20.6
+
+- Default automatic habitation optimization turned off for existing plans [[PR-305]](https://github.com/PRUNplanner/frontend/pull/305)
+- Added "Select Production Building(s)" placeholder to Plans [[PR-306]](https://github.com/PRUNplanner/frontend/pull/306)
+- Fix: Core Module Area (+25) is now used in profit per area calculations [[PR-307]](https://github.com/PRUNplanner/frontend/pull/307)
+- Material Tiles load Traded volumes and display 1d and 7d data [[PR-308]](https://github.com/PRUNplanner/frontend/pull/308)
+
 # 2025-10-26 - v. 0.20.5
 
 - Allow automatic hab-optimization to be turned off before the plan is saved [[PR-298]](https://github.com/PRUNplanner/frontend/pull/298)
