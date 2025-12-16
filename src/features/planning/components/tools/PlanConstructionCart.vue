@@ -258,7 +258,9 @@
 			<thead>
 				<tr>
 					<th>Building</th>
+					<th>Constructed</th>
 					<th>Amount</th>
+					<th>Planned</th>
 					<th
 						v-for="mat in uniqueMaterials"
 						:key="`CONSTRUCTIONCART#COLUMN#${mat}`"
@@ -272,11 +274,23 @@
 					v-for="building in buildingTicker"
 					:key="`CONSTRUCTIONCART#ROW#${building}`">
 					<th>{{ building }}</th>
+					<th class="text-neutral-500">{{ constructedMap.get(building) ?? 0 }}</th>
 					<th class="!border-r">
 						<PInputNumber
 							v-model:value="localBuildingAmount[building]"
 							show-buttons
 							:min="0" />
+					</th>
+					<th>
+						{{
+							productionBuildingData.find(
+								(pf) => pf.name === building
+							)?.amount ??
+							infrastructureData[
+								building as INFRASTRUCTURE_TYPE
+							] ??
+							(building === "CM" ? 1 : 0)
+						}}
 					</th>
 					<td
 						v-for="mat in uniqueMaterials"
@@ -297,7 +311,7 @@
 					</td>
 				</tr>
 				<tr class="child:!border-t-2 child:!border-b-2">
-					<td colspan="2">Materials Sum</td>
+					<td colspan="4">Materials Sum</td>
 					<td
 						v-for="mat in uniqueMaterials"
 						:key="`CONSTRUCTIONCART#COLUMN#TOTALS#${mat}`"
@@ -306,7 +320,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td :colspan="uniqueMaterials.length + 2">
+					<td :colspan="uniqueMaterials.length + 4">
 						<div
 							class="flex flex-row justify-between child:my-auto">
 							<div
