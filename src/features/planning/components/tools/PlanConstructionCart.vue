@@ -124,11 +124,15 @@
 
 			if (thisMats) {
 				localBuildingMaterials.value[bticker] =
-					thisMats.materials.reduce((sum, current) => {
-						sum[current.ticker] =
-							current.input * localBuildingAmount.value[bticker];
-						return sum;
-					}, {} as Record<string, number>);
+					thisMats.materials.reduce(
+						(sum, current) => {
+							sum[current.ticker] =
+								current.input *
+								localBuildingAmount.value[bticker];
+							return sum;
+						},
+						{} as Record<string, number>
+					);
 			}
 		});
 	}
@@ -189,7 +193,7 @@
 		hasStorage.value
 			? storageOptions.value.filter(
 					(e) => e.value === `PLANET#${props.planetNaturalId}`
-			  )
+				)
 				? `PLANET#${props.planetNaturalId}`
 				: undefined
 			: undefined
