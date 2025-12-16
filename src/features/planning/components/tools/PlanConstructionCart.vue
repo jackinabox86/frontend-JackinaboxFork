@@ -13,6 +13,7 @@
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { usePrice } from "@/features/cx/usePrice";
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
+	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -65,6 +66,19 @@
 	const { hasStorage, storageOptions, findStorageValueFromOptions } =
 		useFIOStorage();
 
+	// Get already constructed buildings
+	const fioSites = await useQuery("GetFIOSites").execute();
+	const constructedArray = Object.values(fioSites.planets).find(
+		(p) => p.PlanetIdentifier === props.planetNaturalId
+	)?.Buildings;
+	const constructedMap = new Map<string, number>();
+	if (constructedArray) {
+		for (const building of constructedArray) {
+			const count = constructedMap.get(building.BuildingTicker) ?? 0;
+			constructedMap.set(building.BuildingTicker, count + 1);
+		}
+	}
+
 	const localBuildingAmount: Ref<Record<string, number>> = ref({});
 	const localBuildingMaterials: Ref<Record<string, Record<string, number>>> =
 		ref({});
@@ -103,19 +117,16 @@
 
 	function generateMatrix(): void {
 		buildingTicker.value.forEach((bticker) => {
-			localBuildingAmount.value[bticker] =
-				localBuildingAmount.value[bticker] ??
-				props.productionBuildingData.find((pf) => pf.name === bticker)
-					?.amount ??
-				props.infrastructureData[bticker as INFRASTRUCTURE_TYPE] ??
-				undefined;
-
-			// handle core module separately
-			if (
-				bticker === "CM" &&
-				localBuildingAmount.value["CM"] === undefined
-			) {
-				localBuildingAmount.value["CM"] = 1;
+			if (localBuildingAmount.value[bticker] === undefined) {
+				let need =
+					props.productionBuildingData.find(
+						(pf) => pf.name === bticker
+					)?.amount ??
+					props.infrastructureData[bticker as INFRASTRUCTURE_TYPE];
+				if (bticker === "CM") need = 1;
+				if (need !== undefined)
+					need -= constructedMap.get(bticker) ?? 0;
+				localBuildingAmount.value[bticker] = need;
 			}
 
 			const thisMats = props.constructionData.find(
