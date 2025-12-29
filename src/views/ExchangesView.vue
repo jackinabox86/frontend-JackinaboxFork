@@ -27,6 +27,7 @@
 	);
 
 	import CXExchangePreference from "@/features/exchanges/components/CXExchangePreference.vue";
+	import CXPreferenceImportExport from "@/features/exchanges/components/CXPreferenceImportExport.vue";
 	import CXTickerPreference from "@/features/exchanges/components/CXTickerPreference.vue";
 	import CXPlanetPreferenceTable from "@/features/exchanges/components/CXPlanetPreferenceTable.vue";
 
@@ -41,6 +42,7 @@
 		ArrowDropDownSharp,
 		SaveSharp,
 		ChangeCircleOutlined,
+		ImportExportOutlined,
 	} from "@vicons/material";
 
 	// Unhead
@@ -63,6 +65,7 @@
 	const localCXUuid: Ref<string | undefined> = ref(props.cxUuid);
 	const localCXs: Ref<ICX[]> = ref([]);
 	const selectedCX: Ref<ICX | null> = ref(null);
+	const selectedImportExport: Ref<boolean> = ref(false);
 	const selectedName: Ref<string | null> = ref(null);
 	const rawSelectedCX: Ref<ICX | null> = ref(null);
 	const planetMap: Ref<ICXPlanetMap> = ref({});
@@ -174,6 +177,10 @@
 		selectedName.value = selectedCX.value!.name;
 		generatePlanetMap(localPlanetList.value);
 	}
+
+	function toggleImportExport(): void {
+		selectedImportExport.value = !selectedImportExport.value;
+	}
 </script>
 
 <template>
@@ -181,9 +188,9 @@
 		plan-list
 		load-c-x
 		:cx-uuid="props.cxUuid"
-		@update:cx-uuid="(cxUuid: string | undefined) => localCXUuid = cxUuid"
-		@data:cx="(data: ICX[]) => localCXs = data"
-		@data:plan:list:planets="(data: string[]) => localPlanetList = data">
+		@update:cx-uuid="(cxUuid: string | undefined) => (localCXUuid = cxUuid)"
+		@data:cx="(data: ICX[]) => (localCXs = data)"
+		@data:plan:list:planets="(data: string[]) => (localPlanetList = data)">
 		<WrapperGameDataLoader load-exchanges load-materials>
 			<template v-if="!localCXUuid">
 				<AsyncWrapperGenericError
@@ -198,7 +205,7 @@
 							v-if="selectorDropdownOptions.length > 0"
 							trigger="hover"
 							:options="selectorDropdownOptions"
-							@select="(value: string) => localCXUuid = value">
+							@select="(value: string) => (localCXUuid = value)">
 							<div>
 								<PIcon class="-mr-1">
 									<ArrowDropDownSharp />
@@ -213,11 +220,15 @@
 							v-if="patchData"
 							:loading="isPatching"
 							@click="patchCX(patchData)">
-							<template #icon><SaveSharp /></template>
+							<template #icon>
+								<SaveSharp />
+							</template>
 							Save
 						</PButton>
 						<PButton @click="reloadCXData">
-							<template #icon><ChangeCircleOutlined /></template>
+							<template #icon>
+								<ChangeCircleOutlined />
+							</template>
 							Reload
 						</PButton>
 						<HelpDrawer file-name="exchanges" />
@@ -227,7 +238,17 @@
 					:kex="`EXCHANGE#${localCXUuid}`"
 					class="flex-grow grid grid-cols-1 lg:grid-cols-[25%_auto] divide-x divide-white/10">
 					<div class="px-6 pb-3 pt-4 border-b border-white/10">
-						<h3 class="text-lg font-bold pb-3">Preference Name</h3>
+						<div class="flex flex-row justify-between items-center">
+							<h3 class="text-lg font-bold pb-3">
+								Preference Name
+							</h3>
+							<PButton @click="toggleImportExport">
+								<template #icon>
+									<ImportExportOutlined />
+								</template>
+								Import / Export CSV
+							</PButton>
+						</div>
 						<PInput
 							v-model:value="selectedName"
 							:status="
@@ -235,6 +256,7 @@
 									? 'warning'
 									: 'success'
 							" />
+
 						<h2 class="text-xl font-bold py-3 pt-6 my-auto">
 							Empire Preferences
 						</h2>
@@ -250,6 +272,19 @@
 							" />
 					</div>
 					<div class="p-6">
+						<CXPreferenceImportExport
+							v-if="selectedCX && selectedImportExport"
+							v-model:empire-ticker-options="
+								selectedCX.cx_data.ticker_empire
+							"
+							v-model:planet-ticker-options="
+								selectedCX.cx_data.ticker_planets
+							"
+							v-model:cx-empire="selectedCX.cx_data.cx_empire"
+							v-model:cx-planets="
+								selectedCX.cx_data.cx_planets
+							" />
+
 						<CXPlanetPreferenceTable
 							v-if="selectedCX"
 							:key="selectedCX.uuid"
