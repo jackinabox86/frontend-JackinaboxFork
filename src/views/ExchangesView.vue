@@ -68,7 +68,6 @@
 	const selectedImportExport: Ref<boolean> = ref(false);
 	const selectedName: Ref<string | null> = ref(null);
 	const rawSelectedCX: Ref<ICX | null> = ref(null);
-	const planetMap: Ref<ICXPlanetMap> = ref({});
 
 	const selectorDropdownOptions = computed(() =>
 		localCXs.value.map((c) => ({
@@ -86,12 +85,9 @@
 
 	watch(
 		[() => localCXUuid.value, () => localPlanetList.value],
-		([cxUuid, planetList]) => {
+		([cxUuid, _planetList]) => {
 			if (cxUuid) {
 				initialize(cxUuid);
-				if (planetList.length > 0) {
-					generatePlanetMap(planetList);
-				}
 			}
 		},
 		{ immediate: true }
@@ -105,8 +101,10 @@
 		rawSelectedCX.value = planningStore.getCX(cxUuid);
 	}
 
-	function generatePlanetMap(planetList: string[]): void {
-		planetMap.value = planetList.reduce((acc, planet) => {
+	const planetMap = computed(() => {
+		if (!selectedCX.value) return {};
+
+		return localPlanetList.value.reduce((acc, planet) => {
 			acc[planet] = {
 				planet: planet,
 				exchanges:
@@ -120,7 +118,7 @@
 			};
 			return acc;
 		}, {} as ICXPlanetMap);
-	}
+	});
 
 	const patchData: ComputedRef<undefined | ICXData> = computed(() => {
 		const activeCX = selectedCX.value;

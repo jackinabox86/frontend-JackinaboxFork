@@ -93,7 +93,7 @@ export default defineConfig({
 		include: ["vue", "vue-router", "pinia"],
 		exclude: [],
 		esbuildOptions: {
-			target: "es2020",
+			target: "esnext",
 		},
 	},
 	assetsInclude: ["**/*.md"],
