@@ -16,6 +16,9 @@
 	} from "../manageCX.types";
 
 	import Papa from "papaparse";
+	import { useCXImportExport } from "../useCXImportExport";
+
+	const { parseSettingsCSV, generateSettingsCSV } = useCXImportExport();
 
 	interface IExchangeCSVRow {
 		Location: string;
@@ -57,120 +60,30 @@
 		fileInput.value.click();
 	};
 
-	const handleFileChange = (event) => {
+	const handleFileChange = async (event) => {
 		const file = event.target.files[0];
 		if (!file) return;
-		console.log(`Selected file: ${file.name}`);
 
-		Papa.parse<IExchangeCSVRow>(file, {
-			header: true,
-			complete: (results) => {
-				const newEmpireCX: ICXDataExchangeOption[] = [];
-				const newEmpireTickers: ICXDataTickerOption[] = [];
+		try {
+			const data = await parseSettingsCSV(file);
 
-				const planetCXMap = new Map<string, ICXPlanetMap>();
-				const planetTickerMap = new Map<string, ICXPlanetMap>();
-
-				results.data.forEach((row) => {
-					if (!row.Location) return;
-
-					const isEmpire = row.Location === "EMPIRE";
-					const isTicker = row.Ticker && row.Ticker.trim() !== "";
-					console.log(row, isTicker);
-					if (isEmpire) {
-						if (!isTicker) {
-							newEmpireCX.push({
-								type: row.Type as PreferenceType,
-								exchange: row.CX as ExchangeType,
-							});
-						} else {
-							newEmpireTickers.push({
-								type: row.Type as PreferenceType,
-								ticker: row.Ticker,
-								value: Number(row.Price),
-							});
-						}
-					} else if (!isEmpire) {
-						const targetMap = isTicker
-							? planetTickerMap
-							: planetCXMap;
-
-						let planetData = targetMap.get(row.Location);
-
-						if (!planetData) {
-							planetData = {
-								planet: row.Location,
-								preferences: [],
-							};
-							targetMap.set(row.Location, planetData);
-						}
-
-						if (!isTicker) {
-							planetData.preferences.push({
-								type: row.Type as PreferenceType,
-								exchange: row.CX as ExchangeType,
-							});
-						} else {
-							planetData.preferences.push({
-								type: row.Type as PreferenceType,
-								ticker: row.Ticker,
-								value: Number(row.Price),
-							});
-						}
-					}
-				});
-
-				console.log("newEmpireCX", newEmpireCX);
-				console.log("newEmpireTickers", newEmpireTickers);
-				console.log("planetCXMap", planetCXMap);
-				console.log("planetTickerMap", planetTickerMap);
-
-				emit("update:cxEmpire", newEmpireCX);
-				emit("update:empireTickerOptions", newEmpireTickers);
-				emit("update:cxPlanets", Array.from(planetCXMap.values()));
-				emit(
-					"update:planetTickerOptions",
-					Array.from(planetTickerMap.values())
-				);
-			},
-			error: (error) => {
-				console.error(error);
-			},
-		});
-
+			emit("update:cxEmpire", data.empireCX);
+			emit("update:empireTickerOptions", data.empireTickerOptions);
+			emit("update:cxPlanets", data.planetsCX);
+			emit("update:planetTickerOptions", data.plantesTickerOptions);
+		} catch (e) {
+			console.error(e);
+		}
 		event.target.value = "";
 	};
 
 	function exportSettings() {
-		let csvContent = "Location;Type;CX;Ticker;Price";
-
-		if (props.cxEmpire) {
-			for (let option of props.cxEmpire) {
-				csvContent = `${csvContent}\nEMPIRE;${option.type};${option.exchange};;`;
-			}
-		}
-
-		if (props.cxPlanets) {
-			for (let planet of props.cxPlanets) {
-				for (let option of planet.preferences) {
-					csvContent = `${csvContent}\n${planet.planet};${option.type};${option.exchange};;`;
-				}
-			}
-		}
-
-		if (props.empireTickerOptions) {
-			for (let option of props.empireTickerOptions) {
-				csvContent = `${csvContent}\nEMPIRE;${option.type};;${option.ticker};${option.value}`;
-			}
-		}
-
-		if (props.planetTickerOptions) {
-			for (let planet of props.planetTickerOptions) {
-				for (let option of planet.preferences) {
-					csvContent = `${csvContent}\n${planet.planet};${option.type};;${option.ticker};${option.value}`;
-				}
-			}
-		}
+		let csvContent = generateSettingsCSV(
+			props.cxEmpire,
+			props.empireTickerOptions,
+			props.cxPlanets,
+			props.planetTickerOptions
+		);
 
 		const blob = new Blob([csvContent], {
 			type: "text/csv;charset=utf-8;",
