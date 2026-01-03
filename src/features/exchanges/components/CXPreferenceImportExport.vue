@@ -9,24 +9,11 @@
 		ICXDataTickerOption,
 	} from "@/stores/planningStore.types";
 	import { PropType, ref } from "vue";
-	import {
-		ExchangeType,
-		ICXPlanetMap,
-		PreferenceType,
-	} from "../manageCX.types";
+	import { ICXPlanetMap } from "../manageCX.types";
 
-	import Papa from "papaparse";
 	import { useCXImportExport } from "../useCXImportExport";
 
 	const { parseSettingsCSV, generateSettingsCSV } = useCXImportExport();
-
-	interface IExchangeCSVRow {
-		Location: string;
-		Type: string;
-		CX: string;
-		Ticker: string;
-		Price: string;
-	}
 
 	const props = defineProps({
 		cxEmpire: {
