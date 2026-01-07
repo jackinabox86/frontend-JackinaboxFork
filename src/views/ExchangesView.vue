@@ -251,6 +251,12 @@
 						<template v-else>Exchanges</template>
 					</h1>
 					<div class="flex flex-row gap-x-3">
+						<PButton @click="toggleImportExport">
+							<template #icon>
+								<ImportExportOutlined />
+							</template>
+							Import / Export CSV
+						</PButton>
 						<PButton
 							v-if="patchData"
 							:loading="isPatching"
@@ -271,19 +277,9 @@
 				</div>
 				<div
 					:kex="`EXCHANGE#${localCXUuid}`"
-					class="flex-grow grid grid-cols-1 lg:grid-cols-[25%_auto] divide-x divide-white/10">
+					class="grow grid grid-cols-1 lg:grid-cols-[25%_auto] divide-x divide-white/10">
 					<div class="px-6 pb-3 pt-4 border-b border-white/10">
-						<div class="flex flex-row justify-between items-center">
-							<h3 class="text-lg font-bold pb-3">
-								Preference Name
-							</h3>
-							<PButton @click="toggleImportExport">
-								<template #icon>
-									<ImportExportOutlined />
-								</template>
-								Import / Export CSV
-							</PButton>
-						</div>
+						<h3 class="text-lg font-bold pb-3">Preference Name</h3>
 						<PInput
 							v-model:value="selectedName"
 							:status="
