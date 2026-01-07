@@ -173,12 +173,49 @@
 		trackEvent("exchange_reload", { location: "exchanges_view" });
 		selectedCX.value = inertClone(rawSelectedCX.value);
 		selectedName.value = selectedCX.value!.name;
-		generatePlanetMap(localPlanetList.value);
 	}
 
 	function toggleImportExport(): void {
 		selectedImportExport.value = !selectedImportExport.value;
 	}
+
+	const planetCXMapped = computed({
+		get: () => {
+			if (!selectedCX.value) return [];
+			return selectedCX.value.cx_data.cx_planets.map((p) => ({
+				planet: p.planet,
+				exchanges: p.preferences,
+				ticker: [], // Empty because this is the exchange-only list
+			}));
+		},
+		set: (val) => {
+			if (selectedCX.value) {
+				selectedCX.value.cx_data.cx_planets = val.map((v) => ({
+					planet: v.planet,
+					preferences: v.exchanges,
+				}));
+			}
+		},
+	});
+
+	const planetTickerMapped = computed({
+		get: () => {
+			if (!selectedCX.value) return [];
+			return selectedCX.value.cx_data.ticker_planets.map((p) => ({
+				planet: p.planet,
+				exchanges: [], // Empty because this is the ticker-only list
+				ticker: p.preferences,
+			}));
+		},
+		set: (val) => {
+			if (selectedCX.value) {
+				selectedCX.value.cx_data.ticker_planets = val.map((v) => ({
+					planet: v.planet,
+					preferences: v.ticker,
+				}));
+			}
+		},
+	});
 </script>
 
 <template>
@@ -275,13 +312,9 @@
 							v-model:empire-ticker-options="
 								selectedCX.cx_data.ticker_empire
 							"
-							v-model:planet-ticker-options="
-								selectedCX.cx_data.ticker_planets
-							"
+							v-model:planet-ticker-options="planetTickerMapped"
 							v-model:cx-empire="selectedCX.cx_data.cx_empire"
-							v-model:cx-planets="
-								selectedCX.cx_data.cx_planets
-							" />
+							v-model:cx-planets="planetCXMapped" />
 
 						<CXPlanetPreferenceTable
 							v-if="selectedCX"

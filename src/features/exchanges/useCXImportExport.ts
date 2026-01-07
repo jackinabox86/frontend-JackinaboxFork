@@ -20,8 +20,8 @@ export function useCXImportExport() {
 	): Promise<{
 		empireCX: ICXDataExchangeOption[];
 		empireTickerOptions: ICXDataTickerOption[];
-		planetsCX: ICXPlanetMap[];
-		plantesTickerOptions: ICXPlanetMap[];
+		planetsCX: ICXPlanetMap[string][];
+		plantesTickerOptions: ICXPlanetMap[string][];
 	}> => {
 		return new Promise((resolve, reject) => {
 			Papa.parse<IExchangeCSVRow>(file, {
@@ -30,10 +30,13 @@ export function useCXImportExport() {
 					const empireCX: ICXDataExchangeOption[] = [];
 					const empireTickerOptions: ICXDataTickerOption[] = [];
 
-					const planetsCXMap = new Map<string, ICXPlanetMap>();
+					const planetsCXMap = new Map<
+						string,
+						ICXPlanetMap[string]
+					>();
 					const planetTickerOptionsMap = new Map<
 						string,
-						ICXPlanetMap
+						ICXPlanetMap[string]
 					>();
 
 					results.data.forEach((row) => {
@@ -54,7 +57,7 @@ export function useCXImportExport() {
 									value: Number(row.Price),
 								});
 							}
-						} else if (!isEmpire) {
+						} else {
 							const targetMap = isTicker
 								? planetTickerOptionsMap
 								: planetsCXMap;
@@ -64,18 +67,19 @@ export function useCXImportExport() {
 							if (!planetData) {
 								planetData = {
 									planet: row.Location,
-									preferences: [],
+									exchanges: [],
+									ticker: [],
 								};
 								targetMap.set(row.Location, planetData);
 							}
 
 							if (!isTicker) {
-								planetData.preferences.push({
+								planetData.exchanges.push({
 									type: row.Type as PreferenceType,
 									exchange: row.CX as ExchangeType,
 								});
 							} else {
-								planetData.preferences.push({
+								planetData.ticker.push({
 									type: row.Type as PreferenceType,
 									ticker: row.Ticker,
 									value: Number(row.Price),
@@ -100,8 +104,8 @@ export function useCXImportExport() {
 	const generateSettingsCSV = (
 		empireCX: ICXDataExchangeOption[],
 		empireTickerOptions: ICXDataTickerOption[],
-		planetsCX: ICXPlanetMap[],
-		plantesTickerOptions: ICXPlanetMap[]
+		planetsCX: ICXPlanetMap[string][],
+		plantesTickerOptions: ICXPlanetMap[string][]
 	): string => {
 		let csvContent = "Location;Type;CX;Ticker;Price";
 
@@ -113,7 +117,7 @@ export function useCXImportExport() {
 
 		if (planetsCX) {
 			for (const planet of planetsCX) {
-				for (const option of planet.preferences) {
+				for (const option of planet.exchanges) {
 					csvContent = `${csvContent}\n${planet.planet};${option.type};${option.exchange};;`;
 				}
 			}
@@ -127,7 +131,7 @@ export function useCXImportExport() {
 
 		if (plantesTickerOptions) {
 			for (const planet of plantesTickerOptions) {
-				for (const option of planet.preferences) {
+				for (const option of planet.ticker) {
 					csvContent = `${csvContent}\n${planet.planet};${option.type};;${option.ticker};${option.value}`;
 				}
 			}
