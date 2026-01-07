@@ -54,7 +54,7 @@
 					:options="optionsPlanNames"
 					searchable
 					clearable
-					class="!w-[400px]" />
+					class="w-100!" />
 			</div>
 		</div>
 		<div class="flex flex-row gap-3 child:my-auto">
@@ -65,7 +65,7 @@
 					:options="optionsEmpires"
 					searchable
 					clearable
-					class="!w-[400px]" />
+					class="w-100!" />
 			</div>
 		</div>
 	</div>

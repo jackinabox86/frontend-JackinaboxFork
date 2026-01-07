@@ -69,9 +69,9 @@
 				<th>Req.</th>
 				<th>Capa.</th>
 				<th>Open</th>
-				<th class="!text-center">L1</th>
-				<th class="!text-center">L2</th>
-				<th class="!text-end">%Eff</th>
+				<th class="text-center!">L1</th>
+				<th class="text-center!">L2</th>
+				<th class="text-end!">%Eff</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -79,13 +79,13 @@
 				<td class="font-bold">
 					{{ capitalizeString(workforce.name) }}
 				</td>
-				<td :class="workforce.required === 0 ? '!text-white/50' : ''">
+				<td :class="workforce.required === 0 ? 'text-white/50!' : ''">
 					{{ formatAmount(workforce.required) }}
 				</td>
-				<td :class="workforce.capacity === 0 ? '!text-white/50' : ''">
+				<td :class="workforce.capacity === 0 ? 'text-white/50!' : ''">
 					{{ formatAmount(workforce.capacity) }}
 				</td>
-				<td :class="workforce.left === 0 ? '!text-white/50' : ''">
+				<td :class="workforce.left === 0 ? 'text-white/50!' : ''">
 					{{ formatAmount(workforce.left) }}
 				</td>
 				<td class="text-center">
@@ -118,7 +118,7 @@
 				</td>
 				<td
 					class="text-end"
-					:class="workforce.efficiency === 0 ? '!text-white/50' : ''">
+					:class="workforce.efficiency === 0 ? 'text-white/50!' : ''">
 					{{ formatNumber(workforce.efficiency * 100) }} %
 				</td>
 			</tr>

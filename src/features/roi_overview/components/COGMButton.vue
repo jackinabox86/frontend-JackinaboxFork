@@ -26,7 +26,7 @@
 		v-model:show="refShowCOGM"
 		preset="card"
 		title="Cost Of Goods Manufactured"
-		class="max-w-[600px]">
+		class="max-w-150">
 		<PlanCOGM v-if="cogmData" :cogm-data="cogmData" />
 	</n-modal>
 	<PButton

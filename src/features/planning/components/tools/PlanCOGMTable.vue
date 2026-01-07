@@ -28,21 +28,21 @@
 				<th colspan="4">Parameters</th>
 			</tr>
 			<tr>
-				<td class="!border-r">Recipe Runtime</td>
+				<td class="border-r">Recipe Runtime</td>
 				<td>{{ humanizeTimeMs(data.runtime) }}</td>
 				<td colspan="2" class="text-end">
 					{{ formatNumber(data.runtimeShare * 100) }} % / day
 				</td>
 			</tr>
 			<tr>
-				<td class="!border-r">Efficiency</td>
+				<td class="border-r">Efficiency</td>
 				<td colspan="3">{{ formatNumber(data.efficiency * 100) }} %</td>
 			</tr>
 			<tr>
 				<th colspan="4">Cost</th>
 			</tr>
 			<tr>
-				<td class="!border-r">Degradation</td>
+				<td class="border-r">Degradation</td>
 				<td class="font-bold">
 					{{ formatNumber(data.degradationShare) }}
 					<span class="pl-1 font-light text-white/50"> $ </span>
@@ -55,7 +55,7 @@
 			</tr>
 			<template v-if="data.inputCost.length > 0">
 				<tr>
-					<td :rowspan="data.inputCost.length + 2" class="!border-r">
+					<td :rowspan="data.inputCost.length + 2" class="border-r">
 						Materials
 					</td>
 					<td>Input Total</td>
@@ -89,7 +89,7 @@
 				</tr>
 			</template>
 			<tr>
-				<td class="!border-r">Workforce</td>
+				<td class="border-r">Workforce</td>
 				<td class="font-bold">
 					{{ formatNumber(data.workforceCost) }}
 					<span class="pl-1 font-light text-white/50"> $ </span>
@@ -100,15 +100,15 @@
 					<span class="pl-1 font-light text-white/50"> $ </span>
 				</td>
 			</tr>
-			<tr class="child:!border-t-2">
-				<td class="!border-r">Total Cost</td>
+			<tr class="child:border-t-2!">
+				<td class="border-r">Total Cost</td>
 				<td colspan="3" class="font-bold">
 					{{ formatNumber(data.totalCost) }}
 					<span class="pl-1 font-light text-white/50"> $ </span>
 				</td>
 			</tr>
-			<tr class="child:!border-b-2">
-				<td class="!border-r">Recipe Profit</td>
+			<tr class="child:border-b-2!">
+				<td class="border-r">Recipe Profit</td>
 				<td colspan="3" class="font-bold">
 					{{ formatNumber(data.totalProfit) }}
 					<span class="pl-1 font-light text-white/50"> $ </span>
@@ -120,7 +120,7 @@
 			<tr>
 				<td
 					:rowspan="data.outputCOGM.length + 1"
-					class="!border-b-0 !border-r">
+					class="border-b-0! border-r">
 					COGM
 				</td>
 				<td>Material</td>

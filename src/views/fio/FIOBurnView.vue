@@ -178,7 +178,7 @@
 					</div>
 
 					<div
-						class="flex-grow grid grid-cols-1 xl:grid-cols-[40%_auto] gap-3 divide-x divide-white/10 child:px-6 child:py-3">
+						class="grow grid grid-cols-1 xl:grid-cols-[40%_auto] gap-3 divide-x divide-white/10 child:px-6 child:py-3">
 						<div>
 							<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
 								<div>
@@ -216,14 +216,14 @@
 												v-model:value="burnDaysRed"
 												show-buttons
 												:min="1"
-												class="w-full max-w-[400px]" />
+												class="w-full max-w-100" />
 										</PFormItem>
 										<PFormItem label="Yellow">
 											<PInputNumber
 												v-model:value="burnDaysYellow"
 												show-buttons
 												:min="1"
-												class="w-full max-w-[400px]" />
+												class="w-full max-w-100" />
 										</PFormItem>
 									</PForm>
 								</div>
@@ -235,7 +235,7 @@
 
 							<AsyncFIOBurnPlanTable :plan-table="planTable" />
 						</div>
-						<div class="md:!pl-3">
+						<div class="md:pl-3!">
 							<AsyncFIOBurnTable :burn-table="burnTable" />
 						</div>
 					</div>

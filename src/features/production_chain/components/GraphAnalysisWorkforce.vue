@@ -26,7 +26,7 @@
 		<thead>
 			<tr>
 				<th>Workforce</th>
-				<th class="!text-end">Required</th>
+				<th class="text-end!">Required</th>
 			</tr>
 		</thead>
 		<tbody>

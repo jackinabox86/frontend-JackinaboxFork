@@ -75,8 +75,8 @@
 						<td
 							:class="
 								overviewData.profit >= 0
-									? '!text-positive'
-									: '!text-negative'
+									? 'text-positive!'
+									: 'text-negative!'
 							">
 							{{ formatNumber(overviewData.profit) }}
 							<span class="font-light text-white/50"> $ </span>
@@ -87,8 +87,8 @@
 						<td
 							:class="
 								overviewData.roi > 0
-									? '!text-positive'
-									: '!text-negative'
+									? 'text-positive!'
+									: 'text-negative!'
 							">
 							{{ formatNumber(overviewData.roi) }}
 							<span class="font-light text-white/50"> d </span>
@@ -99,8 +99,8 @@
 						<td
 							:class="
 								profitPerArea >= 0
-									? '!text-positive'
-									: '!text-negative'
+									? 'text-positive!'
+									: 'text-negative!'
 							">
 							{{ formatNumber(profitPerArea) }}
 							<span class="font-light text-white/50"> $ </span>
@@ -115,13 +115,13 @@
 				<thead class="child:text-center">
 					<tr>
 						<th />
-						<th class="!text-center">m³</th>
-						<th class="!text-center">t</th>
+						<th class="text-center!">m³</th>
+						<th class="text-center!">t</th>
 					</tr>
 				</thead>
 				<tbody class="child:child:text-center">
 					<tr>
-						<td class="!text-left font-bold">Import</td>
+						<td class="text-left! font-bold">Import</td>
 						<td>
 							{{ formatNumber(visitationData.dailyVolumeImport) }}
 						</td>
@@ -130,7 +130,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="!text-left font-bold">Export</td>
+						<td class="text-left! font-bold">Export</td>
 						<td>
 							{{ formatNumber(visitationData.dailyVolumeExport) }}
 						</td>
@@ -139,12 +139,12 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="!text-left font-bold">&#8721;</td>
+						<td class="text-left! font-bold">&#8721;</td>
 						<td>{{ formatNumber(visitationData.dailyVolume) }}</td>
 						<td>{{ formatNumber(visitationData.dailyWeight) }}</td>
 					</tr>
 					<tr>
-						<td class="!text-left font-bold">Filled</td>
+						<td class="text-left! font-bold">Filled</td>
 						<td colspan="2" class="font-bold">
 							{{ formatNumber(visitationData.storageFilled) }}
 							<span class="font-light text-white/50"> d </span>

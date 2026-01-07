@@ -31,7 +31,7 @@
 	<div class="mx-auto w-full max-w-7xl pb-5 md:px-10 lg:px-0">
 		<div class="lg:mb-10">
 			<h1
-				class="bg-gradient-to-b bg-clip-text pb-4 text-7xl font-extrabold leading-tight text-transparent from-white/50 to-white">
+				class="bg-linear-to-b bg-clip-text pb-4 text-7xl font-extrabold leading-tight text-transparent from-white/50 to-white">
 				Plan your empire. <br />
 				Rule Prosperous Universe.
 			</h1>
@@ -50,7 +50,7 @@
 		</p>
 
 		<div
-			class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-white/20 gap-[1px] child:p-10 child:hover:bg-linear-315 child:from-white/10 child:to-transparent mb-20">
+			class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-white/20 gap-px child:p-10 child:hover:bg-linear-315 child:from-white/10 child:to-transparent mb-20">
 			<div class="bg-black">
 				<div class="flex flex-col">
 					<div class="text-white text-2xl font-bold mb-2">
@@ -210,12 +210,10 @@
 			<a href="https://posthog.com/" target="_blank">
 				<img
 					src="/images/homepage/posthog-logo-white@2x.png"
-					class="h-[30px]" />
+					class="h-7.5" />
 			</a>
 			<a href="https://www.highcharts.com/" target="_blank">
-				<img
-					src="/images/homepage/highcharts-logo.png"
-					class="h-[30px]" />
+				<img src="/images/homepage/highcharts-logo.png" class="h-7.5" />
 			</a>
 		</div>
 	</div>

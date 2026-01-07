@@ -317,7 +317,7 @@
 		<div class="items-center justify-between sm:hidden md:flex">
 			<div class="w-full flex flex-row items-baseline pt-4">
 				<div
-					class="flex-grow text-prunplanner text-xl font-light text-center">
+					class="grow text-prunplanner text-xl font-light text-center">
 					<router-link to="/">
 						<template v-if="isFull">
 							<span class="font-bold">PRUN</span>planner
@@ -559,10 +559,8 @@
 					<div class="hover:bg-white/20 hover:rounded-sm p-2">
 						<KeyboardDoubleArrowLeftSharp
 							v-if="isFull"
-							class="w-[20px] h-[20px]" />
-						<KeyboardDoubleArrowRightSharp
-							v-else
-							class="w-[20px] h-[20px]" />
+							class="w-5 h-5" />
+						<KeyboardDoubleArrowRightSharp v-else class="w-5 h-5" />
 					</div>
 				</div>
 			</div>

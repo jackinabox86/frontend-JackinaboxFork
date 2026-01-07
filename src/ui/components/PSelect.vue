@@ -202,24 +202,22 @@
 		@keydown="onKeyDown">
 		<label name="pselect-label">
 			<div
-				class="flex flex-row items-center cursor-pointer bg-white/5 text-white/80 rounded-sm pr-2 min-h-[28px]"
+				class="flex flex-row items-center cursor-pointer bg-white/5 text-white/80 rounded-sm pr-2 min-h-7"
 				:class="!useSearch ? 'py-1 ' : ''"
 				@click="toggleOpen">
-				<div v-if="!useSearch" class="flex-grow px-2">
+				<div v-if="!useSearch" class="grow px-2">
 					{{ displayValue }}
 				</div>
-				<div
-					v-else
-					class="flex-grow child:child:!bg-transparent py-0.5">
+				<div v-else class="grow child:child:bg-transparent! py-0.5">
 					<PInput v-model:value="searchString" placeholder="Search" />
 				</div>
 				<div
 					v-if="value && value !== null && clearable"
-					class="text-white/60 w-[16px]"
+					class="text-white/60 w-4"
 					@click="clear">
 					<ClearSharp />
 				</div>
-				<div class="text-white w-[16px]" @click="toggleOpen">
+				<div class="text-white w-4" @click="toggleOpen">
 					<svg
 						viewBox="0 0 16 16"
 						fill="none"
@@ -236,7 +234,7 @@
 			<div
 				v-if="open"
 				ref="dropdownRef"
-				class="z-5000 p-1 bg-gray-900 text-white rounded-sm shadow-lg max-h-[300px] overflow-auto"
+				class="z-5000 p-1 bg-gray-900 text-white rounded-sm shadow-lg max-h-75 overflow-auto"
 				:style="dropdownPosition">
 				<div
 					class="w-full flex flex-col bg-gray-900 child:py-1 child:px-2 child:hover:bg-gray-800 rounded-b-sm">

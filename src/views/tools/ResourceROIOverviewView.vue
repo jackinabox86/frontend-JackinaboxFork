@@ -64,7 +64,7 @@
 			<div class="min-h-screen flex flex-col">
 				<div
 					class="px-6 py-3 border-b border-white/10 flex flex-row justify-between">
-					<h1 class="text-2xl font-bold my-auto flex-grow">
+					<h1 class="text-2xl font-bold my-auto grow">
 						Resource ROI Overview
 					</h1>
 					<div
@@ -75,11 +75,11 @@
 							:options="PLANETSEARCHOPTIONMATERIALS"
 							placeholder=""
 							searchable
-							class="w-[200px]" />
+							class="w-50" />
 						<div>CX Preference</div>
 						<CXPreferenceSelector
 							:cx-uuid="refSelectedCXUuid"
-							class="w-[200px]"
+							class="w-50"
 							@update:cxuuid="
 								(value) => (refSelectedCXUuid = value)
 							" />
@@ -99,7 +99,7 @@
 					</div>
 					<div
 						v-else-if="refIsLoading"
-						class="flex justify-center child:w-[400px] py-3">
+						class="flex justify-center child:w-100 py-3">
 						<div class="text-center">
 							<div v-if="progressSearchingPlanets">
 								<PSpin size="xl" />

@@ -317,7 +317,7 @@
 		:pagination="{ pageSize: 50 }">
 		<x-n-data-table-column key="planName" title="Plan" sorter="default">
 			<template #render-cell="{ rowData }">
-				<div class="w-[175px] text-wrap">
+				<div class="w-43.75 text-wrap">
 					<router-link
 						:to="`/plan/${rowData.planetId}/${rowData.planUuid}`"
 						class="text-link-primary font-bold hover:underline">
@@ -328,7 +328,7 @@
 		</x-n-data-table-column>
 		<x-n-data-table-column key="planetId" title="Planet" sorter="default">
 			<template #render-cell="{ rowData }">
-				<div class="w-[175px] text-wrap">
+				<div class="w-43.75 text-wrap">
 					{{
 						planetNames[rowData.planetId] ||
 						loadPlanetName(rowData.planetId) ||
@@ -366,7 +366,7 @@
 		<!-- Empire Columns -->
 		<x-n-data-table-column v-for="e in matrixEmpires" :key="e.empireUuid">
 			<template #title>
-				<div class="max-w-[100px] text-wrap">
+				<div class="max-w-25 text-wrap">
 					{{ e.empireName }}
 				</div>
 			</template>

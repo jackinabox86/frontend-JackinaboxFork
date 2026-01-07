@@ -81,9 +81,7 @@
 </script>
 
 <template>
-	<div
-		v-if="!chartData"
-		class="w-full h-[300px] flex items-center justify-center">
+	<div v-if="!chartData" class="w-full h-75 flex items-center justify-center">
 		<div class="text-white text-center">
 			<PSpin size="lg" />
 			<div class="text-white/60">Loading Data...</div>

@@ -97,7 +97,7 @@
 </script>
 
 <template>
-	<div class="mx-auto max-w-[400px]">
+	<div class="mx-auto max-w-100">
 		<template v-if="registrationSuccess">
 			<div>
 				<div class="text-xl text-white font-bold font-mono pb-1">

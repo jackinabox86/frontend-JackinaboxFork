@@ -68,7 +68,7 @@
 <template>
 	<n-modal
 		v-model:show="showModal"
-		class="!w-fit !max-w-[700px]"
+		class="w-fit! max-w-175!"
 		preset="card"
 		title="Share Plan">
 		<template v-if="!isShared">

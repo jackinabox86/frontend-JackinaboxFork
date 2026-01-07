@@ -22,7 +22,7 @@
 				<h1 class="text-2xl font-bold font-mono mb-3">
 					{{ messageTitle }}
 				</h1>
-				<div v-if="messageText" class="max-w-[300px]">
+				<div v-if="messageText" class="max-w-75">
 					{{ messageText }}
 				</div>
 			</div>

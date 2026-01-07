@@ -81,7 +81,7 @@
 										v-model:value="selectedStart"
 										:options="levelOptions"
 										searchable
-										class="w-[150px]"
+										class="w-37.5"
 										@update:value="calculateMaterialData" />
 								</PFormItem>
 								<PFormItem label="To HQ Level">
@@ -89,7 +89,7 @@
 										v-model:value="selectedTo"
 										:options="levelOptionsTo"
 										searchable
-										class="w-[150px]"
+										class="w-37.5"
 										@update:value="calculateMaterialData" />
 								</PFormItem>
 							</PForm>
@@ -200,7 +200,7 @@
 									clearable
 									show-buttons
 									placeholder=""
-									class="max-w-[150px]"
+									class="max-w-37.5"
 									@update:value="calculateMaterialData" />
 							</template>
 						</XNDataTableColumn>

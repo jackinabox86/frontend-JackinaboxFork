@@ -297,7 +297,7 @@
 							v-model:value="selectedDay"
 							:options="daySelectOptions"
 							searchable
-							class="w-1/2 max-w-[200px]" />
+							class="w-1/2 max-w-50" />
 
 						<XITTransferActionButton
 							:elements="selectPlanTransferMaterials" />
@@ -321,7 +321,7 @@
 					<PSelect
 						v-model:value="selectedBuilding"
 						:options="selectionOptions"
-						class="w-1/2 max-w-[200px]" />
+						class="w-1/2 max-w-50" />
 				</PFormItem>
 			</PForm>
 

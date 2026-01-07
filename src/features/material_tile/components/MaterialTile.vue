@@ -147,7 +147,8 @@
 
 				// Merge traded volume data into existing overview
 				if (refExchangeOverview.value) {
-					refExchangeOverview.value.Traded1Day = tradedData.Traded1Day;
+					refExchangeOverview.value.Traded1Day =
+						tradedData.Traded1Day;
 					refExchangeOverview.value.Traded7Days =
 						tradedData.Traded7Days;
 				}
@@ -234,7 +235,7 @@
 			<PTooltip v-if="max">
 				<template #trigger>
 					<div
-						class="!w-[7px] !my-0 border-white/50"
+						class="w-1.75! my-0! border-white/50"
 						:style="indicatorStyle">
 						&nbsp;
 					</div>
@@ -243,7 +244,7 @@
 					<tbody>
 						<tr>
 							<th>Value</th>
-							<td>{{ formatNumber(amount) }}</td>
+							<td>{{ formatNumber(amount ?? 0) }}</td>
 						</tr>
 						<tr>
 							<th>Maximum</th>
@@ -276,7 +277,7 @@
 						{{ material.Ticker }}
 					</div>
 				</div>
-				<div class="flex-grow">
+				<div class="grow">
 					<div
 						class="w-full grid grid-cols-[25%_auto] child:odd:font-bold">
 						<div>Category</div>
@@ -309,7 +310,7 @@
 				<div>
 					<PSelect
 						v-model:value="refChartValue"
-						class="!w-[200px]"
+						class="w-50!"
 						size="sm"
 						:options="refChartValueOptions" />
 				</div>

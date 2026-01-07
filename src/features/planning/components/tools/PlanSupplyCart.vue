@@ -222,14 +222,14 @@
 				v-model:value="refStockRequirement"
 				show-buttons
 				:min="0"
-				class="!w-[100px]" />
+				class="w-25!" />
 			<template v-if="hasStorage">
 				<div class="my-auto font-bold">Storage</div>
 				<PSelect
 					v-model:value="refSelectedStorage"
 					searchable
 					:options="storageOptions"
-					class="!w-[250px]" />
+					class="w-62.5!" />
 			</template>
 			<XITTransferActionButton
 				:elements="xitTransferElements"

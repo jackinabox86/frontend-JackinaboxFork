@@ -36,7 +36,7 @@
 			<tr>
 				<th>Material</th>
 				<th>Amount</th>
-				<th class="!text-end">Cost</th>
+				<th class="text-end!">Cost</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -59,7 +59,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="3" class="!border-t">
+				<td colspan="3" class="border-t!">
 					<div
 						class="grid grid-cols-2 gap-1 child:even:text-end child:not-even:font-bold">
 						<div>Total Cost</div>

@@ -45,7 +45,7 @@
 		<PSelect
 			v-model:value="selectedType"
 			:options="typeOptions"
-			class="!w-[100px]" />
+			class="w-25!" />
 
 		<PSelect
 			v-model:value="selectedExchange"
@@ -74,7 +74,7 @@
 			<tr
 				v-for="preference in localCXOptions"
 				:key="`${preference.type}#${preference.exchange}`">
-				<td class="w-[75px]">
+				<td class="w-18.75">
 					<PTag
 						:type="
 							preference.type === 'BUY'
@@ -103,7 +103,7 @@
 			</tr>
 			<tr
 				v-if="localCXOptions.length === 0"
-				class="text-center child:!text-white/50">
+				class="text-center child:text-white/50!">
 				<td colspan="3">No Exchange Preference Configured</td>
 			</tr>
 		</PTable>

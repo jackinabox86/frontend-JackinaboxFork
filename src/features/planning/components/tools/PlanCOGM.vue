@@ -177,7 +177,7 @@
 			</div>
 			<PlanCOGMTable :data="data" />
 		</div>
-		<div v-if="showCX" class="max-h-[600px] overflow-y-auto">
+		<div v-if="showCX" class="max-h-150 overflow-y-auto">
 			<div class="flex flex-row flex-wrap justify-between">
 				<h2 class="text-lg font-bold pb-3">Exchange Preferences</h2>
 				<div class="flex flex-row flex-wrap">

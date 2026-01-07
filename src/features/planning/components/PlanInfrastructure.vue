@@ -101,7 +101,7 @@
 				:disabled="disabled || (localAutoOptimizeHabs && inf !== 'STO')"
 				show-buttons
 				:min="0"
-				class="min-w-[85px] max-w-[100px]"
+				class="min-w-21.25 max-w-25"
 				@update:value="
 					(value) => {
 						if (value !== null && value !== undefined) {

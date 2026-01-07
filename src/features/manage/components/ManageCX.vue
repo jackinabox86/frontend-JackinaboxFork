@@ -113,12 +113,12 @@
 	</div>
 	<div
 		:class="
-			!refShowCreateCX ? 'opacity-0 overflow-hidden !h-0' : 'opacity-100'
+			!refShowCreateCX ? 'opacity-0 overflow-hidden h-0' : 'opacity-100'
 		"
 		class="transition-all duration-500 border-t border-b border-white/10">
 		<div class="flex gap-x-3 py-2">
 			<div class="my-auto">CX Name</div>
-			<div class="flex-grow">
+			<div class="grow">
 				<PInput
 					v-model:value="refNewCXName"
 					placeholder="CX Name (max. 100 characters)" />

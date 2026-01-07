@@ -103,7 +103,7 @@
 					:disabled="disabled"
 					show-buttons
 					:min="0"
-					class="max-w-[100px]"
+					class="max-w-25"
 					@update:value="
 						(value) => {
 							if (value !== null && value !== undefined) {
@@ -218,8 +218,8 @@
 						class="font-bold"
 						:class="
 							localBuildingData.dailyRevenue >= 0
-								? '!text-positive'
-								: '!text-negative'
+								? 'text-positive!'
+								: 'text-negative!'
 						">
 						{{ formatNumber(localBuildingData.dailyRevenue) }} $
 					</span>

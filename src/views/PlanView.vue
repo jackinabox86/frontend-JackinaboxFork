@@ -553,7 +553,7 @@
 									modified || !saveable ? 'error' : 'success'
 								"
 								:disabled="disabled || !saveable"
-								class="!rounded-none !rounded-l-sm"
+								class="rounded-none! rounded-l-sm!"
 								@click="save">
 								<template #icon>
 									<SaveSharp />
@@ -581,7 +581,7 @@
 					<HelpDrawer file-name="plan" />
 				</PButtonGroup>
 				<!-- empty div to maintain layout -->
-				<div v-else class="@[1290px]:w-[450px]" />
+				<div v-else class="@[1290px]:w-112.5" />
 			</div>
 			<!-- Tools Container -->
 			<div class="row-4 md:col-span-3">
@@ -648,13 +648,13 @@
 					class="transition-discrete transition-opacity duration-500"
 					:class="
 						!refShowTool
-							? 'opacity-0 overflow-hidden !h-0'
+							? 'opacity-0 overflow-hidden h-0!'
 							: 'px-6 py-3 opacity-100 border-b border-white/10'
 					">
 					<div
 						v-if="refShowTool === 'configuration'"
 						class="flex flex-wrap sm:justify-center-safe gap-6">
-						<div class="flex flex-col min-w-[300px]">
+						<div class="flex flex-col min-w-75">
 							<h2 class="text-white/80 font-bold text-lg pb-3">
 								Configuration
 							</h2>

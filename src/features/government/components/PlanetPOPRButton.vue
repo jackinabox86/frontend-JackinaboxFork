@@ -66,7 +66,7 @@
 		v-model:show="showPOPRModal"
 		preset="card"
 		:title="`Latest Population Report: ${planetNaturalId}`"
-		class="max-w-[600px]">
+		class="max-w-150">
 		<PlanetPOPRTable
 			v-if="poprData"
 			:planet-natural-id="planetNaturalId"
