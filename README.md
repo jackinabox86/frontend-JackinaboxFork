@@ -45,7 +45,9 @@ pnpm run test:ui
 
 # Build & Run Frontend
 
-PRUNplanner offers a pre-built Docker image for the frontend, hosted on GitHub Container Registry: [prunplanner-frontend](https://github.com/orgs/PRUNplanner/packages/container/package/prunplanner-frontend). The image comes with default environment settings and rebuilds on published repository releases.
+PRUNplanner offers a pre-built ARM64 Docker image for the frontend hosted on GitHub Container Registry:
+[prunplanner-frontend](https://github.com/orgs/PRUNplanner/packages/container/package/prunplanner-frontend).
+The image comes with default environment settings and rebuilds on published repository releases.
 
 You can also build and run yourself with Docker:
 
@@ -56,7 +58,7 @@ docker build -t prunplanner-frontend:latest .
 # Run local build
 docker run -p 80:80 prunplanner-frontend:latest --brotli --port 80
 
-# or, run pre-build image
+# or, run pre-built image (ARM64 only)
 docker run -p 80:80 ghcr.io/prunplanner/prunplanner-frontend:latest --brotli --port 80
 ```
 

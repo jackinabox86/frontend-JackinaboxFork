@@ -13,6 +13,7 @@
 	import { useMaterialData } from "@/database/services/useMaterialData";
 	import { usePrice } from "@/features/cx/usePrice";
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
+	import { useQuery } from "@/lib/query_cache/useQuery";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -65,6 +66,19 @@
 	const { hasStorage, storageOptions, findStorageValueFromOptions } =
 		useFIOStorage();
 
+	// Get already constructed buildings
+	const fioSites = await useQuery("GetFIOSites").execute();
+	const constructedArray = Object.values(fioSites.planets).find(
+		(p) => p.PlanetIdentifier === props.planetNaturalId
+	)?.Buildings;
+	const constructedMap = new Map<string, number>();
+	if (constructedArray) {
+		for (const building of constructedArray) {
+			const count = constructedMap.get(building.BuildingTicker) ?? 0;
+			constructedMap.set(building.BuildingTicker, count + 1);
+		}
+	}
+
 	const localBuildingAmount: Ref<Record<string, number>> = ref({});
 	const localBuildingMaterials: Ref<Record<string, Record<string, number>>> =
 		ref({});
@@ -103,19 +117,16 @@
 
 	function generateMatrix(): void {
 		buildingTicker.value.forEach((bticker) => {
-			localBuildingAmount.value[bticker] =
-				localBuildingAmount.value[bticker] ??
-				props.productionBuildingData.find((pf) => pf.name === bticker)
-					?.amount ??
-				props.infrastructureData[bticker as INFRASTRUCTURE_TYPE] ??
-				undefined;
-
-			// handle core module separately
-			if (
-				bticker === "CM" &&
-				localBuildingAmount.value["CM"] === undefined
-			) {
-				localBuildingAmount.value["CM"] = 1;
+			if (localBuildingAmount.value[bticker] === undefined) {
+				let need =
+					props.productionBuildingData.find(
+						(pf) => pf.name === bticker
+					)?.amount ??
+					props.infrastructureData[bticker as INFRASTRUCTURE_TYPE];
+				if (bticker === "CM") need = 1;
+				if (need !== undefined)
+					need -= constructedMap.get(bticker) ?? 0;
+				localBuildingAmount.value[bticker] = need;
 			}
 
 			const thisMats = props.constructionData.find(
@@ -124,11 +135,15 @@
 
 			if (thisMats) {
 				localBuildingMaterials.value[bticker] =
-					thisMats.materials.reduce((sum, current) => {
-						sum[current.ticker] =
-							current.input * localBuildingAmount.value[bticker];
-						return sum;
-					}, {} as Record<string, number>);
+					thisMats.materials.reduce(
+						(sum, current) => {
+							sum[current.ticker] =
+								current.input *
+								localBuildingAmount.value[bticker];
+							return sum;
+						},
+						{} as Record<string, number>
+					);
 			}
 		});
 	}
@@ -189,7 +204,7 @@
 		hasStorage.value
 			? storageOptions.value.filter(
 					(e) => e.value === `PLANET#${props.planetNaturalId}`
-			  )
+				)
 				? `PLANET#${props.planetNaturalId}`
 				: undefined
 			: undefined
@@ -243,7 +258,9 @@
 			<thead>
 				<tr>
 					<th>Building</th>
+					<th>Constructed</th>
 					<th>Amount</th>
+					<th>Planned</th>
 					<th
 						v-for="mat in uniqueMaterials"
 						:key="`CONSTRUCTIONCART#COLUMN#${mat}`"
@@ -257,11 +274,23 @@
 					v-for="building in buildingTicker"
 					:key="`CONSTRUCTIONCART#ROW#${building}`">
 					<th>{{ building }}</th>
+					<th class="text-neutral-500">{{ constructedMap.get(building) ?? 0 }}</th>
 					<th class="!border-r">
 						<PInputNumber
 							v-model:value="localBuildingAmount[building]"
 							show-buttons
 							:min="0" />
+					</th>
+					<th>
+						{{
+							productionBuildingData.find(
+								(pf) => pf.name === building
+							)?.amount ??
+							infrastructureData[
+								building as INFRASTRUCTURE_TYPE
+							] ??
+							(building === "CM" ? 1 : 0)
+						}}
 					</th>
 					<td
 						v-for="mat in uniqueMaterials"
@@ -282,7 +311,7 @@
 					</td>
 				</tr>
 				<tr class="child:!border-t-2 child:!border-b-2">
-					<td colspan="2">Materials Sum</td>
+					<td colspan="4">Materials Sum</td>
 					<td
 						v-for="mat in uniqueMaterials"
 						:key="`CONSTRUCTIONCART#COLUMN#TOTALS#${mat}`"
@@ -291,7 +320,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td :colspan="uniqueMaterials.length + 2">
+					<td :colspan="uniqueMaterials.length + 4">
 						<div
 							class="flex flex-row justify-between child:my-auto">
 							<div
