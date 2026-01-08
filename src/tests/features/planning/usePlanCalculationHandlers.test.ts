@@ -3,6 +3,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 
 import { buildingsStore, recipesStore } from "@/database/stores";
+import { IPlanDataBuilding } from "@/stores/planningStore.types";
 
 // test data
 import buildings from "@/tests/test_data/api_data_buildings.json";
@@ -422,6 +423,32 @@ describe("Planning: Workforce Calculations", async () => {
 			expect(fakePlan.buildings.length).toBe(0);
 			await handleCreateBuilding("BMP");
 			expect(fakePlan.buildings.length).toBe(1);
+		});
+	});
+
+	describe("handleCreateBuildingAndRecipe", async () => {
+		it("Create and add Recipe", async () => {
+			const fakePlan: { buildings: IPlanDataBuilding[] } = {
+				buildings: [],
+			};
+
+			const { handleCreateBuildingAndRecipe } =
+				await usePlanCalculationHandlers(
+					// @ts-expect-error mock data
+					ref({}),
+					ref(fakePlan),
+					ref(),
+					ref({})
+				);
+
+			expect(fakePlan.buildings.length).toBe(0);
+			await handleCreateBuildingAndRecipe("EXT", "EXT#FEO");
+			expect(fakePlan.buildings.length).toBe(1);
+			expect(fakePlan.buildings[0].name).toBe("EXT");
+			expect(fakePlan.buildings[0].active_recipes.length).toBe(1);
+			await handleCreateBuildingAndRecipe("EXT", "EXT#FEO");
+			expect(fakePlan.buildings.length).toBe(1);
+			expect(fakePlan.buildings[0].active_recipes.length).toBe(1);
 		});
 	});
 

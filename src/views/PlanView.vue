@@ -134,6 +134,7 @@
 		handleUpdateBuildingAmount,
 		handleDeleteBuilding,
 		handleCreateBuilding,
+		handleCreateBuildingAndRecipe,
 		handleUpdateBuildingRecipeAmount,
 		handleDeleteBuildingRecipe,
 		handleAddBuildingRecipe,
@@ -791,6 +792,9 @@
 							@update:building:amount="handleUpdateBuildingAmount"
 							@delete:building="handleDeleteBuilding"
 							@create:building="handleCreateBuilding"
+							@create:building:recipe="
+								handleCreateBuildingAndRecipe
+							"
 							@update:building:recipe:amount="
 								handleUpdateBuildingRecipeAmount
 							"
