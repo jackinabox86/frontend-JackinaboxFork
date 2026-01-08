@@ -1,9 +1,4 @@
-import {
-	createWebHistory,
-	createRouter,
-	NavigationGuardNext,
-	RouteLocationRaw,
-} from "vue-router";
+import { createWebHistory, createRouter } from "vue-router";
 
 // Stores
 import { useUserStore } from "@/stores/userStore";
@@ -163,22 +158,23 @@ const router = createRouter({
 	],
 });
 
-router.beforeEach((to, _, next: NavigationGuardNext) => {
+router.beforeEach((to, _) => {
 	const userStore = useUserStore();
 
 	if (to.meta.requiresAuth && !userStore.isLoggedIn) {
-		const redirectTo: RouteLocationRaw = {
+		return {
+			path: "/",
 			name: "homepage",
 			state: { showLogin: "true" },
+			query: {
+				redirectTo: to.fullPath,
+			},
 		};
-		next(redirectTo);
 	} else if (to.name === "homepage" && userStore.isLoggedIn) {
-		const redirectTo: RouteLocationRaw = {
+		return {
+			path: "/empire",
 			name: "empire",
 		};
-		next(redirectTo);
-	} else {
-		next();
 	}
 });
 
