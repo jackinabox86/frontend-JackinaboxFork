@@ -73,7 +73,7 @@
 				<PSpin v-if="isLoading" />
 			</div>
 			<div
-				class="flex-grow grid grid-cols-1 xl:grid-cols-2 gap-3 divide-x divide-white/10 child:px-6 child:py-3 xl:child:last:pl-3">
+				class="grow grid grid-cols-1 xl:grid-cols-2 gap-3 divide-x divide-white/10 child:px-6 child:py-3 xl:child:last:pl-3">
 				<div>
 					<div class="pb-3 text-white/60">
 						PRUNplanner utilizes its own backend API to securely
@@ -100,7 +100,7 @@
 									<PSelect
 										v-model:value="selectedAPIKey"
 										:options="apiKeySelectOptions"
-										class="w-[200px]" />
+										class="w-50" />
 								</PFormItem>
 							</PForm>
 						</div>
@@ -111,7 +111,7 @@
 										v-model:value="selectedEmpireUuid"
 										:options="empireSelectOptions"
 										clearable
-										class="w-[200px]" />
+										class="w-50" />
 								</PFormItem>
 							</PForm>
 						</div>

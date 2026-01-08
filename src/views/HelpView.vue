@@ -36,7 +36,7 @@
 		</div>
 
 		<div
-			class="flex-grow grid grid-cols-1 lg:grid-cols-[60%_auto] gap-3 divide-x divide-white/10 child:px-6 child:py-3 child:last:pl-3">
+			class="grow grid grid-cols-1 lg:grid-cols-[60%_auto] gap-3 divide-x divide-white/10 child:px-6 child:py-3 child:last:pl-3">
 			<div>
 				<HelpTutorial />
 			</div>

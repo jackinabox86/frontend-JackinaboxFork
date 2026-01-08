@@ -133,7 +133,7 @@
 						<span class="font-bold">
 							{{ rowData.planName }}
 						</span>
-						<span class="!text-white/50">
+						<span class="text-white/50!">
 							&mdash;
 							{{
 								planetNames[rowData.planetId] ||

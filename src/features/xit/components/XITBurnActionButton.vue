@@ -250,7 +250,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="child:!border-b">
+					<tr class="child:border-b!">
 						<td colspan="7">
 							<div class="flex flex-row justify-between">
 								<div>
@@ -302,7 +302,7 @@
 										? `${
 												getBurnDisplayClass(e.burn)
 													.value
-										  } px-2 py-[3px]`
+										  } px-2 py-0.75`
 										: ''
 								">
 								{{ formatNumber(e.burn) }}
@@ -314,7 +314,7 @@
 								v-model:value="refMaterialOverrides[e.ticker]"
 								size="sm"
 								:min="0"
-								class="max-w-[100px]" />
+								class="max-w-25" />
 						</td>
 					</tr>
 				</tbody>

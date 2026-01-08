@@ -29,7 +29,7 @@
 <template>
 	<template v-if="option.children">
 		<div
-			class="border-t border-b border-white/20 bg-white/5 hover:!bg-white/5 font-bold">
+			class="border-t border-b border-white/20 bg-white/5 hover:bg-white/5! font-bold">
 			{{ option.label }}
 		</div>
 		<template
@@ -44,12 +44,12 @@
 						: '',
 				]"
 				@click="emit('click', child.value)">
-				<div class="pl-3 flex-grow hover:cursor-pointer">
+				<div class="pl-3 grow hover:cursor-pointer">
 					{{ child.label }}
 				</div>
 				<div
 					v-if="isSelected(child.value)"
-					class="text-white fill-white h-[16px] w-[16px]">
+					class="text-white fill-white h-4 w-4">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 						<g fill="none">
 							<path
@@ -75,12 +75,12 @@
 				isSelected(option.value) ? 'text-link-primary font-bold' : '',
 			]"
 			@click="emit('click', option.value)">
-			<div class="flex-grow hover:cursor-pointer">
+			<div class="grow hover:cursor-pointer">
 				{{ option.label }}
 			</div>
 			<div
 				v-if="isSelected(option.value)"
-				class="text-white fill-white h-[16px] w-[16px]">
+				class="text-white fill-white h-4 w-4">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
 					<g fill="none">
 						<path

@@ -72,7 +72,7 @@
 <template>
 	<div>
 		<div class="flex flex-row flex-wrap gap-3">
-			<h2 class="flex-grow my-auto text-white/80 font-bold text-lg">
+			<h2 class="grow my-auto text-white/80 font-bold text-lg">
 				Profile
 			</h2>
 			<PButton
@@ -91,24 +91,24 @@
 			<PFormItem label="FIO API Key">
 				<PInput
 					v-model:value="localProfile.fio_apikey"
-					class="w-full min-w-[200px] max-w-[50%]" />
+					class="w-full min-w-50 max-w-[50%]" />
 			</PFormItem>
 			<PFormItem label="PrUn Username">
 				<PInput
 					v-model:value="localProfile.prun_username"
-					class="w-full min-w-[200px] max-w-[50%]" />
+					class="w-full min-w-50 max-w-[50%]" />
 			</PFormItem>
 			<PFormItem label="Email Address">
 				<PInput
 					v-model:value="localProfile.email"
-					class="w-full min-w-[200px] max-w-[50%]" />
+					class="w-full min-w-50 max-w-[50%]" />
 			</PFormItem>
 			<PFormItem label="Email Verified">
 				<div class="w-full flex flex-row flex-wrap gap-3">
 					<PCheckbox
 						v-model:checked="localProfile.email_verified"
 						disabled
-						class="w-full min-w-[200px] max-w-[50%] child:my-auto" />
+						class="w-full min-w-50 max-w-[50%] child:my-auto" />
 
 					<div
 						v-if="!localProfile.email_verified"

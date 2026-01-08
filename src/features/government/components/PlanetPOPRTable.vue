@@ -51,7 +51,7 @@
 		Planet {{ planetNaturalId }} has no population data.
 	</div>
 
-	<PTable striped>
+	<PTable v-if="poprData" striped>
 		<thead>
 			<tr>
 				<th></th>
@@ -108,7 +108,7 @@
 				<td>{{ formatAmount(poprData.OpenJobsScientist) }}</td>
 			</tr>
 			<template v-if="workforceData">
-				<tr class="child:!border-t-2 child:!border-t-white/20">
+				<tr class="child:border-t-2! child:border-t-white/20!">
 					<td class="font-bold">Plan Need</td>
 					<td>{{ formatAmount(workforceData.pioneer.required) }}</td>
 					<td>{{ formatAmount(workforceData.settler.required) }}</td>

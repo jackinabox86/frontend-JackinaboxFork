@@ -110,7 +110,7 @@
 				</PFormItem>
 				<PFormItem label="Buy From CX">
 					<div
-						class="w-full flex flex-row gap-1 my-3 h-[32px] items-center">
+						class="w-full flex flex-row gap-1 my-3 h-8 items-center">
 						<PCheckbox
 							v-model:checked="defaultBuyItemsFromCX"
 							:disabled="
@@ -126,7 +126,7 @@
 				</PFormItem>
 				<PFormItem label="JSON">
 					<div class="w-full flex flex-row gap-1">
-						<div class="flex-grow">
+						<div class="grow">
 							<PInput
 								v-model:value="
 									transferJSON(localElements, {

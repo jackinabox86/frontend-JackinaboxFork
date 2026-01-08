@@ -83,7 +83,7 @@
 				<HelpDrawer file-name="tools_production_chain" />
 			</div>
 			<div
-				class="flex-grow grid grid-cols-1 xl:grid-cols-[400px_auto_300px] gap-3 divide-x divide-white/10">
+				class="grow grid grid-cols-1 xl:grid-cols-[400px_auto_300px] gap-3 divide-x divide-white/10">
 				<div class="px-6 py-3">
 					<h3 class="font-bold pb-3">Configuration</h3>
 					<PForm>
@@ -119,7 +119,7 @@
 								@update:value="generate()" />
 						</PFormItem>
 						<PFormSeperator>
-							<div class="text-xs !text-white/60">
+							<div class="text-xs text-white/60!">
 								Terminals are materials whose inputs are
 								excluded from the graph, useful if you buy them
 								on the CX or locally and don't need to produce

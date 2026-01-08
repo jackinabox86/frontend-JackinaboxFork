@@ -91,7 +91,7 @@
 				:options="buildingOptions"
 				searchable
 				clearable
-				class="w-[200px]" />
+				class="w-50" />
 		</div>
 		<div class="flex flex-row gap-3 child:my-auto">
 			<div>COGC</div>
@@ -100,7 +100,7 @@
 				:options="cogcOptions"
 				searchable
 				clearable
-				class="w-[200px]" />
+				class="w-50" />
 		</div>
 		<div class="flex flex-row gap-3 child:my-auto">
 			<div>Output</div>
@@ -109,7 +109,7 @@
 				:options="outputMaterialOptions"
 				searchable
 				clearable
-				class="w-[200px]" />
+				class="w-50" />
 		</div>
 		<div class="flex flex-row gap-3 child:my-auto">
 			<div>Input</div>
@@ -118,7 +118,7 @@
 				:options="inputMaterialOptions"
 				searchable
 				clearable
-				class="w-[200px]" />
+				class="w-50" />
 		</div>
 		<div class="flex flex-row gap-3 child:my-auto">
 			<div>Positive ROI</div>

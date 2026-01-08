@@ -76,14 +76,14 @@
 						<PSelect
 							v-model:value="selectedExchange"
 							:options="exchangeOptions"
-							class="w-[100px]" />
+							class="w-25" />
 
 						<div>Material</div>
 						<PSelect
 							v-model:value="selectedMaterial"
 							searchable
 							:options="materialOptions"
-							class="w-[200px]" />
+							class="w-50" />
 						<PButton :loading="loading" @click="fetch">
 							Explore
 						</PButton>

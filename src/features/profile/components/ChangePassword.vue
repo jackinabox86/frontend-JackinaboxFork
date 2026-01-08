@@ -52,7 +52,7 @@
 <template>
 	<div>
 		<div class="flex flex-row flex-wrap gap-3">
-			<h2 class="flex-grow my-auto text-white/80 font-bold text-lg">
+			<h2 class="grow my-auto text-white/80 font-bold text-lg">
 				Change Password
 			</h2>
 			<PButton
@@ -80,13 +80,13 @@
 				<PInput
 					v-model:value="refCurrentPassword"
 					type="password"
-					class="w-full min-w-[200px] max-w-[50%]" />
+					class="w-full min-w-50 max-w-[50%]" />
 			</PFormItem>
 			<PFormItem label="New Password">
 				<PInput
 					v-model:value="refNewPassword"
 					type="password"
-					class="w-full min-w-[200px] max-w-[50%]" />
+					class="w-full min-w-50 max-w-[50%]" />
 			</PFormItem>
 		</PForm>
 	</div>

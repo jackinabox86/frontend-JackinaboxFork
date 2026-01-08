@@ -53,7 +53,7 @@
 		</PFormItem>
 		<PFormItem label="Area">
 			<div class="flex flex-row w-full">
-				<div class="flex-grow">
+				<div class="grow">
 					{{ areaData.areaUsed }} / {{ areaData.areaTotal }}
 				</div>
 				<div>

@@ -107,9 +107,7 @@
 <template>
 	<div class="p-3 child:my-auto border border-white/10 rounded">
 		<div class="pb-3 flex justify-between child:my-auto">
-			<h2 class="flex-grow text-white/80 font-bold text-lg">
-				Configuration
-			</h2>
+			<h2 class="grow text-white/80 font-bold text-lg">Configuration</h2>
 
 			<div class="flex gap-x-3">
 				<PButton size="md" :loading="isLoading" @click="save">

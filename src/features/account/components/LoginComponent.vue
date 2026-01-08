@@ -44,7 +44,7 @@
 </script>
 
 <template>
-	<div class="mx-auto max-w-[400px]">
+	<div class="mx-auto max-w-100">
 		<div class="text-xl text-white font-bold font-mono pb-3">Login</div>
 		<div v-if="hasError" class="pb-3 text-red-600">
 			Error logging in. Please check your username and password.

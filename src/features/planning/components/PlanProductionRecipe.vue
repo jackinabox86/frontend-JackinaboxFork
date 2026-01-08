@@ -108,7 +108,7 @@
 		v-model:show="refShowCOGM"
 		preset="card"
 		title="Cost Of Goods Manufactured"
-		:class="cogmWithCX ? 'max-w-[1000px]' : 'max-w-[600px]'">
+		:class="cogmWithCX ? 'max-w-250' : 'max-w-150'">
 		<PlanCOGM
 			v-if="localRecipeData.cogm && cxUuid"
 			:cogm-data="localRecipeData.cogm"
@@ -166,7 +166,7 @@
 			class="relative z-10"
 			:class="refShowRecipeOptions ? 'visible' : 'hidden'">
 			<n-table
-				class="absolute w-full border border-pp-border !bg-black"
+				class="absolute w-full border border-pp-border bg-black!"
 				striped>
 				<thead>
 					<tr>
@@ -193,7 +193,7 @@
 						<td
 							:class="
 								recipe.RecipeId === localRecipeData.recipeId
-									? '!border-l-3 !border-l-green-500'
+									? 'border-l-3! border-l-green-500!'
 									: ''
 							">
 							<div class="flex flex-row gap-1">
@@ -219,24 +219,24 @@
 						<td
 							:class="
 								recipe.dailyRevenue >= 0
-									? '!text-positive'
-									: '!text-negative'
+									? 'text-positive!'
+									: 'text-negative!'
 							">
 							{{ formatNumber(recipe.dailyRevenue) }} $
 						</td>
 						<td
 							:class="
 								recipe.profitPerArea >= 0
-									? '!text-positive'
-									: '!text-negative'
+									? 'text-positive!'
+									: 'text-negative!'
 							">
 							{{ formatNumber(recipe.profitPerArea) }} $
 						</td>
 						<td
 							:class="
 								recipe.roi >= 0
-									? '!text-positive'
-									: '!text-negative'
+									? 'text-positive!'
+									: 'text-negative!'
 							">
 							{{ formatNumber(recipe.roi) }} d
 						</td>
@@ -246,7 +246,7 @@
 					<tr>
 						<td
 							colspan="6"
-							class="text-xs !p-2 !text-white/60 !border-t-1">
+							class="text-xs p-2! text-white/60! border-t!">
 							<strong>Revenue / Day</strong> is calculated by
 							taking the daily income generated from a recipe and
 							subtracting both the daily workforce cost (all
@@ -257,8 +257,8 @@
 							output material values. <strong>$ / Area</strong> is
 							the daily revenue divided by the area for one
 							production building and its proportionate share of
-							the area for a CM and habs required for an
-							optimal base of such buildings in Recipe ROI.
+							the area for a CM and habs required for an optimal
+							base of such buildings in Recipe ROI.
 							<strong>ROI (Payback)</strong> is the time required
 							for a continuously operating recipe to generate
 							enough revenue to offset the building's construction

@@ -81,10 +81,10 @@
 			<template #render-cell="{ rowData }">
 				<span
 					v-if="rowData.planetName === rowData.planetId"
-					class="!font-bold">
+					class="font-bold!">
 					{{ rowData.planetId }}
 				</span>
-				<span v-else class="!font-bold">
+				<span v-else class="font-bold!">
 					{{ rowData.planetName }} ({{ rowData.planetId }})
 				</span>
 			</template>

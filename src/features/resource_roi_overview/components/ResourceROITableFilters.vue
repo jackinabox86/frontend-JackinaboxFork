@@ -73,7 +73,7 @@
 					:options="planetOptions"
 					searchable
 					clearable
-					class="w-[200px]" />
+					class="w-50" />
 			</div>
 			<div class="flex flex-row gap-3 child:my-auto">
 				<div>Building</div>
@@ -82,7 +82,7 @@
 					:options="buildingOptions"
 					searchable
 					clearable
-					class="w-[200px]" />
+					class="w-50" />
 			</div>
 			<div class="flex flex-row gap-3 child:my-auto">
 				<div>Positive ROI</div>

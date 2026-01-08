@@ -53,7 +53,7 @@
 
 <template>
 	<div class="flex flex-row gap-x-1">
-		<div class="child:!w-[100px]">
+		<div class="child:w-25!">
 			<PSelect v-model:value="selectedType" :options="typeOptions" />
 		</div>
 		<PSelect
@@ -62,12 +62,12 @@
 			searchable
 			size="small"
 			placeholder="Material"
-			class="!w-[100px]" />
+			class="w-25!" />
 		<PInputNumber
 			v-model:value="selectedValue"
 			:min="0"
 			decimals
-			class="!w-[250px]" />
+			class="w-62.5!" />
 		<div>
 			<PButton
 				:disabled="
@@ -94,7 +94,7 @@
 			<tr
 				v-for="preference in sortedCXOptions"
 				:key="`${preference.type}#${preference.ticker}`">
-				<td class="w-[75px]">
+				<td class="w-18.75">
 					<PTag
 						:type="
 							preference.type === 'BUY'
@@ -132,7 +132,7 @@
 			</tr>
 			<tr
 				v-if="localCXOptions.length === 0"
-				class="text-center child:!text-white/50">
+				class="text-center child:text-white/50!">
 				<td colspan="4">No Ticker Preferences Configured</td>
 			</tr>
 		</PTable>

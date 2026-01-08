@@ -265,12 +265,12 @@
 	<div
 		:class="
 			!refShowCreateEmpire
-				? 'opacity-0 overflow-hidden !h-0'
+				? 'opacity-0 overflow-hidden h-0'
 				: 'opacity-100'
 		"
 		class="transition-all duration-500 border-t border-b border-white/10">
-		<div class="flex gap-x-3 pt-3 w-1/2 min-w-[400px]">
-			<div class="flex-grow">
+		<div class="flex gap-x-3 pt-3 w-1/2 min-w-100">
+			<div class="grow">
 				<PForm>
 					<PFormItem label="Empire Name">
 						<PInput
@@ -351,7 +351,7 @@
 		</x-n-data-table-column>
 		<x-n-data-table-column key="cx" title="CX" width="200">
 			<template #render-cell="{ rowData }">
-				<div class="max-w-[200px]">
+				<div class="max-w-50">
 					<PSelect
 						:key="`${rowData.uuid}#${refEmpireCXMap[rowData.uuid]}`"
 						v-model:value="refEmpireCXMap[rowData.uuid]"

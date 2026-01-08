@@ -65,7 +65,7 @@
 				show-buttons
 				:min="0"
 				:max="5"
-				class="min-w-[80px] max-w-[100px]"
+				class="min-w-20 max-w-25"
 				@update:value="
 					(value) => {
 						if (value !== null && value !== undefined) {

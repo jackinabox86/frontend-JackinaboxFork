@@ -135,15 +135,11 @@
 
 			if (thisMats) {
 				localBuildingMaterials.value[bticker] =
-					thisMats.materials.reduce(
-						(sum, current) => {
-							sum[current.ticker] =
-								current.input *
-								localBuildingAmount.value[bticker];
-							return sum;
-						},
-						{} as Record<string, number>
-					);
+					thisMats.materials.reduce((sum, current) => {
+						sum[current.ticker] =
+							current.input * localBuildingAmount.value[bticker];
+						return sum;
+					}, {} as Record<string, number>);
 			}
 		});
 	}
@@ -204,7 +200,7 @@
 		hasStorage.value
 			? storageOptions.value.filter(
 					(e) => e.value === `PLANET#${props.planetNaturalId}`
-				)
+			  )
 				? `PLANET#${props.planetNaturalId}`
 				: undefined
 			: undefined
@@ -246,7 +242,7 @@
 <template>
 	<div class="pb-3 flex flex-row justify-between child:my-auto">
 		<h2 class="text-white/80 font-bold text-lg">Construction Cart</h2>
-		<div class="flex flex-row gap-x-3 child:!my-auto">
+		<div class="flex flex-row gap-x-3 child:my-auto!">
 			<XITTransferActionButton
 				:elements="xitTransferElements"
 				transfer-name="Construct"
@@ -264,7 +260,7 @@
 					<th
 						v-for="mat in uniqueMaterials"
 						:key="`CONSTRUCTIONCART#COLUMN#${mat}`"
-						class="!text-center">
+						class="text-center!">
 						<MaterialTile :key="mat" :ticker="mat" />
 					</th>
 				</tr>
@@ -274,8 +270,10 @@
 					v-for="building in buildingTicker"
 					:key="`CONSTRUCTIONCART#ROW#${building}`">
 					<th>{{ building }}</th>
-					<th class="text-neutral-500">{{ constructedMap.get(building) ?? 0 }}</th>
-					<th class="!border-r">
+					<th class="text-neutral-500">
+						{{ constructedMap.get(building) ?? 0 }}
+					</th>
+					<th class="border-r!">
 						<PInputNumber
 							v-model:value="localBuildingAmount[building]"
 							show-buttons
@@ -310,7 +308,7 @@
 						</span>
 					</td>
 				</tr>
-				<tr class="child:!border-t-2 child:!border-b-2">
+				<tr class="child:border-t-2! child:border-b-2!">
 					<td colspan="4">Materials Sum</td>
 					<td
 						v-for="mat in uniqueMaterials"
@@ -368,7 +366,7 @@
 							v-model:value="refSelectedStorage"
 							searchable
 							:options="storageOptions"
-							class="!w-[250px]" />
+							class="w-62.5!" />
 					</template>
 					<XITTransferActionButton
 						:elements="xitTransferElementsOverview"
@@ -410,7 +408,7 @@
 								placeholder=""
 								show-buttons
 								:min="0"
-								class="max-w-[200px]" />
+								class="max-w-50" />
 						</td>
 						<td>
 							{{ formatAmount(material.total) }}

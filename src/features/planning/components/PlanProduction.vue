@@ -135,7 +135,7 @@
 				:disabled="disabled"
 				searchable
 				placeholder="Select Production Building(s)"
-				class="w-full sm:!w-[300px]"
+				class="w-full sm:w-75!"
 				:options="
 					getProductionBuildingOptions(
 						localProductionData.buildings.map((e) => e.name),

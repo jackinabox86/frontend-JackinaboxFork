@@ -329,7 +329,7 @@
 						</div>
 
 						<div
-							class="flex-grow grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6 m-3 sm:m-6">
+							class="grow grid grid-cols-1 xl:grid-cols-[auto_1fr] gap-6 m-3 sm:m-6">
 							<div
 								class="flex flex-col gap-6 justify-items-start">
 								<div>

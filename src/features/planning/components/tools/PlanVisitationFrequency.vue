@@ -220,28 +220,28 @@
 				<thead>
 					<tr>
 						<th />
-						<th class="!text-center">m³</th>
-						<th class="!text-center">t</th>
+						<th class="text-center!">m³</th>
+						<th class="text-center!">t</th>
 					</tr>
 				</thead>
 				<tbody class="child:child:text-center">
 					<tr>
-						<td class="!text-left font-bold">Import</td>
+						<td class="text-left! font-bold">Import</td>
 						<td>{{ formatNumber(dailyData.dailyVolumeImport) }}</td>
 						<td>{{ formatNumber(dailyData.dailyWeightImport) }}</td>
 					</tr>
 					<tr>
-						<td class="!text-left font-bold">Export</td>
+						<td class="text-left! font-bold">Export</td>
 						<td>{{ formatNumber(dailyData.dailyVolumeExport) }}</td>
 						<td>{{ formatNumber(dailyData.dailyWeightExport) }}</td>
 					</tr>
 					<tr>
-						<td class="!text-left font-bold">&#8721;</td>
+						<td class="text-left! font-bold">&#8721;</td>
 						<td>{{ formatNumber(dailyData.dailyVolume) }}</td>
 						<td>{{ formatNumber(dailyData.dailyWeight) }}</td>
 					</tr>
 					<tr>
-						<td class="!text-left font-bold">Storage Filled</td>
+						<td class="text-left! font-bold">Storage Filled</td>
 						<td colspan="2" class="font-bold">
 							{{ formatNumber(dailyData.storageFilled) }} days
 						</td>
@@ -281,17 +281,17 @@
 					<tr>
 						<th>Ship m³</th>
 						<th>Ship t</th>
-						<th class="!text-center">Visitation (days)</th>
-						<th class="!text-center">Limit</th>
-						<th class="!text-center">Visitation (days)</th>
-						<th class="!text-center">Limit</th>
+						<th class="text-center!">Visitation (days)</th>
+						<th class="text-center!">Limit</th>
+						<th class="text-center!">Visitation (days)</th>
+						<th class="text-center!">Limit</th>
 					</tr>
 					<tr>
 						<th colspan="2" />
-						<th colspan="2" class="!text-center">
+						<th colspan="2" class="text-center!">
 							Export Frequency
 						</th>
-						<th colspan="2" class="!text-center">
+						<th colspan="2" class="text-center!">
 							Import Frequency
 						</th>
 					</tr>
