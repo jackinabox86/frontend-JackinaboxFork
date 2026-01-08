@@ -530,7 +530,10 @@
 					:overview-data="overviewData" />
 			</div>
 			<!-- Plan Actions -->
-			<div class="row-2 md:row-1 md:col-3 py-3 flex flex-row flex-wrap">
+			<div
+				class="row-2 md:row-1 md:col-3 py-3 flex flex-row flex-wrap gap-x-3">
+				<HelpDrawer file-name="plan" />
+
 				<PButtonGroup v-if="userStore.isLoggedIn">
 					<PButton
 						v-if="disabled"
@@ -577,8 +580,6 @@
 					<ShareButton
 						v-if="!disabled && refPlanData.uuid"
 						:plan-uuid="refPlanData.uuid" />
-
-					<HelpDrawer file-name="plan" />
 				</PButtonGroup>
 				<!-- empty div to maintain layout -->
 				<div v-else class="@[1290px]:w-112.5" />
