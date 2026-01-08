@@ -38,7 +38,14 @@
 
 		if (!result) hasError.value = true;
 		else {
-			router.push({ path: "/empire/" });
+			let urlParams = new URLSearchParams(window.location.search);
+
+			// successfull login should redirect back to origin, if present
+			if (urlParams.has("redirectTo") && urlParams.get("redirectTo")) {
+				router.push({ path: urlParams.get("redirectTo")! });
+			} else {
+				router.push({ path: "/empire" });
+			}
 		}
 	}
 </script>
