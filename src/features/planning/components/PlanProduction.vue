@@ -10,7 +10,10 @@
 	import PlanProductionBuilding from "@/features/planning/components/PlanProductionBuilding.vue";
 
 	// Types & Interfaces
-	import { IPlanetResource } from "@/features/api/gameData.types";
+	import {
+		IPlanetResource,
+		PLANET_RESOURCETYPE_TYPE,
+	} from "@/features/api/gameData.types";
 	import { IProductionResult } from "@/features/planning/usePlanCalculation.types";
 	import { PLAN_COGCPROGRAM_TYPE } from "@/stores/planningStore.types";
 
@@ -53,6 +56,7 @@
 		(e: "update:building:amount", index: number, value: number): void;
 		(e: "delete:building", index: number): void;
 		(e: "create:building", ticker: string): void;
+		(e: "create:building:recipe", ticker: string, recipeId: string): void;
 		(
 			e: "update:building:recipe:amount",
 			buildingIndex: number,
@@ -84,6 +88,24 @@
 	const localMatchCOGC: Ref<boolean> = ref(false);
 
 	const { getProductionBuildingOptions } = await useBuildingData();
+
+	function emitCreateBuildingWithRecipe(
+		resourceType: PLANET_RESOURCETYPE_TYPE,
+		resourceTicker: string
+	): void {
+		const buildingTicker =
+			resourceType === "MINERAL"
+				? "EXT"
+				: resourceType === "GASEOUS"
+				? "COL"
+				: "RIG";
+
+		emit(
+			"create:building:recipe",
+			buildingTicker,
+			buildingTicker + "#" + resourceTicker
+		);
+	}
 </script>
 
 <template>
@@ -99,7 +121,14 @@
 					v-for="resource in planetResources"
 					:key="`PLANET#RESOURCE#${resource.MaterialTicker}`">
 					<template #trigger>
-						<div class="hover:cursor-help">
+						<div
+							class="hover:cursor-pointer"
+							@click="
+								emitCreateBuildingWithRecipe(
+									resource.ResourceType,
+									resource.MaterialTicker
+								)
+							">
 							<MaterialTile
 								:key="resource.MaterialTicker"
 								:ticker="resource.MaterialTicker"

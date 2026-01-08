@@ -200,17 +200,68 @@ export async function usePlanCalculationHandlers(
 	 *
 	 * @param {string} ticker Building Ticker to add
 	 */
-	async function handleCreateBuilding(ticker: string): Promise<void> {
+	async function handleCreateBuilding(ticker: string): Promise<boolean> {
 		// validate building
 		const building: IBuilding = await getBuilding(ticker);
 
-		planData.value.buildings.push({
-			name: building.Ticker,
-			amount: 1,
-			active_recipes: [],
-		});
+		// check if building already exists
+		const hasTicker: boolean = !!planData.value.buildings.find(
+			(e) => e.name === ticker
+		);
 
-		modified.value = true;
+		// only add, if this ticker is not yet present
+		if (!hasTicker) {
+			planData.value.buildings.push({
+				name: building.Ticker,
+				amount: 1,
+				active_recipes: [],
+			});
+
+			modified.value = true;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Creates or uses a building and adds a recipe if not yet present
+	 * @author jplacht
+	 *
+	 * @async
+	 * @param {string} ticker Building Ticker
+	 * @param {string} recipeId Recipe Id
+	 * @returns {Promise<void>} void
+	 */
+	async function handleCreateBuildingAndRecipe(
+		ticker: string,
+		recipeId: string
+	): Promise<void> {
+		// try creating the building first
+		await handleCreateBuilding(ticker);
+
+		const building = planData.value.buildings.find(
+			(e) => e.name === ticker
+		);
+
+		if (building) {
+			// check if the building is available and does not yet have the recipe
+
+			// check, that the building does not hold the recipe
+			const hasRecipe = building.active_recipes.find(
+				(r) => r.recipeid === recipeId
+			);
+
+			if (!hasRecipe) {
+				// add first option to the data
+				building.active_recipes.push({
+					recipeid: recipeId,
+					amount: 1,
+				});
+
+				modified.value = true;
+			}
+		}
 	}
 
 	/**
@@ -405,6 +456,7 @@ export async function usePlanCalculationHandlers(
 		handleUpdateBuildingAmount,
 		handleDeleteBuilding,
 		handleCreateBuilding,
+		handleCreateBuildingAndRecipe,
 		handleUpdateBuildingRecipeAmount,
 		handleDeleteBuildingRecipe,
 		handleAddBuildingRecipe,
