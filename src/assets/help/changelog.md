@@ -1,3 +1,11 @@
+# 2026-01-09 - v. 0.21.0
+
+- Already constructed buildings from FIO are shown in Construction Cart [[PR-309]](https://github.com/PRUNplanner/frontend/pull/309)
+- Import/Export CX preferences functionality with CSV files [[PR-310]](https://github.com/PRUNplanner/frontend/pull/310)
+- PRUNplanner now redirects you back to the latest page on login after logout [[#313]](https://github.com/PRUNplanner/frontend/issues/313)
+- "Help" button on Plans is now displayed up top [[#291]](https://github.com/PRUNplanner/frontend/issues/291)
+- Planet Resource Tiles in plans are now clickable and add building and recipe for extraction [[#238]](https://github.com/PRUNplanner/frontend/issues/238)
+
 # 2025-11-13 - v. 0.20.6
 
 - Default automatic habitation optimization turned off for existing plans [[PR-305]](https://github.com/PRUNplanner/frontend/pull/305)
