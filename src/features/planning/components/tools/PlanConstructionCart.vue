@@ -14,6 +14,7 @@
 	import { usePrice } from "@/features/cx/usePrice";
 	import { useFIOStorage } from "@/features/fio/useFIOStorage";
 	import { useQuery } from "@/lib/query_cache/useQuery";
+	import { useUserStore } from "@/stores/userStore";
 
 	// Components
 	import MaterialTile from "@/features/material_tile/components/MaterialTile.vue";
@@ -67,15 +68,17 @@
 		useFIOStorage();
 
 	// Get already constructed buildings
-	const fioSites = await useQuery("GetFIOSites").execute();
-	const constructedArray = Object.values(fioSites.planets).find(
-		(p) => p.PlanetIdentifier === props.planetNaturalId
-	)?.Buildings;
 	const constructedMap = new Map<string, number>();
-	if (constructedArray) {
-		for (const building of constructedArray) {
-			const count = constructedMap.get(building.BuildingTicker) ?? 0;
-			constructedMap.set(building.BuildingTicker, count + 1);
+	if (useUserStore().hasFIO) {
+		const fioSites = await useQuery("GetFIOSites").execute();
+		const constructedArray = Object.values(fioSites.planets).find(
+			(p) => p.PlanetIdentifier === props.planetNaturalId
+		)?.Buildings;
+		if (constructedArray) {
+			for (const building of constructedArray) {
+				const count = constructedMap.get(building.BuildingTicker) ?? 0;
+				constructedMap.set(building.BuildingTicker, count + 1);
+			}
 		}
 	}
 
