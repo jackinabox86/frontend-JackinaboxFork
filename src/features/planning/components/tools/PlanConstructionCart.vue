@@ -68,8 +68,9 @@
 		useFIOStorage();
 
 	// Get already constructed buildings
-	const constructedMap = new Map<string, number>();
+	let constructedMap: Map<string, number> | null = null;
 	if (useUserStore().hasFIO) {
+		constructedMap = new Map<string, number>();
 		const fioSites = await useQuery("GetFIOSites").execute();
 		const constructedArray = Object.values(fioSites.planets).find(
 			(p) => p.PlanetIdentifier === props.planetNaturalId
@@ -127,7 +128,7 @@
 					)?.amount ??
 					props.infrastructureData[bticker as INFRASTRUCTURE_TYPE];
 				if (bticker === "CM") need = 1;
-				if (need !== undefined)
+				if (need !== undefined && constructedMap !== null)
 					need -= constructedMap.get(bticker) ?? 0;
 				localBuildingAmount.value[bticker] = need;
 			}
@@ -257,7 +258,7 @@
 			<thead>
 				<tr>
 					<th>Building</th>
-					<th>Constructed</th>
+					<th v-if="constructedMap">Constructed</th>
 					<th>Amount</th>
 					<th>Planned</th>
 					<th
@@ -273,7 +274,7 @@
 					v-for="building in buildingTicker"
 					:key="`CONSTRUCTIONCART#ROW#${building}`">
 					<th>{{ building }}</th>
-					<th class="text-neutral-500">
+					<th v-if="constructedMap" class="text-neutral-500">
 						{{ constructedMap.get(building) ?? 0 }}
 					</th>
 					<th class="border-r!">
@@ -312,7 +313,7 @@
 					</td>
 				</tr>
 				<tr class="child:border-t-2! child:border-b-2!">
-					<td colspan="4">Materials Sum</td>
+					<td :colspan="constructedMap ? 4 : 3">Materials Sum</td>
 					<td
 						v-for="mat in uniqueMaterials"
 						:key="`CONSTRUCTIONCART#COLUMN#TOTALS#${mat}`"
@@ -321,7 +322,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td :colspan="uniqueMaterials.length + 4">
+					<td :colspan="uniqueMaterials.length + (constructedMap ? 4 : 3)">
 						<div
 							class="flex flex-row justify-between child:my-auto">
 							<div
