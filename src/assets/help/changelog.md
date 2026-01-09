@@ -1,3 +1,7 @@
+# 2026-01-09 - v. 0.21.1
+
+- Fixes an issue with the construction cart when FIO is not enabled [[PR-320]](https://github.com/PRUNplanner/frontend/pull/320)
+
 # 2026-01-09 - v. 0.21.0
 
 - Already constructed buildings from FIO are shown in Construction Cart [[PR-309]](https://github.com/PRUNplanner/frontend/pull/309)
