@@ -17,6 +17,8 @@
 
 	const refResults: Ref<IPlanet[]> = ref([]);
 	const refSearchMaterials: Ref<string[]> = ref([]);
+	const refSearchSystem: Ref<string | undefined> = ref(undefined);
+	const refSearchSystemDistance: Ref<number | undefined> = ref(undefined);
 </script>
 
 <template>
@@ -37,6 +39,8 @@
 								(value) => {
 									refResults = value;
 									refSearchMaterials = [];
+									refSearchSystem = undefined;
+									refSearchSystemDistance = undefined;
 								}
 							" />
 					</div>
@@ -45,6 +49,12 @@
 							@update:results="(value) => (refResults = value)"
 							@update:materials="
 								(value) => (refSearchMaterials = value)
+							"
+							@update:distance="
+								(searchSystem, searchDistance) => {
+									refSearchSystem = searchSystem;
+									refSearchSystemDistance = searchDistance;
+								}
 							" />
 					</div>
 				</div>
@@ -53,7 +63,9 @@
 				<div>
 					<PlanetSearchResults
 						:results="refResults"
-						:search-materials="refSearchMaterials" />
+						:search-materials="refSearchMaterials"
+						:search-system="refSearchSystem"
+						:search-system-distance="refSearchSystemDistance" />
 				</div>
 			</div>
 		</div>
