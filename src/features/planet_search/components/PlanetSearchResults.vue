@@ -224,9 +224,41 @@
 			key="checkDistance"
 			:title="`Distance ${tableCheckDistances}`"
 			sorter="default" />
-		<XNDataTableColumn key="distanceAI1" title="AI1" sorter="default" />
-		<XNDataTableColumn key="distanceCI1" title="CI1" sorter="default" />
-		<XNDataTableColumn key="distanceIC1" title="IC1" sorter="default" />
-		<XNDataTableColumn key="distanceNC1" title="NC1" sorter="default" />
+		<XNDataTableColumn key="distanceAI1" title="AI1" sorter="default">
+			<template #render-cell="{ rowData }">
+				<PTooltip v-if="rowData.distanceAI1 == -1">
+					<template #trigger> ∞ </template>
+					Colony Ship Required
+				</PTooltip>
+				<span v-else>{{ rowData.distanceAI1 }}</span>
+			</template>
+		</XNDataTableColumn>
+		<XNDataTableColumn key="distanceCI1" title="CI1" sorter="default">
+			<template #render-cell="{ rowData }">
+				<PTooltip v-if="rowData.distanceCI1 == -1">
+					<template #trigger> ∞ </template>
+					Colony Ship Required
+				</PTooltip>
+				<span v-else>{{ rowData.distanceCI1 }}</span>
+			</template>
+		</XNDataTableColumn>
+		<XNDataTableColumn key="distanceIC1" title="IC1" sorter="default">
+			<template #render-cell="{ rowData }">
+				<PTooltip v-if="rowData.distanceIC1 == -1">
+					<template #trigger> ∞ </template>
+					Colony Ship Required
+				</PTooltip>
+				<span v-else>{{ rowData.distanceIC1 }}</span>
+			</template>
+		</XNDataTableColumn>
+		<XNDataTableColumn key="distanceNC1" title="NC1" sorter="default">
+			<template #render-cell="{ rowData }">
+				<PTooltip v-if="rowData.distanceNC1 == -1">
+					<template #trigger> ∞ </template>
+					Colony Ship Required
+				</PTooltip>
+				<span v-else>{{ rowData.distanceNC1 }}</span>
+			</template>
+		</XNDataTableColumn>
 	</XNDataTable>
 </template>
