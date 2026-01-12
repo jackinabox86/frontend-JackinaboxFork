@@ -260,10 +260,7 @@ export function usePathfinder() {
 
 		if (systemIdx === undefined) return null;
 
-		const systemInfo = systemsJson[systemIdx];
-
-		if (systemInfo) return systemInfo.Name;
-		else return null;
+		return systemsJson[systemIdx].Name;
 	}
 
 	return {
