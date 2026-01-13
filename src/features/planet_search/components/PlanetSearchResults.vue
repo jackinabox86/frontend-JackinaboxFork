@@ -1,8 +1,9 @@
 <script setup lang="ts">
-	import { computed, ComputedRef, PropType, ref, Ref, watch } from "vue";
+	import { PropType, ref, Ref, watch } from "vue";
 
 	// Composables
-	import { usePlanetSearchResults } from "../usePlanetSearchResults";
+	import { usePlanetSearchResults } from "@/features/planet_search/usePlanetSearchResults";
+	import { usePathfinder } from "@/features/pathfinding/usePathfinder";
 
 	// Util
 	import { formatNumber } from "@/util/numbers";
@@ -30,13 +31,19 @@
 			type: Array as PropType<string[]>,
 			required: true,
 		},
+		searchSystem: {
+			type: String,
+			required: false,
+			default: undefined,
+		},
+		searchSystemDistance: {
+			type: Number,
+			required: false,
+			default: undefined,
+		},
 	});
 
-	// Local State
-	const localSearchMaterials: ComputedRef<string[]> = computed(
-		() => props.searchMaterials
-	);
-	const localResults: ComputedRef<IPlanet[]> = computed(() => props.results);
+	const { getSystemName } = usePathfinder();
 
 	// Table Data
 	const tableResults: Ref<IPlanetSearchResult[]> = ref([]);
@@ -47,20 +54,28 @@
 		tableSearchMaterials.value = [...props.searchMaterials];
 
 		tableResults.value = usePlanetSearchResults(
-			localResults.value,
-			localSearchMaterials.value
+			props.results,
+			props.searchMaterials,
+			props.searchSystem,
+			props.searchSystemDistance
 		).results.value;
-		tableCheckDistances.value = usePlanetSearchResults(
-			localResults.value,
-			localSearchMaterials.value
-		).hasCheckDistance.value;
+		tableCheckDistances.value = props.searchSystem
+			? getSystemName(props.searchSystem)
+			: null;
 	}
 
 	watch(
-		() => localResults.value,
-		(newResults: IPlanet[]) => {
-			if (newResults.length > 0) prepareTableData();
-		}
+		[
+			() => props.results,
+			() => props.searchSystem,
+			() => props.searchSystemDistance,
+		],
+		([newResults]) => {
+			if (newResults.length > 0) {
+				prepareTableData();
+			}
+		},
+		{ deep: true }
 	);
 </script>
 
@@ -209,9 +224,41 @@
 			key="checkDistance"
 			:title="`Distance ${tableCheckDistances}`"
 			sorter="default" />
-		<XNDataTableColumn key="distanceAI1" title="AI1" sorter="default" />
-		<XNDataTableColumn key="distanceCI1" title="CI1" sorter="default" />
-		<XNDataTableColumn key="distanceIC1" title="IC1" sorter="default" />
-		<XNDataTableColumn key="distanceNC1" title="NC1" sorter="default" />
+		<XNDataTableColumn key="distanceAI1" title="AI1" sorter="default">
+			<template #render-cell="{ rowData }">
+				<PTooltip v-if="rowData.distanceAI1 == -1">
+					<template #trigger> ∞ </template>
+					Colony Ship Required
+				</PTooltip>
+				<span v-else>{{ rowData.distanceAI1 }}</span>
+			</template>
+		</XNDataTableColumn>
+		<XNDataTableColumn key="distanceCI1" title="CI1" sorter="default">
+			<template #render-cell="{ rowData }">
+				<PTooltip v-if="rowData.distanceCI1 == -1">
+					<template #trigger> ∞ </template>
+					Colony Ship Required
+				</PTooltip>
+				<span v-else>{{ rowData.distanceCI1 }}</span>
+			</template>
+		</XNDataTableColumn>
+		<XNDataTableColumn key="distanceIC1" title="IC1" sorter="default">
+			<template #render-cell="{ rowData }">
+				<PTooltip v-if="rowData.distanceIC1 == -1">
+					<template #trigger> ∞ </template>
+					Colony Ship Required
+				</PTooltip>
+				<span v-else>{{ rowData.distanceIC1 }}</span>
+			</template>
+		</XNDataTableColumn>
+		<XNDataTableColumn key="distanceNC1" title="NC1" sorter="default">
+			<template #render-cell="{ rowData }">
+				<PTooltip v-if="rowData.distanceNC1 == -1">
+					<template #trigger> ∞ </template>
+					Colony Ship Required
+				</PTooltip>
+				<span v-else>{{ rowData.distanceNC1 }}</span>
+			</template>
+		</XNDataTableColumn>
 	</XNDataTable>
 </template>
