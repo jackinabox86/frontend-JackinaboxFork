@@ -11,7 +11,14 @@
 	import { useUserStore } from "@/stores/userStore";
 
 	// UI
-	import { PForm, PFormItem, PInput, PButton, PCheckbox } from "@/ui";
+	import {
+		PForm,
+		PFormItem,
+		PFormSeperator,
+		PInput,
+		PButton,
+		PCheckbox,
+	} from "@/ui";
 
 	const userStore = useUserStore();
 
@@ -38,6 +45,16 @@
 
 	async function patchProfile(): Promise<void> {
 		trackEvent("user_profile_change");
+
+		// detect if user has fio enabled
+		const userHasFIO: boolean = !!(
+			localProfile.fio_apikey &&
+			localProfile.fio_apikey != "" &&
+			localProfile.prun_username &&
+			localProfile.prun_username != ""
+		);
+
+		trackEvent("user_profile_change_fio", { active: userHasFIO });
 
 		isUpdating.value = true;
 
@@ -82,12 +99,13 @@
 				Update Profile
 			</PButton>
 		</div>
-		<div class="py-3 text-white/60">
-			FIO Data Updates are handled by PRUNplanners backend automatically.
-			It is not required to provide an email but highly recommended for
-			increased account safety and password recovery.
-		</div>
 		<PForm v-if="localProfile">
+			<PFormSeperator>
+				<div class="py-3 text-white/60">
+					FIO Data Updates are handled by PRUNplanners backend
+					automatically.
+				</div>
+			</PFormSeperator>
 			<PFormItem label="FIO API Key">
 				<PInput
 					v-model:value="localProfile.fio_apikey"
@@ -98,6 +116,13 @@
 					v-model:value="localProfile.prun_username"
 					class="w-full min-w-50 max-w-[50%]" />
 			</PFormItem>
+			<PFormSeperator>
+				<div class="py-3 text-white/60">
+					It is not required to provide an email but highly
+					recommended for increased account safety and password
+					recovery.
+				</div>
+			</PFormSeperator>
 			<PFormItem label="Email Address">
 				<PInput
 					v-model:value="localProfile.email"
