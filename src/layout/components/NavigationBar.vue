@@ -348,7 +348,11 @@
 							">
 							<!-- without children-->
 							<RouterLink
-								v-if="!item.children && item.routerLink"
+								v-if="
+									item.display &&
+									!item.children &&
+									item.routerLink
+								"
 								:key="
 									'ROUTER#' + section.label + '#' + item.label
 								"
