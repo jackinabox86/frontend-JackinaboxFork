@@ -9,3 +9,6 @@ coverage
 LICENSE
 *.md
 pnpm-lock.yaml
+
+# dont prettify certain jsons
+fio_systemstars.json

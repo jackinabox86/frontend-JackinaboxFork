@@ -38,6 +38,11 @@
 	const emit = defineEmits<{
 		(e: "update:results", value: IPlanet[]): void;
 		(e: "update:materials", value: string[]): void;
+		(
+			e: "update:distance",
+			system: string | undefined,
+			distance: number | undefined
+		): void;
 	}>();
 
 	// input refs
@@ -97,15 +102,16 @@
 				inputInfrastructure.value.includes("SHY")
 					? true
 					: false,
-			MaxDistanceCheck:
-				inputSystem.value !== undefined &&
-				inputSystem.value !== null &&
-				inputSystemDistance.value !== undefined
-					? {
-							SystemId: inputSystem.value,
-							MaxDistance: inputSystemDistance.value,
-					  }
-					: undefined,
+			// // NOTE: Removed to use frontend pathfinding
+			// MaxDistanceCheck:
+			// 	inputSystem.value !== undefined &&
+			// 	inputSystem.value !== null &&
+			// 	inputSystemDistance.value !== undefined
+			// 		? {
+			// 				SystemId: inputSystem.value,
+			// 				MaxDistance: inputSystemDistance.value,
+			// 		  }
+			// 		: undefined,
 		};
 	});
 
@@ -140,11 +146,22 @@
 			const data: IPlanet[] = await useQuery("PostPlanetSearch", {
 				searchData: searchPayload.value,
 			}).execute();
-			emit("update:results", data);
+
+			// also send distance
+			if (inputSystem.value && inputSystemDistance.value) {
+				emit(
+					"update:distance",
+					inputSystem.value,
+					inputSystemDistance.value
+				);
+			}
+
 			emit("update:materials", inputMaterials.value);
+			emit("update:results", data);
 		} catch {
 			emit("update:results", []);
 			emit("update:materials", []);
+			emit("update:distance", undefined, undefined);
 		}
 
 		refIsLoading.value = false;
