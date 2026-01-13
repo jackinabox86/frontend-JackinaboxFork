@@ -60,6 +60,7 @@ export type ANALYTICS_EVENT_TYPE =
 	| "user_password_change"
 	| "user_password_reset"
 	| "user_profile_change"
+	| "user_profile_change_fio"
 	| "user_registration"
 	| "user_request_email_verification"
 	| "user_request_password_reset"
@@ -121,6 +122,7 @@ export interface IAnalyticsEventProperties {
 	user_login: { username: string };
 	user_registration: { username: string };
 	user_profile_change: undefined;
+	user_profile_change_fio: { active: boolean };
 	user_request_email_verification: undefined;
 	version_reload: undefined;
 	navigation_toggle: { size: "full" | "collapsed" };

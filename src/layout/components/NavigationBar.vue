@@ -555,9 +555,11 @@
 							</tbody>
 						</PTable>
 					</PTooltip>
-					<PTag v-else size="sm" type="warning" :bordered="false">
-						{{ isFull ? "FIO Inactive" : "FIO" }}
-					</PTag>
+					<RouterLink v-else to="profile">
+						<PTag size="sm" type="warning" :bordered="false">
+							{{ isFull ? "FIO Inactive" : "FIO" }}
+						</PTag>
+					</RouterLink>
 				</div>
 				<div @click="toggleNavigationSize">
 					<div class="hover:bg-white/20 hover:rounded-sm p-2">
