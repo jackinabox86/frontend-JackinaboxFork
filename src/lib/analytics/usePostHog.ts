@@ -39,7 +39,7 @@ export function usePostHog() {
 			person_profiles: "identified_only",
 			name: posthogName,
 			autocapture: true,
-			capture_pageview: false,
+			capture_pageview: true,
 		});
 
 		// register global versions

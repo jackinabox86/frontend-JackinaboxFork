@@ -178,11 +178,11 @@ router.beforeEach((to, _) => {
 	}
 });
 
-router.afterEach((to, from) => {
-	trackEvent("page_view", {
-		page_name: to.name?.toString() ?? to.path,
-		referrer: from.name?.toString(),
-	});
-});
+// router.afterEach((to, from) => {
+// 	trackEvent("page_view", {
+// 		page_name: to.name?.toString() ?? to.path,
+// 		referrer: from.name?.toString(),
+// 	});
+// });
 
 export default router;
