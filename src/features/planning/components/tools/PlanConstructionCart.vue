@@ -337,18 +337,18 @@
 							</div>
 							<div
 								class="grid grid-cols-2 gap-x-3 gap-y-1 child:text-end child:not-even:font-bold">
-								<div>Total Volume</div>
-								<div>
-									{{ formatNumber(totalInformation.volume) }}
-									<span class="pl-1 font-light text-white/50">
-										m³
-									</span>
-								</div>
 								<div>Total Weight</div>
 								<div>
 									{{ formatNumber(totalInformation.weight) }}
 									<span class="pl-1 font-light text-white/50">
 										t
+									</span>
+								</div>
+								<div>Total Volume</div>
+								<div>
+									{{ formatNumber(totalInformation.volume) }}
+									<span class="pl-1 font-light text-white/50">
+										m³
 									</span>
 								</div>
 							</div>
@@ -440,18 +440,6 @@
 								</div>
 								<div
 									class="grid grid-cols-2 gap-x-3 gap-y-1 child:text-end child:not-even:font-bold">
-									<div>Total Volume</div>
-									<div>
-										{{
-											formatNumber(
-												overviewTotalInformation.volume
-											)
-										}}
-										<span
-											class="pl-1 font-light text-white/50">
-											m³
-										</span>
-									</div>
 									<div>Total Weight</div>
 									<div>
 										{{
@@ -462,6 +450,18 @@
 										<span
 											class="pl-1 font-light text-white/50">
 											t
+										</span>
+									</div>
+									<div>Total Volume</div>
+									<div>
+										{{
+											formatNumber(
+												overviewTotalInformation.volume
+											)
+										}}
+										<span
+											class="pl-1 font-light text-white/50">
+											m³
 										</span>
 									</div>
 								</div>
