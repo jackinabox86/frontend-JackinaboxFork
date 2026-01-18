@@ -102,13 +102,16 @@
 	const refMaterialOverrides: Ref<Record<string, number>> = ref({});
 	const refMaterialInactives: Ref<Set<string>> = ref(new Set([]));
 
-	const { materialTable, totalWeightVolume, fit } = await useBurnXITAction(
-		localElements,
-		burnResupplyDays,
-		refHideInfinite,
-		refMaterialOverrides,
-		refMaterialInactives
-	);
+	const { materialTable, totalWeightVolume, totalPrice, fit } =
+		await useBurnXITAction(
+			localElements,
+			burnResupplyDays,
+			refHideInfinite,
+			refMaterialOverrides,
+			refMaterialInactives,
+			ref(undefined),
+			ref(undefined)
+		);
 </script>
 
 <template>
@@ -270,6 +273,10 @@
 										)
 									}}
 									m³
+								</div>
+								<div>
+									Est. Price:
+									{{ formatNumber(totalPrice) }}
 								</div>
 							</div>
 						</td>
