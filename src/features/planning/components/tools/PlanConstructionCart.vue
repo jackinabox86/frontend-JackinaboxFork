@@ -83,6 +83,7 @@
 		}
 	}
 
+	const plannedBuildings: Ref<Record<string, number>> = ref({});
 	const localBuildingAmount: Ref<Record<string, number>> = ref({});
 	const localBuildingMaterials: Ref<Record<string, Record<string, number>>> =
 		ref({});
@@ -122,14 +123,21 @@
 	function generateMatrix(): void {
 		buildingTicker.value.forEach((bticker) => {
 			if (localBuildingAmount.value[bticker] === undefined) {
-				let need =
+				let planned =
 					props.productionBuildingData.find(
 						(pf) => pf.name === bticker
 					)?.amount ??
 					props.infrastructureData[bticker as INFRASTRUCTURE_TYPE];
-				if (bticker === "CM") need = 1;
-				if (need !== undefined && constructedMap !== null)
-					need -= constructedMap.get(bticker) ?? 0;
+				if (bticker === "CM") planned = 1;
+				let need = planned;
+				if (planned !== undefined) {
+					plannedBuildings.value[bticker] = planned;
+					if (constructedMap !== null)
+						need = Math.max(
+							planned - (constructedMap.get(bticker) ?? 0),
+							0
+						);
+				}
 				localBuildingAmount.value[bticker] = need;
 			}
 
@@ -139,11 +147,15 @@
 
 			if (thisMats) {
 				localBuildingMaterials.value[bticker] =
-					thisMats.materials.reduce((sum, current) => {
-						sum[current.ticker] =
-							current.input * localBuildingAmount.value[bticker];
-						return sum;
-					}, {} as Record<string, number>);
+					thisMats.materials.reduce(
+						(sum, current) => {
+							sum[current.ticker] =
+								current.input *
+								localBuildingAmount.value[bticker];
+							return sum;
+						},
+						{} as Record<string, number>
+					);
 			}
 		});
 	}
@@ -204,7 +216,7 @@
 		hasStorage.value
 			? storageOptions.value.filter(
 					(e) => e.value === `PLANET#${props.planetNaturalId}`
-			  )
+				)
 				? `PLANET#${props.planetNaturalId}`
 				: undefined
 			: undefined
@@ -274,7 +286,14 @@
 					v-for="building in buildingTicker"
 					:key="`CONSTRUCTIONCART#ROW#${building}`">
 					<th>{{ building }}</th>
-					<th v-if="constructedMap" class="text-neutral-500">
+					<th
+						v-if="constructedMap"
+						:class="
+							(constructedMap.get(building) ?? 0) >
+							plannedBuildings[building]
+								? 'text-red-500'
+								: 'text-neutral-500'
+						">
 						{{ constructedMap.get(building) ?? 0 }}
 					</th>
 					<th class="border-r!">
@@ -284,15 +303,7 @@
 							:min="0" />
 					</th>
 					<th>
-						{{
-							productionBuildingData.find(
-								(pf) => pf.name === building
-							)?.amount ??
-							infrastructureData[
-								building as INFRASTRUCTURE_TYPE
-							] ??
-							(building === "CM" ? 1 : 0)
-						}}
+						{{ plannedBuildings[building] ?? 0 }}
 					</th>
 					<td
 						v-for="mat in uniqueMaterials"
@@ -322,7 +333,10 @@
 					</td>
 				</tr>
 				<tr>
-					<td :colspan="uniqueMaterials.length + (constructedMap ? 4 : 3)">
+					<td
+						:colspan="
+							uniqueMaterials.length + (constructedMap ? 4 : 3)
+						">
 						<div
 							class="flex flex-row justify-between child:my-auto">
 							<div
