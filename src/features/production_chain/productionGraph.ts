@@ -205,6 +205,9 @@ export class ProductionGraph {
 			// unique node map
 			if (!nodeMap.has(node.id)) {
 				if (node.materialTicker !== materialTicker) node.amount = 0;
+				// Reset flags for fresh calculation each time graph is created
+				node.hasInput = false;
+				node.hasOutput = false;
 			}
 			nodeMap.set(node.id, node);
 
