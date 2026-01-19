@@ -133,7 +133,10 @@
 				if (planned !== undefined) {
 					plannedBuildings.value[bticker] = planned;
 					if (constructedMap !== null)
-						need = Math.max(planned - (constructedMap.get(bticker) ?? 0), 0);
+						need = Math.max(
+							planned - (constructedMap.get(bticker) ?? 0),
+							0
+						);
 				}
 				localBuildingAmount.value[bticker] = need;
 			}
@@ -144,11 +147,15 @@
 
 			if (thisMats) {
 				localBuildingMaterials.value[bticker] =
-					thisMats.materials.reduce((sum, current) => {
-						sum[current.ticker] =
-							current.input * localBuildingAmount.value[bticker];
-						return sum;
-					}, {} as Record<string, number>);
+					thisMats.materials.reduce(
+						(sum, current) => {
+							sum[current.ticker] =
+								current.input *
+								localBuildingAmount.value[bticker];
+							return sum;
+						},
+						{} as Record<string, number>
+					);
 			}
 		});
 	}
@@ -209,7 +216,7 @@
 		hasStorage.value
 			? storageOptions.value.filter(
 					(e) => e.value === `PLANET#${props.planetNaturalId}`
-			  )
+				)
 				? `PLANET#${props.planetNaturalId}`
 				: undefined
 			: undefined
@@ -279,8 +286,14 @@
 					v-for="building in buildingTicker"
 					:key="`CONSTRUCTIONCART#ROW#${building}`">
 					<th>{{ building }}</th>
-					<th v-if="constructedMap"
-						:class="(constructedMap.get(building) ?? 0) > plannedBuildings[building] ? 'text-red-500' : 'text-neutral-500'">
+					<th
+						v-if="constructedMap"
+						:class="
+							(constructedMap.get(building) ?? 0) >
+							plannedBuildings[building]
+								? 'text-red-500'
+								: 'text-neutral-500'
+						">
 						{{ constructedMap.get(building) ?? 0 }}
 					</th>
 					<th class="border-r!">
@@ -320,7 +333,10 @@
 					</td>
 				</tr>
 				<tr>
-					<td :colspan="uniqueMaterials.length + (constructedMap ? 4 : 3)">
+					<td
+						:colspan="
+							uniqueMaterials.length + (constructedMap ? 4 : 3)
+						">
 						<div
 							class="flex flex-row justify-between child:my-auto">
 							<div
