@@ -441,9 +441,9 @@
 				planetNaturalId: planetData.PlanetNaturalId,
 			});
 
-			// Close modal and navigate to new plan (force reload to load fresh data)
+			// Close modal and open new plan in a new tab
 			refShowSaveAsModal.value = false;
-			window.location.href = `/plan/${planetData.PlanetNaturalId}/${newUuid}`;
+			window.open(`/plan/${planetData.PlanetNaturalId}/${newUuid}`, "_blank");
 			return;
 		}
 
