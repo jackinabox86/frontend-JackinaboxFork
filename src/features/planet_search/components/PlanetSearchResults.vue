@@ -31,6 +31,11 @@
 			type: Array as PropType<string[]>,
 			required: true,
 		},
+		searchMaterialRichness: {
+			type: Object as PropType<Record<string, number>>,
+			required: false,
+			default: () => ({}),
+		},
 		searchSystem: {
 			type: String,
 			required: false,
@@ -56,6 +61,7 @@
 		tableResults.value = usePlanetSearchResults(
 			props.results,
 			props.searchMaterials,
+			props.searchMaterialRichness,
 			props.searchSystem,
 			props.searchSystemDistance
 		).results.value;
@@ -67,11 +73,12 @@
 	watch(
 		[
 			() => props.results,
+			() => props.searchMaterialRichness,
 			() => props.searchSystem,
 			() => props.searchSystemDistance,
 		],
-		([newResults]) => {
-			if (newResults.length > 0) {
+		() => {
+			if (props.results.length > 0) {
 				prepareTableData();
 			}
 		},
