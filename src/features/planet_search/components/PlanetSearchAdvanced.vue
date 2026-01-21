@@ -154,6 +154,15 @@
 		{ immediate: true }
 	);
 
+	// Watch richness changes to emit updates in real-time
+	watch(
+		inputMaterialRichness,
+		(newRichness) => {
+			emit("update:richness", { ...newRichness });
+		},
+		{ deep: true }
+	);
+
 	async function doSearch() {
 		refIsLoading.value = true;
 
@@ -221,7 +230,7 @@
 				<PFormItem
 					v-if="inputMaterials.length > 0"
 					label="Min. Richness %">
-					<div class="flex flex-col gap-2 w-full">
+					<div class="flex flex-col gap-1 w-full">
 						<div
 							v-for="material in inputMaterials"
 							:key="material"
