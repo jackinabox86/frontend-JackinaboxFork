@@ -187,11 +187,16 @@
 					<XNDataTableColumn key="Input" title="Input">
 						<template #render-cell="{ rowData }">
 							<div class="flex flex-row gap-1">
+								<span
+									v-if="rowData.RecipeId === localRecipeData.recipe.RecipeId"
+									class="w-2 h-2 bg-green-500 animate-pulse rounded-full my-auto"
+								/>
 								<MaterialTile
 									v-for="material in rowData.Inputs"
 									:key="`${rowData.BuildingTicker}#INPUT#${material.Ticker}`"
 									:ticker="material.Ticker"
-									:amount="material.Amount" />
+									:amount="material.Amount"
+								/>
 							</div>
 						</template>
 					</XNDataTableColumn>
