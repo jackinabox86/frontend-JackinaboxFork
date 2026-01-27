@@ -25,7 +25,7 @@
 
 	// UI
 	import { PButton, PInputNumber } from "@/ui";
-	import { NModal, NTable } from "naive-ui";
+	import { NModal } from "naive-ui";
 	import { ClearSharp, AnalyticsOutlined } from "@vicons/material";
 	import { XNDataTable, XNDataTableColumn } from "@skit/x.naive-ui";
 
@@ -189,7 +189,7 @@
 							<div class="flex flex-row gap-1">
 								<span
 									v-if="rowData.RecipeId === localRecipeData.recipe.RecipeId"
-									class="w-2 h-2 bg-green-500 animate-pulse rounded-full my-auto"
+									class="w-2 h-2 bg-prunplanner animate-pulse rounded-full my-auto mr-1"
 								/>
 								<MaterialTile
 									v-for="material in rowData.Inputs"
