@@ -1,3 +1,8 @@
+# 2026-01-29 - v. 0.22.1
+
+- Adds horizontal scroll in construction carts [[PR-333]](https://github.com/PRUNplanner/frontend/pull/333)
+- Replaces recipe selection static with sortable table [[PR-335]](https://github.com/PRUNplanner/frontend/pull/335)
+
 # 2026-01-22 - v. 0.22.0
 
 - Pathfinding and distance calculations on Planet Search are now done in the frontend instead of backend [[PR-322]](https://github.com/PRUNplanner/frontend/pull/322)
