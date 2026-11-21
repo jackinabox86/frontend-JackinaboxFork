@@ -32,7 +32,7 @@
 		"dayjs": "^1.11.19",
 		"fast-equals": "^5.4.0",
 		"globals": "^16.5.0",
-		"highcharts": "^12.4.0",
+		"highcharts": "^12.6.2",
 		"highcharts-vue": "^2.0.1",
 		"idb": "^8.0.3",
 		"lodash": "^4.17.23",
